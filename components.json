@@ -11,7 +11,7 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "@src/core/components",
-    "utils": "@src/core/lib/utils"
+    "components": "@/src/core/components",
+    "utils": "@/src/core/lib/utils"
   }
 }

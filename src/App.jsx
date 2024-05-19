@@ -1,18 +1,16 @@
 import { Provider } from 'react-redux';
 import store from './store';
 import { RouterProvider } from 'react-router-dom';
-// import { ToastContainer } from 'react-toastify';
 import appRouter from './core/navigation/approuter';
-// import 'react-toastify/dist/ReactToastify.css';
-// import 'react-loading-skeleton/dist/skeleton.css';
+import { Toaster } from 'sonner';
 
 function App() {
-    return (
-        <Provider store={store}>
-            {/*<ToastContainer />*/}
-            <RouterProvider router={appRouter} />
-        </Provider>
-    );
+  return (
+    <Provider store={store}>
+      <RouterProvider router={appRouter} />
+      <Toaster richColors position="top-right" />
+    </Provider>
+  );
 }
 
 export default App;

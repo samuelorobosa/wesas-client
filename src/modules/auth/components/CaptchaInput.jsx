@@ -36,14 +36,20 @@ export default function CaptchaInput({ onChange }) {
   }, []);
 
   return (
-    <section className="w-full flex rounded-md items-center ">
-      <div className="text-nowrap h-full bg-input px-3 py-2 rounded-md rounded-r-none">
-        {question ?? ''}
+    <section className="w-full flex flex-col gap-y-2">
+      <div className="flex rounded-md items-center ">
+        <div className="text-nowrap h-full bg-input px-3 py-2 rounded-md rounded-r-none">
+          {question ?? ''}
+        </div>
+        <Input
+          onInput={handleChange}
+          className="border-l-0 rounded-l-none focus-visible:ring-0 focus-visible:outline-0 focus-visible:ring-offset-0"
+          placeholder="Input answeer"
+        />
       </div>
-      <Input
-        className="border-l-0 rounded-l-none focus-visible:ring-0 focus-visible:outline-0 focus-visible:ring-offset-0"
-        placeholder="Input answeer"
-      />
+      <div className="text-destructive text-left">
+        {!isCorrect && <p>Incorrect answer. Please try again.</p>}
+      </div>
     </section>
   );
 }
