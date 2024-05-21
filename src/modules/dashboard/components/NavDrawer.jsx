@@ -8,6 +8,7 @@ import {
   User,
 } from 'lucide-react';
 import { subRouteNames } from '@/src/core/navigation/routenames.js';
+import NavDrawerItem from '@/src/modules/dashboard/components/NavDrawerItem.jsx';
 
 export default function NavDrawer() {
   const sidebarMenu = useMemo(
@@ -15,7 +16,7 @@ export default function NavDrawer() {
       {
         title: 'Profile',
         key: 0,
-        icon: <User />,
+        icon: <User size={20} />,
         links: [
           {
             title: 'User Profile',
@@ -30,15 +31,11 @@ export default function NavDrawer() {
       {
         title: 'Wallet',
         key: 1,
-        icon: <DollarSign />,
+        icon: <DollarSign size={20} />,
         links: [
           {
             title: 'Add Funds',
             path: subRouteNames.addFunds,
-          },
-          {
-            title: 'Withdraw Funds',
-            path: subRouteNames.withdrawFunds,
           },
           {
             title: 'Manage Subscription',
@@ -53,7 +50,7 @@ export default function NavDrawer() {
       {
         title: 'Procurement',
         key: 2,
-        icon: <ShoppingCartIcon />,
+        icon: <ShoppingCartIcon size={20} />,
         links: [
           {
             title: 'Orders',
@@ -68,7 +65,7 @@ export default function NavDrawer() {
       {
         title: 'Logistics',
         key: 4,
-        icon: <TruckIcon />,
+        icon: <TruckIcon size={20} />,
         links: [
           {
             title: 'Shipping Address Book',
@@ -87,7 +84,7 @@ export default function NavDrawer() {
       {
         title: 'Support',
         key: 5,
-        icon: <BookUserIcon />,
+        icon: <BookUserIcon size={20} />,
         links: [
           {
             title: 'Whatsapp',
@@ -99,11 +96,20 @@ export default function NavDrawer() {
     [],
   );
   return (
-    <nav className="h-full p-2 border-r border-r-gray-300">
-      <div className="flex items-center p-4">
+    <nav className="h-full bg-sidebar text-white">
+      <div className="flex items-center p-4 gap-x-2">
         <img className="w-6 h-6" src={logo} alt="We Shop And Ship Logo" />
-        <h3 className="title">WeShopAndShip</h3>
+        <p className="title">We Shop And Ship</p>
       </div>
+      {sidebarMenu.map(({ title, key, icon, links }) => (
+        <NavDrawerItem
+          key={crypto.randomUUID()}
+          title={title}
+          icon={icon}
+          links={links}
+          itemKey={key}
+        />
+      ))}
     </nav>
   );
 }

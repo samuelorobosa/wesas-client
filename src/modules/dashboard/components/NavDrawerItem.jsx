@@ -1,10 +1,8 @@
-import './NavDrawerItem.css';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { IconContext } from 'react-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectNewItem } from '../../state/nav-drawer-slice';
 import { ChevronDown } from 'lucide-react';
+import { selectNewItem } from '@/src/modules/dashboard/state/navDrawerSlice.js';
 
 export default function NavDrawerItem({ title, itemKey, icon, links }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,36 +14,38 @@ export default function NavDrawerItem({ title, itemKey, icon, links }) {
   }
 
   function handleLinkClick() {
-    if (selectedItemKey != itemKey) dispatch(selectNewItem(itemKey));
+    if (selectedItemKey !== itemKey) dispatch(selectNewItem(itemKey));
   }
 
   return (
-    <div className="nav-drawer-item">
-      <button
+    <div className="w-[250px]">
+      <div
         onClick={handleClick}
-        className={`clickable ${selectedItemKey === itemKey && 'isActive'}`}
+        className={`clickable ${selectedItemKey === itemKey && 'border-l-[3px] border-l-blue'} flex items-center p-2`}
       >
-        <IconContext.Provider
-          value={{ className: 'leading-icon', size: '17px' }}
+        <span className="text-sidebarColor inline-block mr-2">{icon}</span>
+        <p className="flex-1 text-sm">{title}</p>
+        <div
+          className={`transition-all duration-200 cursor-pointer ${isOpen && 'rotate-180'}`}
         >
-          {icon}
-        </IconContext.Provider>
-        <p className="title">{title}</p>
-        <div className={`trailing-icon-wrapper ${isOpen && 'open'}`}>
-          <ChevronDown />
+          <ChevronDown size={20} />
         </div>
-      </button>
-      <section className={`links ${isOpen && 'open'}`}>
-        <ul className="links-list">
+      </div>
+      <section className={`bg-sidebarColorLight ${isOpen && 'max-h-[400px]'}`}>
+        <ul
+          className={`${isOpen ? 'block' : 'hidden'} py-2 transition-all duration-500`}
+        >
           {links.map(({ title, path }) => (
             <li onClick={handleLinkClick} key={crypto.randomUUID()}>
               <NavLink
-                className={({ isActive }) => (isActive ? 'link-active' : '')}
+                className={({ isActive }) =>
+                  isActive ? 'text-white' : 'text-sidebarColor'
+                }
                 to={path}
               >
-                <button className="link-btn">
-                  <div className="selection-circle" />
-                  <p className="link-title">{title}</p>
+                <button className="flex items-center w-full py-1 pl-8 gap-x-2">
+                  <div className="w-[17px] h-[17px] border border-sidebarColor rounded-full" />
+                  <p className="text-sm">{title}</p>
                 </button>
               </NavLink>
             </li>

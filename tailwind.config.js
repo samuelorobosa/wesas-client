@@ -54,6 +54,13 @@ module.exports = {
         blue: '#007cff',
         green: '#28a745',
         'grey-00': '#F8F8F8',
+        sidebar: '#343a40',
+        sidebarColor: '#c2c7d0',
+        grey: '#F7F9FC',
+        grey_02: '#DFE6EC',
+        grey_03: '#8B909A',
+        'primary-tint-300': '#4DA3FF',
+        sidebarColorLight: 'rgba(255,255,255,.05)',
       },
       borderRadius: {
         lg: 'var(--radius)',
