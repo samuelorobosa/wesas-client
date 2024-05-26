@@ -68,10 +68,6 @@ export default function NavDrawer() {
         icon: <TruckIcon size={20} />,
         links: [
           {
-            title: 'Shipping Address Book',
-            path: subRouteNames.shippingAddresses,
-          },
-          {
             title: 'Request Shipping',
             path: subRouteNames.requestShipping,
           },

@@ -1,4 +1,4 @@
-import { ArrowLeftRight, Bell } from 'lucide-react';
+import { ArrowLeftRight, Bell, CircleAlert } from 'lucide-react';
 import userProfile from '../../../core/assets/images/user_profile.svg';
 import { Button } from '@/src/core/components/ui/button.jsx';
 import {
@@ -29,13 +29,23 @@ import {
   SelectValue,
 } from '@/src/core/components/ui/select.jsx';
 import { ClipLoader } from 'react-spinners';
-import { getProfileThunk } from '@/src/modules/profile/net/profileThunks.js';
+import {
+  getExchangeRatesThunk,
+  getNotificationsThunk,
+  getProfileThunk,
+} from '@/src/modules/profile/net/profileThunks.js';
 import Skeleton from 'react-loading-skeleton';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/src/core/components/ui/popover.jsx';
 
 export default function ProfilePage() {
   const {
     get_profile: { loading: profileLoading, data: profileData },
+    get_notifications: { data: notifications },
   } = useSelector((state) => state.profile);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -86,6 +96,8 @@ export default function ProfilePage() {
 
   useEffect(() => {
     dispatch(getProfileThunk());
+    dispatch(getExchangeRatesThunk());
+    dispatch(getNotificationsThunk());
   }, []);
 
   return (
@@ -112,9 +124,23 @@ export default function ProfilePage() {
       <div className="bg-white rounded-md mt-10 w-full py-4">
         <header className="flex items-center justify-between px-4 border-b border-b-grey_02">
           <p className="text-xl font-semibold pb-3 mt-1">Personal Rate</p>
-          <figure className="cursor-pointer">
-            <Bell />
-          </figure>
+          <Popover>
+            <PopoverTrigger>
+              <figure className="cursor-pointer">
+                <Bell />
+              </figure>
+            </PopoverTrigger>
+            <PopoverContent className="mr-8">
+              {notifications.length > 0 ? (
+                <p>You have some notification</p>
+              ) : (
+                <div className="flex gap-x-2 items-center">
+                  <CircleAlert color="#8B909A" size={20} />
+                  <p className="text-sm text-sidebar">No new notifications</p>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
         </header>
         <section className="flex justify-between items-center bg-grey mx-4 mt-6 rounded-md">
           <aside className="flex gap-x-3 items-center p-4">

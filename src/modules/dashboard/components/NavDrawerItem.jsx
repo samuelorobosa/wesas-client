@@ -17,6 +17,13 @@ export default function NavDrawerItem({ title, itemKey, icon, links }) {
     if (selectedItemKey !== itemKey) dispatch(selectNewItem(itemKey));
   }
 
+  const exemptedPaths = [
+    {
+      key: 'Whatsapp',
+      path: 'https://wa.me/2348136562626',
+    },
+  ];
+
   return (
     <div className="w-[250px]">
       <div
@@ -35,21 +42,52 @@ export default function NavDrawerItem({ title, itemKey, icon, links }) {
         <ul
           className={`${isOpen ? 'block' : 'hidden'} py-2 transition-all duration-500`}
         >
-          {links.map(({ title, path }) => (
-            <li onClick={handleLinkClick} key={crypto.randomUUID()}>
-              <NavLink
-                className={({ isActive }) =>
-                  isActive ? 'text-white' : 'text-sidebarColor'
-                }
-                to={path}
-              >
-                <button className="flex items-center w-full py-1 pl-8 gap-x-2">
-                  <div className="w-[17px] h-[17px] border border-sidebarColor rounded-full" />
-                  <p className="text-sm">{title}</p>
-                </button>
-              </NavLink>
-            </li>
-          ))}
+          {links.map(({ title, path }) => {
+            if (
+              exemptedPaths.some(
+                (exemptedPath) =>
+                  exemptedPath.key.toLowerCase() === title.toLowerCase(),
+              )
+            ) {
+              return (
+                <li key={crypto.randomUUID()}>
+                  <a
+                    className="text-sidebarColor"
+                    href={
+                      exemptedPaths.find(
+                        (exemptedPath) =>
+                          exemptedPath.key.toLowerCase() ===
+                          title.toLowerCase(),
+                      ).path
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <button className="flex items-center w-full py-1 pl-8 gap-x-2">
+                      <div className="w-[17px] h-[17px] border border-sidebarColor rounded-full" />
+                      <p className="text-sm">{title}</p>
+                    </button>
+                  </a>
+                </li>
+              );
+            } else {
+              return (
+                <li onClick={handleLinkClick} key={crypto.randomUUID()}>
+                  <NavLink
+                    className={({ isActive }) =>
+                      isActive ? 'text-white' : 'text-sidebarColor'
+                    }
+                    to={path}
+                  >
+                    <button className="flex items-center w-full py-1 pl-8 gap-x-2">
+                      <div className="w-[17px] h-[17px] border border-sidebarColor rounded-full" />
+                      <p className="text-sm">{title}</p>
+                    </button>
+                  </NavLink>
+                </li>
+              );
+            }
+          })}
         </ul>
       </section>
     </div>

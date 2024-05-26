@@ -11,3 +11,10 @@ export const getProfile = async (data) => {
 export const editProfile = async (data) => {
   return await profileServiceClient.patch(profileUrls.editProfile, data);
 };
+
+export const getExchangeRates = async () => {
+  return await profileServiceClient.get(profileUrls.getExchangeRates);
+};
+export const getNotifications = async () => {
+  return await profileServiceClient.get(profileUrls.getNotifications);
+};

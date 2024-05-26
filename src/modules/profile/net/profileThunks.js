@@ -1,6 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   editProfile,
+  getExchangeRates,
+  getNotifications,
   getProfile,
 } from '@/src/modules/profile/service/profileService.js';
 
@@ -21,6 +23,30 @@ export const editProfileThunk = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await editProfile(data);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  },
+);
+
+export const getExchangeRatesThunk = createAsyncThunk(
+  'profile/getExchangeRates',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getExchangeRates();
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  },
+);
+
+export const getNotificationsThunk = createAsyncThunk(
+  'profile/getNotifications',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getNotifications();
       return response.data;
     } catch (err) {
       return rejectWithValue(err);
