@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getNotificationsThunk } from '@/src/modules/profile/net/profileThunks.js';
-import userProfile from '@/src/core/assets/images/user_profile.svg';
 import TimeAgo from 'react-timeago';
 import { CircleAlert } from 'lucide-react';
+import { createAvatar } from '@dicebear/core';
+import { shapes } from '@dicebear/collection';
 
 export default function EventHistoryPage() {
   const dispatch = useDispatch();
@@ -13,6 +14,12 @@ export default function EventHistoryPage() {
   useEffect(() => {
     dispatch(getNotificationsThunk());
   }, []);
+
+  function generateAvatar(seed) {
+    return createAvatar(shapes, {
+      seed: seed,
+    }).toDataUriSync();
+  }
   return (
     <main className="w-full">
       <h1 className="font-medium text-xl">Event History</h1>
@@ -26,7 +33,7 @@ export default function EventHistoryPage() {
               <figure className="w-24 h-24">
                 <img
                   className="w-full h-full object-cover"
-                  src={userProfile}
+                  src={generateAvatar(notification?.id)}
                   alt="User Profile"
                 />
               </figure>

@@ -1,5 +1,4 @@
 import { ArrowLeftRight } from 'lucide-react';
-import userProfile from '../../../core/assets/images/user_profile.svg';
 import { Button } from '@/src/core/components/ui/button.jsx';
 import {
   Dialog,
@@ -19,7 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCountriesThunk } from '@/src/modules/auth/net/authThunks.js';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -37,6 +36,8 @@ import Skeleton from 'react-loading-skeleton';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 import { getWalletDetailsThunk } from '@/src/modules/wallet/net/walletThunks.js';
 import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
+import { identicon } from '@dicebear/collection';
+import { createAvatar } from '@dicebear/core';
 
 export default function ProfilePage() {
   const {
@@ -104,6 +105,12 @@ export default function ProfilePage() {
     dispatch(getWalletDetailsThunk());
   }, []);
 
+  const svg = useMemo(() => {
+    return createAvatar(identicon, {
+      seed: crypto.getRandomValues(new Uint32Array(1))[0],
+    }).toDataUriSync();
+  }, []);
+
   return (
     <main className="w-full">
       <h1 className="font-medium text-xl">User Profile</h1>
@@ -139,16 +146,12 @@ export default function ProfilePage() {
       </div>
       <div className="bg-white rounded-md mt-10 w-full py-4">
         <header className="flex items-center justify-between px-4 border-b border-b-grey_02">
-          <p className="text-xl font-semibold pb-3 mt-1">Personal Rate</p>
+          <p className="text-xl font-semibold pb-3 mt-1">Personal Data</p>
         </header>
         <section className="flex justify-between items-center bg-grey mx-4 mt-6 rounded-md">
           <aside className="flex gap-x-3 items-center p-4">
             <figure className="w-16 h-16">
-              <img
-                className="w-full h-full object-cover"
-                src={userProfile}
-                alt=""
-              />
+              <img className="w-full h-full object-cover" src={svg} alt="" />
             </figure>
             <div>
               <p className="text-lg font-semibold">John Doe</p>
