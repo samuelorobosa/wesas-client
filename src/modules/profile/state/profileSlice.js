@@ -16,19 +16,16 @@ const initialState = {
   edit_profile: {
     loading: LoadingStates.base,
     data: {},
-    response: null,
     error: null,
   },
   get_exchange_rates: {
     loading: LoadingStates.base,
     data: {},
-    response: null,
     error: null,
   },
   get_notifications: {
     loading: LoadingStates.base,
     data: {},
-    response: null,
     error: null,
   },
 };
@@ -70,8 +67,7 @@ const profileSlice = createSlice({
     });
     builder.addCase(getExchangeRatesThunk.fulfilled, (state, { payload }) => {
       state.get_exchange_rates.loading = LoadingStates.fulfilled;
-      // console.log(payload);
-      // state.get_exchange_rates.response = payload;
+      state.get_exchange_rates.data = payload;
     });
     builder.addCase(getExchangeRatesThunk.rejected, (state, { payload }) => {
       state.get_exchange_rates.loading = LoadingStates.rejected;
@@ -85,7 +81,6 @@ const profileSlice = createSlice({
     builder.addCase(getNotificationsThunk.fulfilled, (state, { payload }) => {
       state.get_notifications.loading = LoadingStates.fulfilled;
       state.get_notifications.data = payload;
-      console.log(payload);
     });
     builder.addCase(getNotificationsThunk.rejected, (state, { payload }) => {
       state.get_notifications.loading = LoadingStates.rejected;

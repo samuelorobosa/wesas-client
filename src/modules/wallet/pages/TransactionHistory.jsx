@@ -1,6 +1,10 @@
 import DashboardTable from '@/src/core/components/DataTable.jsx';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { getTransactionHistoryThunk } from '@/src/modules/wallet/net/walletThunks.js';
 
 export default function TransactionHistory() {
+  const dispatch = useDispatch();
   const columns = [
     {
       accessorKey: 'trxID',
@@ -86,6 +90,9 @@ export default function TransactionHistory() {
       date: '2021-08-23',
     },
   ];
+  useEffect(() => {
+    dispatch(getTransactionHistoryThunk());
+  }, []);
   return (
     <main className="w-full">
       <h1 className="font-medium text-xl">Transaction History</h1>

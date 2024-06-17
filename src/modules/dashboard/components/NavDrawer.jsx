@@ -41,10 +41,10 @@ export default function NavDrawer() {
             title: 'Manage Subscription',
             path: subRouteNames.manageSubscription,
           },
-          {
-            title: 'Transaction History',
-            path: subRouteNames.transactionHistory,
-          },
+          // {
+          //   title: 'Transaction History',
+          //   path: subRouteNames.transactionHistory,
+          // },
         ],
       },
       {
@@ -57,8 +57,8 @@ export default function NavDrawer() {
             path: subRouteNames.orders,
           },
           {
-            title: 'Pay Supplier',
-            path: subRouteNames.paySupplier,
+            title: 'Suppliers',
+            path: subRouteNames.suppliers,
           },
         ],
       },
@@ -67,10 +67,10 @@ export default function NavDrawer() {
         key: 4,
         icon: <TruckIcon size={20} />,
         links: [
-          {
-            title: 'Request Shipping',
-            path: subRouteNames.requestShipping,
-          },
+          // {
+          //   title: 'Request Shipping',
+          //   path: subRouteNames.requestShipping,
+          // },
           {
             title: 'Express Courier Service',
             path: subRouteNames.requestExpressCourierService,

@@ -1,9 +1,9 @@
 import DashboardTable from '@/src/core/components/DataTable.jsx';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { getOrdersThunk } from '@/src/modules/procurement/net/procurementThunks.js';
-import { useDispatch, useSelector } from 'react-redux';
 
-export default function PendingOrders() {
+export default function DeclinedOrders() {
   const { data: orders } = useSelector((state) => state.procurement.get_orders);
   const dispatch = useDispatch();
   const columns = [
@@ -90,10 +90,12 @@ export default function PendingOrders() {
 
   useEffect(() => {
     const queryParams = {
-      status: 'pending',
+      status: 'declined',
     };
     dispatch(getOrdersThunk(queryParams));
   }, []);
+
+  console.log('orders', orders);
 
   const new_table_data =
     orders &&

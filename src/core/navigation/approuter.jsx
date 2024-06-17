@@ -7,10 +7,8 @@ import ProfilePage from '@/src/modules/profile/pages/ProfilePage.jsx';
 import EventHistoryPage from '@/src/modules/profile/pages/EventHistoryPage.jsx';
 import AddFunds from '@/src/modules/wallet/pages/AddFunds.jsx';
 import ManageSubscription from '@/src/modules/wallet/pages/ManageSubscription.jsx';
-import TransactionHistory from '@/src/modules/wallet/pages/TransactionHistory.jsx';
 import Orders from '@/src/modules/procurement/pages/Orders.jsx';
-import PaySupplier from '@/src/modules/procurement/pages/PaySupplier.jsx';
-import RequestShipping from '@/src/modules/logistics/pages/RequestShipping.jsx';
+import Suppliers from '@/src/modules/procurement/pages/Suppliers.jsx';
 import ExpressCourierService from '@/src/modules/logistics/pages/ExpressCourierService.jsx';
 
 const appRouter = createBrowserRouter([
@@ -38,22 +36,22 @@ const appRouter = createBrowserRouter([
         path: subRouteNames.manageSubscription,
         element: <ManageSubscription />,
       },
-      {
-        path: subRouteNames.transactionHistory,
-        element: <TransactionHistory />,
-      },
+      // {
+      //   path: subRouteNames.transactionHistory,
+      //   element: <TransactionHistory />,
+      // },
       {
         path: subRouteNames.orders,
         element: <Orders />,
       },
       {
-        path: subRouteNames.paySupplier,
-        element: <PaySupplier />,
+        path: subRouteNames.suppliers,
+        element: <Suppliers />,
       },
-      {
-        path: subRouteNames.requestShipping,
-        element: <RequestShipping />,
-      },
+      // {
+      //   path: subRouteNames.requestShipping,
+      //   element: <RequestShipping />,
+      // },
       {
         path: subRouteNames.requestExpressCourierService,
         element: <ExpressCourierService />,

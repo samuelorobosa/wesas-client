@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import NigerianBankTab from '@/src/modules/wallet/components/NigerianBankTab.jsx';
 import UKBankTransferTab from '@/src/modules/wallet/components/UKBankTransferTab.jsx';
 import CardPaymentTab from '@/src/modules/wallet/components/CardPaymentTab.jsx';
+import { useSearchParams } from 'react-router-dom';
 
 export default function AddFunds() {
+  const [searchParams] = useSearchParams();
   const tabs = [
     {
       key: 'ngn-bank-transfer',
-      title: 'Nigerian Bank (NGN and GBP)',
+      title: 'Nigerian Bank',
       element: <NigerianBankTab />,
     },
     {
@@ -22,6 +24,13 @@ export default function AddFunds() {
     },
   ];
   const [activeTab, setActiveTab] = useState(tabs[0].key);
+
+  useEffect(() => {
+    const type = searchParams.get('type');
+    if (type && type === 'uk-card-payment') {
+      setActiveTab('uk-bank-transfer');
+    }
+  }, []);
 
   return (
     <main className="w-full">

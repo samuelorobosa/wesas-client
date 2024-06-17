@@ -1,4 +1,4 @@
-import { ArrowLeftRight, Bell, CircleAlert } from 'lucide-react';
+import { ArrowLeftRight } from 'lucide-react';
 import userProfile from '../../../core/assets/images/user_profile.svg';
 import { Button } from '@/src/core/components/ui/button.jsx';
 import {
@@ -19,7 +19,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCountriesThunk } from '@/src/modules/auth/net/authThunks.js';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -31,22 +31,26 @@ import {
 import { ClipLoader } from 'react-spinners';
 import {
   getExchangeRatesThunk,
-  getNotificationsThunk,
   getProfileThunk,
 } from '@/src/modules/profile/net/profileThunks.js';
 import Skeleton from 'react-loading-skeleton';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/src/core/components/ui/popover.jsx';
+import { getWalletDetailsThunk } from '@/src/modules/wallet/net/walletThunks.js';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
 export default function ProfilePage() {
   const {
-    get_profile: { loading: profileLoading, data: profileData },
-    get_notifications: { data: notifications },
-  } = useSelector((state) => state.profile);
+    profile: {
+      get_profile: { loading: profileLoading, data: profileData },
+      get_exchange_rates: {
+        data: exchangeRates,
+        loading: exchangeRatesLoading,
+      },
+    },
+    wallet: {
+      wallet_details: { data: walletDetails, loading: walletDetailsLoading },
+    },
+  } = useSelector((state) => state);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const { countries } = useSelector((state) => state.auth);
@@ -62,7 +66,7 @@ export default function ProfilePage() {
     email: z.string().email({ message: 'Invalid email address' }),
     country: z
       .enum(countryValues)
-      .refine((value) => countryValues.includes(value), {
+      .refine((value) => countryValues?.includes(value), {
         message: 'Invalid country selected',
       }),
     phone: z.string().min(1, { message: 'Phone number is required' }),
@@ -97,7 +101,7 @@ export default function ProfilePage() {
   useEffect(() => {
     dispatch(getProfileThunk());
     dispatch(getExchangeRatesThunk());
-    dispatch(getNotificationsThunk());
+    dispatch(getWalletDetailsThunk());
   }, []);
 
   return (
@@ -115,32 +119,27 @@ export default function ProfilePage() {
           <div className="bg-blue p-4 rounded-full text-white">
             <ArrowLeftRight size={30} />
           </div>
-          <p className="flex gap-x-2 items-center">
-            <span>₦</span>
-            <span className="text-3xl font-semibold">450.00</span>
-          </p>
+          <div className="flex flex-col">
+            <p className="flex gap-x-2 items-center">
+              <span>₦</span>
+              <span className="text-3xl font-semibold">
+                {exchangeRatesLoading === LoadingStates.pending ? (
+                  <Skeleton height={20} width={150} />
+                ) : exchangeRates.data ? (
+                  <>
+                    {formatNumberWithCommas(exchangeRates['data'][0]['naira'])}
+                  </>
+                ) : (
+                  '---'
+                )}
+              </span>
+            </p>
+          </div>
         </section>
       </div>
       <div className="bg-white rounded-md mt-10 w-full py-4">
         <header className="flex items-center justify-between px-4 border-b border-b-grey_02">
           <p className="text-xl font-semibold pb-3 mt-1">Personal Rate</p>
-          <Popover>
-            <PopoverTrigger>
-              <figure className="cursor-pointer">
-                <Bell />
-              </figure>
-            </PopoverTrigger>
-            <PopoverContent className="mr-8">
-              {notifications.length > 0 ? (
-                <p>You have some notification</p>
-              ) : (
-                <div className="flex gap-x-2 items-center">
-                  <CircleAlert color="#8B909A" size={20} />
-                  <p className="text-sm text-sidebar">No new notifications</p>
-                </div>
-              )}
-            </PopoverContent>
-          </Popover>
         </header>
         <section className="flex justify-between items-center bg-grey mx-4 mt-6 rounded-md">
           <aside className="flex gap-x-3 items-center p-4">
@@ -344,7 +343,18 @@ export default function ProfilePage() {
             <div className="flex flex-col gap-y-3 mt-6">
               <p className="text-xs flex justify-between">
                 <span>Account Balance</span>
-                <span>$0.71</span>
+                <span>
+                  {walletDetailsLoading === LoadingStates.pending ? (
+                    <Skeleton height={20} width={150} />
+                  ) : walletDetails.balance ? (
+                    <>
+                      &#163;
+                      {formatNumberWithCommas(walletDetails.balance) || '----'}
+                    </>
+                  ) : (
+                    '---'
+                  )}
+                </span>
               </p>
               <p className="text-xs flex justify-between">
                 <span>Name</span>
@@ -352,7 +362,10 @@ export default function ProfilePage() {
                   {profileLoading === LoadingStates.pending ? (
                     <Skeleton height={20} width={150} />
                   ) : (
-                    profileData.firstname + profileData.lastname || 'N/A'
+                    <Fragment>
+                      {`${profileData.firstname} ${profileData.lastname}` ||
+                        '---'}
+                    </Fragment>
                   )}
                 </span>
               </p>
@@ -362,7 +375,7 @@ export default function ProfilePage() {
                   {profileLoading === LoadingStates.pending ? (
                     <Skeleton height={20} width={150} />
                   ) : (
-                    profileData.phone || 'N/A'
+                    profileData.phone || '---'
                   )}
                 </span>
               </p>
@@ -372,7 +385,7 @@ export default function ProfilePage() {
                   {profileLoading === LoadingStates.pending ? (
                     <Skeleton height={20} width={150} />
                   ) : (
-                    profileData.username || 'N/A'
+                    profileData.username || '---'
                   )}
                 </span>
               </p>
@@ -382,7 +395,7 @@ export default function ProfilePage() {
                   {profileLoading === LoadingStates.pending ? (
                     <Skeleton height={20} width={150} />
                   ) : (
-                    profileData.email || 'N/A'
+                    profileData.email || '---'
                   )}
                 </span>
               </p>
@@ -393,7 +406,7 @@ export default function ProfilePage() {
                   {profileLoading === LoadingStates.pending ? (
                     <Skeleton height={20} width={150} />
                   ) : (
-                    profileData.id || 'N/A'
+                    profileData.id || '---'
                   )}
                 </span>
               </p>
@@ -403,7 +416,7 @@ export default function ProfilePage() {
                   {profileLoading === LoadingStates.pending ? (
                     <Skeleton height={20} width={150} />
                   ) : (
-                    profileData.country || 'N/A'
+                    profileData.country || '---'
                   )}
                 </span>
               </p>

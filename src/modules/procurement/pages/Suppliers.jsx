@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -17,102 +16,66 @@ import { ClipLoader } from 'react-spinners';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import PendingOrders from '@/src/modules/procurement/components/PendingOrders.jsx';
-import ProcessedOrders from '@/src/modules/procurement/components/ProcessedOrders.jsx';
-import ReceivedOrders from '@/src/modules/procurement/components/ReceivedOrders.jsx';
-import ShippedOrders from '@/src/modules/procurement/components/ShippedOrders.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { createOrderThunk } from '@/src/modules/procurement/net/procurementThunks.js';
+import { createSupplierThunk } from '@/src/modules/procurement/net/procurementThunks.js';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
-import { toast } from 'sonner';
-import DeclinedOrders from '@/src/modules/procurement/components/DeclinedOrders.jsx';
+import SuppliersTable from '@/src/modules/procurement/components/SuppliersTable.jsx';
 
-export default function Orders() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+export default function Suppliers() {
+  const { loading } = useSelector((state) => state.procurement.create_supplier);
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.procurement.create_order);
-  const tabs = [
-    {
-      key: 'pending',
-      title: 'Pending',
-      component: <PendingOrders />,
-    },
-    {
-      key: 'processed',
-      title: 'Processed',
-      component: <ProcessedOrders />,
-    },
-    {
-      key: 'received',
-      title: 'Received',
-      component: <ReceivedOrders />,
-    },
-    {
-      key: 'shipped',
-      title: 'Shipped',
-      component: <ShippedOrders />,
-    },
-    {
-      key: 'declined',
-      title: 'Declined',
-      component: <DeclinedOrders />,
-    },
-  ];
   const formSchema = z.object({
-    product: z.string().nonempty('Product Link is required'),
-    unitPrice: z.string().nonempty('Unit Price is required'),
-    quantity: z.string().nonempty('Quantity is required'),
+    name: z.string().nonempty('Name is required'),
+    phoneNumber: z.string().nonempty('Phone Number is required'),
+    bankName: z.string().nonempty('Bank Name is required'),
+    accountNo: z.string().nonempty('Account Number is required'),
+    sortCode: z.string().nonempty('Sort Code is required'),
   });
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      product: '',
-      unitPrice: '',
-      quantity: '',
-      supplierId: '',
+      name: '',
+      phoneNumber: '',
+      bankName: '',
+      accountNo: '',
+      sortCode: '',
     },
     mode: 'onChange',
   });
+
   async function onSubmit(formData) {
-    //Convert unitPrice and quantity to number
-    formData.unitPrice = Number(formData.unitPrice);
-    formData.quantity = Number(formData.quantity);
-    dispatch(createOrderThunk(formData));
+    //rebuild formData
+    const __formData = {
+      name: formData.name,
+      phoneNumber: formData.phoneNumber,
+      bankDetails: {
+        bankName: formData.bankName,
+        accountNo: formData.accountNo,
+        sortCode: formData.sortCode,
+      },
+    };
+    dispatch(createSupplierThunk(__formData));
   }
-
-  useEffect(() => {
-    if (loading === LoadingStates.fulfilled) {
-      toast.success('Order created successfully');
-      form.reset();
-      setIsDialogOpen(false);
-    } else if (loading === LoadingStates.rejected) {
-      toast.error('Failed to create order');
-    }
-  }, [loading]);
-
-  const [activeTab, setActiveTab] = useState(tabs[0].key);
   return (
     <main className="w-full">
       <header className="flex items-center justify-between">
-        <h1 className="font-medium text-xl">All Orders</h1>
-        <Dialog
-          open={isDialogOpen}
-          onOpenChange={(_) => setIsDialogOpen(!isDialogOpen)}
-        >
+        <h1 className="font-medium text-xl">All Suppliers</h1>
+        <Dialog>
           <DialogTrigger asChild>
             <Button className="ml-4 bg-blue hover:bg-primary-tint-300">
-              Create Order
+              Create Supplier
             </Button>
           </DialogTrigger>
           <DialogContent className="rounded-md">
-            <header className="font-semibold text-base">Create Order</header>
+            <header className="font-semibold text-base">Create Supplier</header>
             <div className="grid w-full items-center gap-4">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                   <div className="grid w-full items-center gap-4">
                     <FormField
                       control={form.control}
-                      name="product"
+                      name="name"
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
@@ -120,7 +83,7 @@ export default function Orders() {
                               <Input
                                 type="text"
                                 {...field}
-                                placeholder="Product Link"
+                                placeholder="Name"
                               />
                             </div>
                           </FormControl>
@@ -130,7 +93,7 @@ export default function Orders() {
                     />
                     <FormField
                       control={form.control}
-                      name="unitPrice"
+                      name="phoneNumber"
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
@@ -138,7 +101,7 @@ export default function Orders() {
                               <Input
                                 type="text"
                                 {...field}
-                                placeholder="Unit Price"
+                                placeholder="Phone Number"
                               />
                             </div>
                           </FormControl>
@@ -148,7 +111,7 @@ export default function Orders() {
                     />
                     <FormField
                       control={form.control}
-                      name="quantity"
+                      name="bankName"
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
@@ -156,7 +119,7 @@ export default function Orders() {
                               <Input
                                 type="text"
                                 {...field}
-                                placeholder="Quantity"
+                                placeholder="Bank Name"
                               />
                             </div>
                           </FormControl>
@@ -166,7 +129,7 @@ export default function Orders() {
                     />
                     <FormField
                       control={form.control}
-                      name="supplierId"
+                      name="accountNo"
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
@@ -174,7 +137,25 @@ export default function Orders() {
                               <Input
                                 type="text"
                                 {...field}
-                                placeholder="Supplier ID"
+                                placeholder="Account Number"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-left" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="sortCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="flex flex-col space-y-1.5">
+                              <Input
+                                type="text"
+                                {...field}
+                                placeholder="Sort Code"
                               />
                             </div>
                           </FormControl>
@@ -200,7 +181,7 @@ export default function Orders() {
                           data-testid="loader"
                         />
                       ) : (
-                        <span>Create Order</span>
+                        <span>Create Supplier</span>
                       )}
                     </Button>
                   </div>
@@ -210,22 +191,9 @@ export default function Orders() {
           </DialogContent>
         </Dialog>
       </header>
-      <ul className="flex items-center justify-start border-b border-b-grey_02 mt-4">
-        {tabs.map((tab) => (
-          <li
-            key={tab.key}
-            className={`cursor-pointer px-4 py-2 ${
-              activeTab === tab.key
-                ? 'border-b-2 border-blue text-blue'
-                : 'text-grey_03'
-            }`}
-            onClick={() => setActiveTab(tab.key)}
-          >
-            {tab.title}
-          </li>
-        ))}
-      </ul>
-      <section>{tabs.find((tab) => tab.key === activeTab).component}</section>
+      <section className="mt-4">
+        <SuppliersTable />
+      </section>
     </main>
   );
 }

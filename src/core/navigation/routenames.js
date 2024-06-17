@@ -3,7 +3,7 @@ export const subRouteNames = {
   eventHistory: 'event-history',
   linksManager: 'links-manager',
   manageSubscription: 'manage-subscription',
-  paySupplier: 'pay-supplier',
+  suppliers: 'supplier',
   orders: 'orders',
   profile: 'profile',
   transactionHistory: 'transaction-history',
