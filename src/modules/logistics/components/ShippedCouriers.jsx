@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCouriersThunk } from '@/src/modules/logistics/net/logisticsThunks.js';
 import DashboardTable from '@/src/core/components/DataTable.jsx';
 
-export default function PendingCouriers() {
-  const { data: couriers } = useSelector(
-    (state) => state.logistics.get_couriers,
-  );
+export default function ShippedCouriers() {
+  const {
+    get_couriers: { data: couriers },
+  } = useSelector((state) => state.logistics);
   const dispatch = useDispatch();
   const columns = [
     {
@@ -79,6 +79,15 @@ export default function PendingCouriers() {
       ),
     },
     {
+      accessorKey: 'courier_fee',
+      header: () => <div className="text-grey-08 font-bold">Courier Fee</div>,
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">
+          {row.getValue('courier_fee')}
+        </div>
+      ),
+    },
+    {
       accessorKey: 'action',
       header: () => <div className="text-grey-08 font-bold">Action</div>,
       cell: ({ row }) => (
@@ -88,7 +97,7 @@ export default function PendingCouriers() {
   ];
   useEffect(() => {
     const queryParams = {
-      status: 'pending',
+      status: 'shipped',
     };
     dispatch(getCouriersThunk(queryParams));
   }, []);
@@ -104,7 +113,8 @@ export default function PendingCouriers() {
       receiver_email: order.receiver.email,
       shipment_content: order.shipment.content,
       shipment_value: order.shipment.value,
-      action: 'Remove',
+      courier_fee: order.courierFee,
+      action: 'Approve Quote',
     }));
 
   console.log('couriers', couriers);

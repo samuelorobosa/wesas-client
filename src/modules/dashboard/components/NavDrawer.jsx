@@ -75,6 +75,10 @@ export default function NavDrawer() {
             title: 'Express Courier Service',
             path: subRouteNames.requestExpressCourierService,
           },
+          {
+            title: 'Shipping Requests',
+            path: subRouteNames.shippingRequests,
+          },
         ],
       },
       {

@@ -14,3 +14,26 @@ export const createCourierRequest = async (data) => {
 export const getCouriers = async (data) => {
   return await logisticsServiceClient.get(logisticsUrls.getCouriers, data);
 };
+
+export const approveCourierQuote = async (data) => {
+  return await logisticsServiceClient.get(
+    `${logisticsUrls.approveCourierRequest}/${data.courierId}`,
+    data.queryParams,
+  );
+};
+
+export const getShipments = async (data) => {
+  return await logisticsServiceClient.get(logisticsUrls.getShipments, data);
+};
+
+export const getShipment = async (data) => {
+  return await logisticsServiceClient.get(
+    `${logisticsUrls.getShipments}/${data}`,
+  );
+};
+
+export const approveShipment = async (id) => {
+  return await logisticsServiceClient.get(
+    `${logisticsUrls.approveShipment}/${id}`,
+  );
+};

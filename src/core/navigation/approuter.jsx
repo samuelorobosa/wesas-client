@@ -10,6 +10,8 @@ import ManageSubscription from '@/src/modules/wallet/pages/ManageSubscription.js
 import Orders from '@/src/modules/procurement/pages/Orders.jsx';
 import Suppliers from '@/src/modules/procurement/pages/Suppliers.jsx';
 import ExpressCourierService from '@/src/modules/logistics/pages/ExpressCourierService.jsx';
+import ShippingRequests from '@/src/modules/logistics/pages/ShippingRequests.jsx';
+import ShipmentOrders from '@/src/modules/logistics/pages/ShipmentOrders.jsx';
 
 const appRouter = createBrowserRouter([
   {
@@ -35,6 +37,14 @@ const appRouter = createBrowserRouter([
       {
         path: subRouteNames.manageSubscription,
         element: <ManageSubscription />,
+      },
+      {
+        path: subRouteNames.shippingRequests,
+        element: <ShippingRequests />,
+      },
+      {
+        path: `${subRouteNames.shippingRequests}/${subRouteNames.shipmentOrders}/:orderId`,
+        element: <ShipmentOrders />,
       },
       // {
       //   path: subRouteNames.transactionHistory,

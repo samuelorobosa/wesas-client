@@ -2,6 +2,7 @@ import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 import { createSlice } from '@reduxjs/toolkit';
 import {
   createOrderThunk,
+  createShipmentRequestThunk,
   createSupplierThunk,
   getOrdersThunk,
   getSuppliersThunk,
@@ -26,6 +27,11 @@ const initialState = {
   get_suppliers: {
     loading: LoadingStates.base,
     data: [],
+    error: null,
+  },
+  create_shipment_request: {
+    loading: LoadingStates.base,
+    data: {},
     error: null,
   },
 };
@@ -86,6 +92,25 @@ const procurementSlice = createSlice({
       state.get_suppliers.loading = LoadingStates.rejected;
       state.get_suppliers.error = payload;
     });
+
+    // Create Shipment Thunk
+    builder.addCase(createShipmentRequestThunk.pending, (state) => {
+      state.create_shipment_request.loading = LoadingStates.pending;
+    });
+    builder.addCase(
+      createShipmentRequestThunk.fulfilled,
+      (state, { payload }) => {
+        state.create_shipment_request.loading = LoadingStates.fulfilled;
+        state.create_shipment_request.data = payload.data;
+      },
+    );
+    builder.addCase(
+      createShipmentRequestThunk.rejected,
+      (state, { payload }) => {
+        state.create_shipment_request.loading = LoadingStates.rejected;
+        state.create_shipment_request.error = payload;
+      },
+    );
   },
 });
 export default procurementSlice.reducer;

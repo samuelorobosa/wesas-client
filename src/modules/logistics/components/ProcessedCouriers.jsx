@@ -1,12 +1,25 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCouriersThunk } from '@/src/modules/logistics/net/logisticsThunks.js';
+import {
+  approveCourierQuoteThunk,
+  getCouriersThunk,
+} from '@/src/modules/logistics/net/logisticsThunks.js';
 import DashboardTable from '@/src/core/components/DataTable.jsx';
+import { ChevronDown, Settings } from 'lucide-react';
+import { Button } from '@/src/core/components/ui/button.jsx';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@radix-ui/react-popover';
+import { ClipLoader } from 'react-spinners';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 
-export default function PendingCouriers() {
-  const { data: couriers } = useSelector(
-    (state) => state.logistics.get_couriers,
-  );
+export default function ProcessedCouriers() {
+  const {
+    get_couriers: { data: couriers },
+    approve_courier_quote: { loading: approveCourierQuoteLoading },
+  } = useSelector((state) => state.logistics);
   const dispatch = useDispatch();
   const columns = [
     {
@@ -79,6 +92,15 @@ export default function PendingCouriers() {
       ),
     },
     {
+      accessorKey: 'courier_fee',
+      header: () => <div className="text-grey-08 font-bold">Courier Fee</div>,
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">
+          {row.getValue('courier_fee')}
+        </div>
+      ),
+    },
+    {
       accessorKey: 'action',
       header: () => <div className="text-grey-08 font-bold">Action</div>,
       cell: ({ row }) => (
@@ -88,10 +110,22 @@ export default function PendingCouriers() {
   ];
   useEffect(() => {
     const queryParams = {
-      status: 'pending',
+      status: 'processed',
     };
     dispatch(getCouriersThunk(queryParams));
   }, []);
+
+  const approveQuote = (courierId) => {
+    const queryParams = {
+      approve: true,
+    };
+
+    const data = {
+      courierId,
+      queryParams,
+    };
+    dispatch(approveCourierQuoteThunk(data));
+  };
 
   const new_table_data =
     couriers &&
@@ -104,7 +138,44 @@ export default function PendingCouriers() {
       receiver_email: order.receiver.email,
       shipment_content: order.shipment.content,
       shipment_value: order.shipment.value,
-      action: 'Remove',
+      courier_fee: order.courierFee,
+      action: (
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              size="sm"
+              variant="outline"
+              className="cursor-pointer text-center"
+            >
+              <Settings size={20} />
+              <ChevronDown size={20} />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="mt-1">
+            <div className="flex flex-col gap-y-2 rounded bg-popover p-2 mr-6 ">
+              <span
+                onClick={() => approveQuote(order.id)}
+                className="cursor-pointer flex flex-col justify-center items-center text-blue text-base"
+              >
+                {approveCourierQuoteLoading === LoadingStates.pending ? (
+                  <ClipLoader
+                    color="#007cff"
+                    loading={approveCourierQuoteLoading}
+                    size={15}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                ) : (
+                  <>Approve Quote</>
+                )}
+              </span>
+              <span className="cursor-pointer text-red-400 text-base">
+                Reject Quote
+              </span>
+            </div>
+          </PopoverContent>
+        </Popover>
+      ),
     }));
 
   console.log('couriers', couriers);

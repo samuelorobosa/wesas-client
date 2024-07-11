@@ -7,8 +7,9 @@ export const subRouteNames = {
   orders: 'orders',
   profile: 'profile',
   transactionHistory: 'transaction-history',
-  requestShipping: 'request-shipping',
   requestExpressCourierService: 'request-express-courier-service',
+  shippingRequests: 'shipping-requests',
+  shipmentOrders: 'shipment-orders',
 };
 
 export const routeNames = {

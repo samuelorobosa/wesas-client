@@ -22,3 +22,10 @@ export const createSupplier = async (data) => {
 export const getSuppliers = async () => {
   return await procurementServiceClient.get(procurementUrls.getSuppliers);
 };
+
+export const createShipmentRequest = async (data) => {
+  return await procurementServiceClient.post(
+    procurementUrls.createShipmentRequest,
+    data,
+  );
+};

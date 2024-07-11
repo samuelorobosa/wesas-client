@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   createOrder,
+  createShipmentRequest,
   createSupplier,
   getOrders,
   getSuppliers,
@@ -47,6 +48,18 @@ export const getSuppliersThunk = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getSuppliers();
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  },
+);
+
+export const createShipmentRequestThunk = createAsyncThunk(
+  'procurement/createShipmentRequestThunk',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await createShipmentRequest(data);
       return response.data;
     } catch (err) {
       return rejectWithValue(err);

@@ -9,6 +9,9 @@ import {
 } from '@/src/core/components/ui/dialog.jsx';
 import ShippersDetails from '@/src/modules/logistics/components/ShippersDetails.jsx';
 import PendingCouriers from '@/src/modules/logistics/components/PendingCouriers.jsx';
+import ProcessedCouriers from '@/src/modules/logistics/components/ProcessedCouriers.jsx';
+import ConfirmedCouriers from '@/src/modules/logistics/components/ConfirmedCouriers.jsx';
+import ShippedCouriers from '@/src/modules/logistics/components/ShippedCouriers.jsx';
 
 export default function ExpressCourierService() {
   const [formData, setFormData] = useState({});
@@ -61,17 +64,17 @@ export default function ExpressCourierService() {
     {
       key: 'processed',
       title: 'Processed',
-      component: <PendingCouriers />,
+      component: <ProcessedCouriers />,
     },
     {
       key: 'confirmed',
       title: 'Confirmed',
-      component: <PendingCouriers />,
+      component: <ConfirmedCouriers />,
     },
     {
       key: 'shipped',
       title: 'Shipped',
-      component: <PendingCouriers />,
+      component: <ShippedCouriers />,
     },
   ];
   const [activeTable, setActiveTable] = useState(tables[0].key);

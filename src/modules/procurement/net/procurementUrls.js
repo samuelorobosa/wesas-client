@@ -3,6 +3,7 @@ const procurementUrls = {
   getOrders: '/orders',
   createSupplier: '/suppliers',
   getSuppliers: '/suppliers',
+  createShipmentRequest: '/logistics/shipments',
 };
 
 export default procurementUrls;

@@ -1,12 +1,61 @@
 import DashboardTable from '@/src/core/components/DataTable.jsx';
-import { useEffect } from 'react';
-import { getOrdersThunk } from '@/src/modules/procurement/net/procurementThunks.js';
+import { useEffect, useState } from 'react';
+import {
+  createShipmentRequestThunk,
+  getOrdersThunk,
+} from '@/src/modules/procurement/net/procurementThunks.js';
 import { useDispatch, useSelector } from 'react-redux';
+import { Checkbox } from '@/src/core/components/ui/checkbox.jsx';
+import { Button } from '@/src/core/components/ui/button.jsx';
+import { ClipLoader } from 'react-spinners';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 
 export default function ReceivedOrders() {
-  const { data: orders } = useSelector((state) => state.procurement.get_orders);
+  const {
+    create_shipment_request: { loading: createShipmentRequestLoading },
+    get_orders: { data: orders },
+  } = useSelector((state) => state.procurement);
   const dispatch = useDispatch();
+  const [selectedRows, setSelectedRows] = useState([]);
   const columns = [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={(value) => {
+            table.toggleAllPageRowsSelected(!!value);
+            if (value) {
+              setSelectedRows(new_table_data);
+            } else {
+              setSelectedRows([]);
+            }
+          }}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => {
+            row.toggleSelected(!!value);
+            if (value) {
+              setSelectedRows((prev) => [...prev, row.original]);
+            } else {
+              setSelectedRows((prev) =>
+                prev.filter((r) => r.order_id !== row.original.order_id),
+              );
+            }
+          }}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: 'order_id',
       header: () => <div className="text-grey-08 font-bold">Order ID</div>,
@@ -79,13 +128,6 @@ export default function ReceivedOrders() {
         <div className="font-normal text-grey-08">{row.getValue('total')}</div>
       ),
     },
-    {
-      accessorKey: 'action',
-      header: () => <div className="text-grey-08 font-bold">Action</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('action')}</div>
-      ),
-    },
   ];
 
   useEffect(() => {
@@ -94,8 +136,6 @@ export default function ReceivedOrders() {
     };
     dispatch(getOrdersThunk(queryParams));
   }, []);
-
-  console.log('orders', orders);
 
   const new_table_data =
     orders &&
@@ -117,12 +157,39 @@ export default function ReceivedOrders() {
       order_fee: order.orderFee,
       supplier_fee: order.supplierFee,
       total: order.total,
-      action: 'Remove',
     }));
+
+  const createShipmentRequest = () => {
+    const data = {
+      orders: selectedRows.map((row) => row.order_id),
+    };
+    dispatch(createShipmentRequestThunk(data));
+  };
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
       <DashboardTable columns={columns} data={new_table_data} />
+      <div className="flex justify-end items-center mt-5">
+        {selectedRows.length > 0 && (
+          <Button
+            disabled={createShipmentRequestLoading === LoadingStates.pending}
+            onClick={createShipmentRequest}
+            className="mt-4 bg-blue hover:bg-primary-tint-300"
+          >
+            {createShipmentRequestLoading === LoadingStates.pending ? (
+              <ClipLoader
+                color="#fff"
+                loading={true}
+                size={15}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+              />
+            ) : (
+              <span>Create Shipment Request</span>
+            )}
+          </Button>
+        )}
+      </div>
     </section>
   );
 }
