@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   approveCourierQuote,
+  approveShipment,
   createCourierRequest,
   getCouriers,
   getShipment,
@@ -71,7 +72,7 @@ export const approveShipmentThunk = createAsyncThunk(
   'logistics/approveShipmentThunk',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await getShipment(data);
+      const response = await approveShipment(data);
       return response.data;
     } catch (err) {
       return rejectWithValue(err);

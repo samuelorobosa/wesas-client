@@ -8,10 +8,11 @@ import { IoIosArrowRoundBack } from 'react-icons/io';
 export default function ShipmentOrders() {
   const navigateTo = useNavigate();
   const {
-    get_shipment: { loading: getShipmentLoading, data: shipment },
+    get_shipments: { loading: getShipmentLoading, data: shipments },
   } = useSelector((state) => state.logistics);
   const dispatch = useDispatch();
   let { orderId } = useParams();
+  const currentShipment = shipments.find((shipment) => shipment.id === orderId);
   const columns = [
     {
       accessorKey: 'id',
@@ -85,7 +86,7 @@ export default function ShipmentOrders() {
     },
   ];
   const new_table_data =
-    shipment?.orders?.map((order) => {
+    currentShipment?.orders?.map((order) => {
       return {
         id: order.orderId,
         product: order.product,

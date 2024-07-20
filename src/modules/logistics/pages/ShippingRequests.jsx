@@ -2,6 +2,7 @@ import { useState } from 'react';
 import PendingRequests from '@/src/modules/logistics/components/PendingRequests.jsx';
 import ProcessedRequests from '@/src/modules/logistics/components/ProcessedRequests.jsx';
 import ShippedRequests from '@/src/modules/logistics/components/ShippedRequests.jsx';
+import ConfirmedRequests from '@/src/modules/logistics/components/ConfirmedRequests.jsx';
 
 export default function ShippingRequests() {
   const tabs = [
@@ -14,6 +15,11 @@ export default function ShippingRequests() {
       key: 'processed',
       title: 'Processed',
       component: <ProcessedRequests />,
+    },
+    {
+      key: 'confirmed',
+      title: 'Confirmed',
+      component: <ConfirmedRequests />,
     },
     {
       key: 'shipped',

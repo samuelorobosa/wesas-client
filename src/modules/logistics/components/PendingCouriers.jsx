@@ -78,13 +78,6 @@ export default function PendingCouriers() {
         </div>
       ),
     },
-    {
-      accessorKey: 'action',
-      header: () => <div className="text-grey-08 font-bold">Action</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('action')}</div>
-      ),
-    },
   ];
   useEffect(() => {
     const queryParams = {
@@ -104,7 +97,6 @@ export default function PendingCouriers() {
       receiver_email: order.receiver.email,
       shipment_content: order.shipment.content,
       shipment_value: order.shipment.value,
-      action: 'Remove',
     }));
 
   console.log('couriers', couriers);

@@ -122,13 +122,6 @@ export default function NigerianBankTab() {
         <div className="font-normal text-grey-08">{row.getValue('rate')}</div>
       ),
     },
-    // {
-    //   accessorKey: 'update',
-    //   header: () => <div className="text-grey-08 font-bold">Update</div>,
-    //   cell: ({ row }) => (
-    //     <div className="font-normal text-grey-08">{row.getValue('update')}</div>
-    //   ),
-    // },
     {
       accessorKey: 'status',
       header: () => <div className="text-grey-08 font-bold">Status</div>,
@@ -320,10 +313,10 @@ export default function NigerianBankTab() {
                             <div className="flex flex-col space-y-1.5">
                               <Input
                                 type="text"
-                                value={formatNumberWithCommas(value)}
+                                value={`£${formatNumberWithCommas(value)}`}
                                 onChange={(e) => {
                                   const rawValue = e.target.value.replace(
-                                    /,/g,
+                                    /[£,]/g,
                                     '',
                                   );
                                   onChange(rawValue);

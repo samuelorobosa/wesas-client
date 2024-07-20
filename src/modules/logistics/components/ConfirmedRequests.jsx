@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { subRouteNames } from '@/src/core/navigation/routenames.js';
 import { useNavigate } from 'react-router-dom';
 
-export default function ShippedRequests() {
+export default function ConfirmedRequests() {
   const navigateTo = useNavigate();
   const {
     get_shipments: { loading: getShipmentsLoading, data: shipments },
@@ -14,12 +14,10 @@ export default function ShippedRequests() {
   const dispatch = useDispatch();
   useEffect(() => {
     const queryParams = {
-      status: 'shipped',
+      status: 'confirmed',
     };
     dispatch(getShipmentsThunk(queryParams));
   }, []);
-
-  console.log(shipments);
 
   const routeToShipmentOrders = (shipmentId) => () => {
     navigateTo(`${subRouteNames.shipmentOrders}/${shipmentId}`);
@@ -66,6 +64,7 @@ export default function ShippedRequests() {
       ),
     },
   ];
+
   const new_table_data =
     shipments && shipments.length > 0
       ? shipments.map((shipment) => {
