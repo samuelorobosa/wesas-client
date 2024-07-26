@@ -6,6 +6,7 @@ const walletUrls = {
   getPlans: '/plans',
   subscribe: '/profile/subscriptions',
   getPastSubscriptions: '/profile/subscriptions',
+  getBanks: '/admin/banks',
 };
 
 export default walletUrls;

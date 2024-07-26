@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   addFunds,
   addGBPViaCard,
+  getBanks,
   getPastSubscriptions,
   getPlans,
   getTransactionHistory,
@@ -10,7 +11,7 @@ import {
 } from '@/src/modules/wallet/service/walletService.js';
 
 export const addFundsThunk = createAsyncThunk(
-  'profile/addFundsThunk',
+  'wallet/addFundsThunk',
   async (data, { rejectWithValue }) => {
     try {
       const response = await addFunds(data);
@@ -22,7 +23,7 @@ export const addFundsThunk = createAsyncThunk(
 );
 
 export const addGBPViaCardThunk = createAsyncThunk(
-  'profile/addGBPViaCard',
+  'wallet/addGBPViaCard',
   async (data, { rejectWithValue }) => {
     try {
       const response = await addGBPViaCard(data);
@@ -34,7 +35,7 @@ export const addGBPViaCardThunk = createAsyncThunk(
 );
 
 export const getWalletDetailsThunk = createAsyncThunk(
-  'profile/getWalletDetailsThunk',
+  'wallet/getWalletDetailsThunk',
   async (_, { rejectWithValue }) => {
     try {
       const response = await getWalletDetails();
@@ -46,7 +47,7 @@ export const getWalletDetailsThunk = createAsyncThunk(
 );
 
 export const getTransactionHistoryThunk = createAsyncThunk(
-  'profile/getTransactionHistoryThunk',
+  'wallet/getTransactionHistoryThunk',
   async (data, { rejectWithValue }) => {
     try {
       const response = await getTransactionHistory(data);
@@ -58,7 +59,7 @@ export const getTransactionHistoryThunk = createAsyncThunk(
 );
 
 export const getPlansThunk = createAsyncThunk(
-  'profile/getPlansThunk',
+  'wallet/getPlansThunk',
   async (_, { rejectWithValue }) => {
     try {
       const response = await getPlans();
@@ -70,7 +71,7 @@ export const getPlansThunk = createAsyncThunk(
 );
 
 export const subscribeToAPlanThunk = createAsyncThunk(
-  'profile/subscribeToAPlanThunk',
+  'wallet/subscribeToAPlanThunk',
   async (id, { rejectWithValue }) => {
     try {
       const response = await subscribeToAPlan(id);
@@ -82,10 +83,22 @@ export const subscribeToAPlanThunk = createAsyncThunk(
 );
 
 export const getPastSubscriptionsThunk = createAsyncThunk(
-  'profile/getPastSubscriptionsThunk',
+  'wallet/getPastSubscriptionsThunk',
   async (_, { rejectWithValue }) => {
     try {
       const response = await getPastSubscriptions();
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  },
+);
+
+export const getBanksThunk = createAsyncThunk(
+  'wallet/getBanksThunk',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getBanks();
       return response.data;
     } catch (err) {
       return rejectWithValue(err);

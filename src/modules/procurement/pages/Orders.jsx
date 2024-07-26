@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -21,16 +21,19 @@ import PendingOrders from '@/src/modules/procurement/components/PendingOrders.js
 import ProcessedOrders from '@/src/modules/procurement/components/ProcessedOrders.jsx';
 import ReceivedOrders from '@/src/modules/procurement/components/ReceivedOrders.jsx';
 import ShippedOrders from '@/src/modules/procurement/components/ShippedOrders.jsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { createOrderThunk } from '@/src/modules/procurement/net/procurementThunks.js';
-import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
+import { useDispatch } from 'react-redux';
+import {
+  createOrderThunk,
+  getOrdersThunk,
+} from '@/src/modules/procurement/net/procurementThunks.js';
 import { toast } from 'sonner';
 import DeclinedOrders from '@/src/modules/procurement/components/DeclinedOrders.jsx';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
 export default function Orders() {
+  const [isCreating, setIsCreating] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.procurement.create_order);
   const tabs = [
     {
       key: 'pending',
@@ -77,18 +80,22 @@ export default function Orders() {
     //Convert unitPrice and quantity to number
     formData.unitPrice = Number(formData.unitPrice);
     formData.quantity = Number(formData.quantity);
-    dispatch(createOrderThunk(formData));
-  }
-
-  useEffect(() => {
-    if (loading === LoadingStates.fulfilled) {
-      toast.success('Order created successfully');
+    try {
+      setIsCreating(true);
+      await dispatch(createOrderThunk(formData)).unwrap();
       form.reset();
+      toast.success('Order created successfully');
       setIsDialogOpen(false);
-    } else if (loading === LoadingStates.rejected) {
-      toast.error('Failed to create order');
+      const queryParams = {
+        status: 'pending',
+      };
+      dispatch(getOrdersThunk(queryParams));
+    } catch (e) {
+      toast.error(e);
+    } finally {
+      setIsCreating(false);
     }
-  }, [loading]);
+  }
 
   const [activeTab, setActiveTab] = useState(tabs[0].key);
   return (
@@ -131,14 +138,22 @@ export default function Orders() {
                     <FormField
                       control={form.control}
                       name="unitPrice"
-                      render={({ field }) => (
+                      render={({ field: { onChange, value, ref } }) => (
                         <FormItem>
                           <FormControl>
                             <div className="flex flex-col space-y-1.5">
                               <Input
+                                value={`£${formatNumberWithCommas(value)}`}
                                 type="text"
-                                {...field}
                                 placeholder="Unit Price"
+                                ref={ref}
+                                onChange={(e) => {
+                                  const rawValue = e.target.value.replace(
+                                    /[£,]/g,
+                                    '',
+                                  );
+                                  onChange(rawValue);
+                                }}
                               />
                             </div>
                           </FormControl>
@@ -185,16 +200,13 @@ export default function Orders() {
 
                     <Button
                       type="submit"
-                      disabled={
-                        loading === LoadingStates.pending ||
-                        !form.formState.isValid
-                      }
+                      disabled={isCreating || !form.formState.isValid}
                       className="w-full"
                     >
-                      {loading === LoadingStates.pending ? (
+                      {isCreating ? (
                         <ClipLoader
                           color="#fff"
-                          loading={loading === LoadingStates.pending}
+                          loading={true}
                           size={15}
                           aria-label="Loading Spinner"
                           data-testid="loader"

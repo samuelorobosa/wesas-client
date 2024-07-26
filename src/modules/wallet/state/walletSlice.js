@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   addFundsThunk,
   addGBPViaCardThunk,
+  getBanksThunk,
   getPastSubscriptionsThunk,
   getPlansThunk,
   getTransactionHistoryThunk,
@@ -51,12 +52,21 @@ const initialState = {
     data: [],
     error: null,
   },
+  banks: {
+    loading: LoadingStates.base,
+    data: [],
+    error: null,
+  },
 };
 
 const walletSlice = createSlice({
   name: 'wallet',
   initialState,
-  reducers: {},
+  reducers: {
+    resetAddFundsLoadingState(state) {
+      state.add_funds.loading = LoadingStates.base;
+    },
+  },
   extraReducers: (builder) => {
     // Add Funds Thunk
     builder.addCase(addFundsThunk.pending, (state) => {
@@ -161,6 +171,21 @@ const walletSlice = createSlice({
         state.get_past_subscriptions.error = payload;
       },
     );
+
+    //Get Banks Thunk
+    builder.addCase(getBanksThunk.pending, (state) => {
+      state.banks.loading = LoadingStates.pending;
+    });
+    builder.addCase(getBanksThunk.fulfilled, (state, { payload }) => {
+      state.banks.loading = LoadingStates.fulfilled;
+      state.banks.data = payload.data;
+    });
+    builder.addCase(getBanksThunk.rejected, (state, { payload }) => {
+      state.banks.loading = LoadingStates.rejected;
+      state.banks.error = payload;
+    });
   },
 });
+
+export const { resetAddFundsLoadingState } = walletSlice.actions;
 export default walletSlice.reducer;

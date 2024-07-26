@@ -164,6 +164,7 @@ export default function RegistrationPage() {
       country: 'Nigeria',
       phone: '',
       terms: false,
+      captcha: false,
     },
     mode: 'onChange',
   });
@@ -199,7 +200,7 @@ export default function RegistrationPage() {
               <b>Ship</b>
             </p>
           </header>
-          <Card className="w-[450px]">
+          <Card className="sm:max-w-[450px]">
             <CardHeader>
               <CardTitle>Create a new account</CardTitle>
             </CardHeader>
@@ -406,7 +407,18 @@ export default function RegistrationPage() {
                       )}
                     />
 
-                    <CaptchaInput onChange={handleCaptchaUpdate} />
+                    <FormField
+                      control={form.control}
+                      name="captcha"
+                      render={({ field }) => (
+                        <CaptchaInput
+                          onChange={(value) => {
+                            field.onChange(value);
+                            handleCaptchaUpdate(value);
+                          }}
+                        />
+                      )}
+                    />
 
                     <FormField
                       control={form.control}

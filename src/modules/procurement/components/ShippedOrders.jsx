@@ -1,11 +1,23 @@
 import DashboardTable from '@/src/core/components/DataTable.jsx';
+import { useEffect } from 'react';
+import { getOrdersThunk } from '@/src/modules/procurement/net/procurementThunks.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 
 export default function ShippedOrders() {
+  const { data: orders, loading } = useSelector(
+    (state) => state.procurement.get_orders,
+  );
+  const dispatch = useDispatch();
   const columns = [
     {
-      accessorKey: 's_n',
-      header: () => <div className="text-grey-08 font-bold">S/N</div>,
-      cell: ({ row }) => row.getValue('s_n'),
+      accessorKey: 'order_id',
+      header: () => <div className="text-grey-08 font-bold">Order ID</div>,
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">
+          {row.getValue('order_id')}
+        </div>
+      ),
     },
     {
       accessorKey: 'product_link',
@@ -13,15 +25,6 @@ export default function ShippedOrders() {
       cell: ({ row }) => (
         <div className="font-normal text-grey-08">
           {row.getValue('product_link')}
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'order_id',
-      header: () => <div className="text-grey-08 font-bold">Order ID</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">
-          {row.getValue('order_id')}
         </div>
       ),
     },
@@ -51,10 +54,25 @@ export default function ShippedOrders() {
       ),
     },
     {
-      accessorKey: 'fee',
-      header: () => <div className="text-grey-08 font-bold">Fee (5%)</div>,
+      accessorKey: 'order_fee',
+      header: () => (
+        <div className="text-grey-08 font-bold">Order Fee (5%)</div>
+      ),
       cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('fee')}</div>
+        <div className="font-normal text-grey-08">
+          {row.getValue('order_fee')}
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'supplier_fee',
+      header: () => (
+        <div className="text-grey-08 font-bold">Supplier Fee (3%)</div>
+      ),
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">
+          {row.getValue('supplier_fee')}
+        </div>
       ),
     },
     {
@@ -64,53 +82,55 @@ export default function ShippedOrders() {
         <div className="font-normal text-grey-08">{row.getValue('total')}</div>
       ),
     },
-    {
-      accessorKey: 'action',
-      header: () => <div className="text-grey-08 font-bold">Action</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('action')}</div>
+  ];
+  useEffect(() => {
+    const queryParams = {
+      status: 'shipped',
+    };
+    dispatch(getOrdersThunk(queryParams));
+  }, []);
+
+  const new_table_data =
+    orders &&
+    orders.length > 0 &&
+    orders.map((order) => ({
+      order_id: order.orderId,
+      product_link: (
+        <span>
+          {order.product.length > 50 ? (
+            <a
+              className="text-blue underline underline-offset-1"
+              href={order.product}
+              target="_blank"
+            >
+              {order.product.slice(0, 30)}...
+            </a>
+          ) : (
+            <a
+              className="text-blue underline underline-offset-1"
+              href={order.product}
+              target="_blank"
+            >
+              {order.product}
+            </a>
+          )}
+        </span>
       ),
-    },
-  ];
-  const new_table_data = [
-    {
-      s_n: 1,
-      product_link: 'https://www.amazon.com/12345',
-      order_id: crypto.randomUUID(),
-      unit_price: '₦1,000',
-      qty: 10,
-      subtotal: '₦10,000',
-      fee: '₦500',
-      total: '₦10,500',
-      action: 'Remove',
-    },
-    {
-      s_n: 1,
-      product_link: 'https://www.amazon.com/12345',
-      order_id: crypto.randomUUID(),
-      unit_price: '₦1,000',
-      qty: 10,
-      subtotal: '₦10,000',
-      fee: '₦500',
-      total: '₦10,500',
-      action: 'Remove',
-    },
-    {
-      s_n: 1,
-      product_link: 'https://www.amazon.com/12345',
-      order_id: crypto.randomUUID(),
-      unit_price: '₦1,000',
-      qty: 10,
-      subtotal: '₦10,000',
-      fee: '₦500',
-      total: '₦10,500',
-      action: 'Remove',
-    },
-  ];
+      unit_price: `£${order.unitPrice}`,
+      qty: order.quantity,
+      subtotal: `£${order.subTotal}`,
+      order_fee: `£${order.orderFee}`,
+      supplier_fee: `£${order.supplierFee}`,
+      total: `£${order.total}`,
+    }));
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable columns={columns} data={new_table_data} />
+      <DashboardTable
+        columns={columns}
+        data={new_table_data}
+        isLoading={loading === LoadingStates.pending}
+      />
     </section>
   );
 }

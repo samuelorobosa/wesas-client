@@ -9,11 +9,12 @@ import { Checkbox } from '@/src/core/components/ui/checkbox.jsx';
 import { Button } from '@/src/core/components/ui/button.jsx';
 import { ClipLoader } from 'react-spinners';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
+import { toast } from 'sonner';
 
 export default function ReceivedOrders() {
+  const [loading, setLoading] = useState(false);
   const {
-    create_shipment_request: { loading: createShipmentRequestLoading },
-    get_orders: { data: orders },
+    get_orders: { data: orders, loading: getOrdersLoading },
   } = useSelector((state) => state.procurement);
   const dispatch = useDispatch();
   const [selectedRows, setSelectedRows] = useState([]);
@@ -137,46 +138,82 @@ export default function ReceivedOrders() {
     dispatch(getOrdersThunk(queryParams));
   }, []);
 
-  const new_table_data =
+  const filteredOrders =
     orders &&
     orders.length > 0 &&
-    orders.map((order) => ({
-      order_id: order.orderId,
-      product_link: (
-        <span>
-          {order.product.length > 50 ? (
-            <span>{order.product.slice(0, 30)}...</span>
-          ) : (
-            <span>{order.product}</span>
-          )}
-        </span>
-      ),
-      unit_price: order.unitPrice,
-      qty: order.quantity,
-      subtotal: order.subTotal,
-      order_fee: order.orderFee,
-      supplier_fee: order.supplierFee,
-      total: order.total,
-    }));
+    orders.filter((order) => order.shipmentId == null);
 
-  const createShipmentRequest = () => {
+  const new_table_data =
+    filteredOrders &&
+    filteredOrders.length > 0 &&
+    filteredOrders.map((order) => {
+      return {
+        order_id: order.orderId,
+        product_link: (
+          <span>
+            {order.product.length > 50 ? (
+              <a
+                className="text-blue underline underline-offset-1"
+                href={order.product}
+                target="_blank"
+              >
+                {order.product.slice(0, 30)}...
+              </a>
+            ) : (
+              <a
+                className="text-blue underline underline-offset-1"
+                href={order.product}
+                target="_blank"
+              >
+                {order.product}
+              </a>
+            )}
+          </span>
+        ),
+        unit_price: `£${order.unitPrice}`,
+        qty: order.quantity,
+        subtotal: `£${order.subTotal}`,
+        order_fee: `£${order.orderFee}`,
+        supplier_fee: `£${order.supplierFee}`,
+        total: `£${order.total}`,
+      };
+    });
+
+  const createShipmentRequest = async () => {
     const data = {
       orders: selectedRows.map((row) => row.order_id),
     };
-    dispatch(createShipmentRequestThunk(data));
+    try {
+      setLoading(true);
+      await dispatch(createShipmentRequestThunk(data)).unwrap();
+      toast.success('Shipment request created successfully');
+      const queryParams = {
+        status: 'received',
+      };
+      dispatch(getOrdersThunk(queryParams));
+      setSelectedRows([]);
+    } catch (e) {
+      toast.error(e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable columns={columns} data={new_table_data} />
+      <DashboardTable
+        columns={columns}
+        data={new_table_data}
+        isLoading={getOrdersLoading === LoadingStates.pending}
+      />
       <div className="flex justify-end items-center mt-5">
         {selectedRows.length > 0 && (
           <Button
-            disabled={createShipmentRequestLoading === LoadingStates.pending}
+            disabled={loading}
             onClick={createShipmentRequest}
             className="mt-4 bg-blue hover:bg-primary-tint-300"
           >
-            {createShipmentRequestLoading === LoadingStates.pending ? (
+            {loading ? (
               <ClipLoader
                 color="#fff"
                 loading={true}

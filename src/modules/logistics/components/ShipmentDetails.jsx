@@ -10,17 +10,22 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/src/core/components/ui/button.jsx';
 import { z } from 'zod';
-import { useDispatch, useSelector } from 'react-redux';
-import { createCourierRequestThunk } from '@/src/modules/logistics/net/logisticsThunks.js';
-import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
+import { useDispatch } from 'react-redux';
+import {
+  createCourierRequestThunk,
+  getCouriersThunk,
+} from '@/src/modules/logistics/net/logisticsThunks.js';
 import { ClipLoader } from 'react-spinners';
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
-export default function ShipmentDetails({ formData, setFormData }) {
-  const { loading } = useSelector(
-    (state) => state.logistics.create_courier_request,
-  );
+export default function ShipmentDetails({
+  formData,
+  setFormData,
+  setIsDialogOpen,
+}) {
+  const [isCreating, setIsCreating] = useState(false);
   const dispatch = useDispatch();
   const formSchema = z.object({
     content: z.string().nonempty('Shipment Content is required'),
@@ -43,16 +48,22 @@ export default function ShipmentDetails({ formData, setFormData }) {
     mode: 'onChange',
   });
   async function onSubmit() {
-    dispatch(createCourierRequestThunk(formData));
+    try {
+      setIsCreating(true);
+      await dispatch(createCourierRequestThunk(formData));
+      const queryParams = {
+        status: 'pending',
+      };
+      dispatch(getCouriersThunk(queryParams));
+      setIsDialogOpen(false);
+      toast.success('Courier request created successfully');
+    } catch (e) {
+      toast.error(e);
+    } finally {
+      setIsCreating(false);
+    }
   }
 
-  useEffect(() => {
-    if (loading === LoadingStates.fulfilled) {
-      toast.success('Courier request created successfully');
-    } else if (loading === LoadingStates.rejected) {
-      toast.error('Failed to create courier request');
-    }
-  }, [loading]);
   return (
     <section>
       <header className="text-black mb-4">Goods Details</header>
@@ -111,7 +122,7 @@ export default function ShipmentDetails({ formData, setFormData }) {
                             },
                           });
                         }}
-                        placeholder="Weight"
+                        placeholder="Weight in cm"
                       />
                     </div>
                   </FormControl>
@@ -140,7 +151,7 @@ export default function ShipmentDetails({ formData, setFormData }) {
                             },
                           });
                         }}
-                        placeholder="Length"
+                        placeholder="Length in cm"
                       />
                     </div>
                   </FormControl>
@@ -169,7 +180,7 @@ export default function ShipmentDetails({ formData, setFormData }) {
                             },
                           });
                         }}
-                        placeholder="Width"
+                        placeholder="Width in cm"
                       />
                     </div>
                   </FormControl>
@@ -198,7 +209,7 @@ export default function ShipmentDetails({ formData, setFormData }) {
                             },
                           });
                         }}
-                        placeholder="Height"
+                        placeholder="Height in cm"
                       />
                     </div>
                   </FormControl>
@@ -210,24 +221,26 @@ export default function ShipmentDetails({ formData, setFormData }) {
             <FormField
               control={form.control}
               name="value"
-              render={({ field }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <FormItem>
                   <FormControl>
                     <div className="flex flex-col space-y-1.5">
                       <Input
                         type="text"
-                        value={field.value}
+                        value={`£${formatNumberWithCommas(value)}`}
                         onChange={(e) => {
-                          field.onChange(e);
+                          const rawValue = e.target.value.replace(/[£,]/g, '');
+                          onChange(rawValue);
                           setFormData({
                             ...formData,
                             shipment: {
                               ...formData.shipment,
-                              value: Number(e.target.value),
+                              value: Number(rawValue),
                             },
                           });
                         }}
                         placeholder="Shipment Value"
+                        ref={ref}
                       />
                     </div>
                   </FormControl>
@@ -239,15 +252,13 @@ export default function ShipmentDetails({ formData, setFormData }) {
             <div className="flex justify-end mt-4">
               <Button
                 type="submit"
-                disabled={
-                  loading === LoadingStates.pending || !form.formState.isValid
-                }
+                disabled={isCreating || !form.formState.isValid}
                 className="self-start bg-blue hover:bg-primary-tint-300"
               >
-                {loading === LoadingStates.pending ? (
+                {isCreating ? (
                   <ClipLoader
                     color="#fff"
-                    loading={loading === LoadingStates.pending}
+                    loading={true}
                     size={15}
                     aria-label="Loading Spinner"
                     data-testid="loader"

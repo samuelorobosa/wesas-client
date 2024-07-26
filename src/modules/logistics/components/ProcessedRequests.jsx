@@ -1,6 +1,6 @@
 import DashboardTable from '@/src/core/components/DataTable.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   approveShipmentThunk,
   getShipmentsThunk,
@@ -9,13 +9,30 @@ import { format } from 'date-fns';
 import { subRouteNames } from '@/src/core/navigation/routenames.js';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/src/core/components/ui/button.jsx';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/src/core/components/ui/dialog.jsx';
+import { ClipLoader } from 'react-spinners';
+import { Settings } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function ProcessedRequests() {
+  const [isApproveLoading, setIsApproveLoading] = useState(false);
+  const [currentShipmentId, setCurrentShipmentId] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
   const navigateTo = useNavigate();
   const {
     get_shipments: { loading: getShipmentsLoading, data: shipments },
   } = useSelector((state) => state.logistics);
+
   const dispatch = useDispatch();
+
   useEffect(() => {
     const queryParams = {
       status: 'processed',
@@ -76,17 +93,31 @@ export default function ProcessedRequests() {
     },
   ];
 
-  const handleShipmentApproval = (shipmentId) => {
-    dispatch(approveShipmentThunk(shipmentId));
+  const handleShipmentApproval = async () => {
+    try {
+      setIsApproveLoading(true);
+      await dispatch(approveShipmentThunk(currentShipmentId)).unwrap();
+      toast.success('Shipment approved successfully');
+      const queryParams = {
+        status: 'processed',
+      };
+      dispatch(getShipmentsThunk(queryParams));
+      setOpenDialog(false);
+    } catch (e) {
+      toast.error(e);
+    } finally {
+      setIsApproveLoading(false);
+    }
   };
+
   const new_table_data =
     shipments && shipments.length > 0
       ? shipments.map((shipment) => {
           return {
             id: shipment.id,
             created_at: format(shipment.createdAt, 'PPP'),
-            weight: shipment.weight,
-            shipping_fee: shipment.shippingFee,
+            weight: `${shipment.weight} kg`,
+            shipping_fee: `£${shipment.shippingFee}`,
             orders: (
               <span
                 onClick={routeToShipmentOrders(shipment.id)}
@@ -97,10 +128,13 @@ export default function ProcessedRequests() {
             ),
             action: (
               <Button
-                onClick={() => handleShipmentApproval(shipment.id)}
-                className="bg-blue text-white hover:bg-primary-tint-300 cursor-pointer"
+                onClick={() => {
+                  setOpenDialog(true);
+                  setCurrentShipmentId(shipment.id);
+                }}
+                variant="outline"
               >
-                Approve
+                <Settings size={20} />
               </Button>
             ),
           };
@@ -108,8 +142,56 @@ export default function ProcessedRequests() {
       : [];
 
   return (
-    <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable columns={columns} data={new_table_data} />
-    </section>
+    <>
+      <section className="mt-4 bg-white p-4 rounded-md">
+        <DashboardTable
+          columns={columns}
+          data={new_table_data}
+          isLoading={getShipmentsLoading === LoadingStates.pending}
+        />
+      </section>
+      <Dialog
+        open={openDialog}
+        onOpenChange={() => {
+          setOpenDialog(false);
+        }}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Finalize Quote</DialogTitle>
+            <DialogDescription>
+              Do you want to approve this quote?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4"></div>
+          <DialogFooter className="flex justify-between w-full ">
+            <Button
+              onClick={() => setOpenDialog(false)}
+              className="w-full "
+              variant={'outline'}
+            >
+              <span>Cancel</span>
+            </Button>
+            <Button
+              disabled={isApproveLoading}
+              onClick={() => handleShipmentApproval()}
+              className="w-full bg-blue hover:bg-primary-tint-300"
+            >
+              {isApproveLoading ? (
+                <ClipLoader
+                  color="#fff"
+                  loading={true}
+                  size={15}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
+              ) : (
+                <span>Approve Quote</span>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

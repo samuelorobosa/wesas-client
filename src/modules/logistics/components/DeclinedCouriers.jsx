@@ -1,19 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  approveCourierQuoteThunk,
-  getCouriersThunk,
-} from '@/src/modules/logistics/net/logisticsThunks.js';
+import { getCouriersThunk } from '@/src/modules/logistics/net/logisticsThunks.js';
 import DashboardTable from '@/src/core/components/DataTable.jsx';
-import { ClipLoader } from 'react-spinners';
-import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
-import { Button } from '@/src/core/components/ui/button.jsx';
-import { toast } from 'sonner';
 import { Dialog, DialogContent } from '@/src/core/components/ui/dialog.jsx';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 
-export default function ProcessedCouriers() {
-  const [isApproving, setIsApproving] = useState(false);
+export default function DeclinedCouriers() {
   const {
     get_couriers: { data: couriers, loading: getCouriersLoading },
   } = useSelector((state) => state.logistics);
@@ -89,55 +83,17 @@ export default function ProcessedCouriers() {
       ),
     },
     {
-      accessorKey: 'courier_fee',
-      header: () => <div className="text-grey-08 font-bold">Courier Fee</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">
-          {row.getValue('courier_fee')}
-        </div>
-      ),
-    },
-    {
       accessorKey: 'summary',
       header: () => <div className="text-grey-08 font-bold">Summary</div>,
       cell: ({ row }) => row.getValue('summary'),
     },
-    {
-      accessorKey: 'action',
-      header: () => <div className="text-grey-08 font-bold">Action</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('action')}</div>
-      ),
-    },
   ];
   useEffect(() => {
     const queryParams = {
-      status: 'processed',
+      status: 'declined',
     };
     dispatch(getCouriersThunk(queryParams));
   }, []);
-
-  const approveQuote = async (courierId) => {
-    const queryParams = {
-      approve: true,
-    };
-
-    const data = {
-      courierId,
-      queryParams,
-    };
-
-    try {
-      setIsApproving(true);
-      await dispatch(approveCourierQuoteThunk(data)).unwrap();
-      toast.success('Courier quote approved successfully');
-      dispatch(getCouriersThunk({ status: 'processed' }));
-    } catch (e) {
-      toast.error(e);
-    } finally {
-      setIsApproving(false);
-    }
-  };
 
   const new_table_data =
     couriers &&
@@ -149,8 +105,7 @@ export default function ProcessedCouriers() {
       receiver_name: order.receiver.name,
       receiver_email: order.receiver.email,
       shipment_content: order.shipment.content,
-      shipment_value: order.shipment.value,
-      courier_fee: order.courierFee,
+      shipment_value: `£${formatNumberWithCommas(order.shipment.value)}`,
       summary: (
         <Dialog>
           <DialogTrigger asChild>
@@ -248,25 +203,6 @@ export default function ProcessedCouriers() {
             </section>
           </DialogContent>
         </Dialog>
-      ),
-      action: (
-        <Button
-          variant="outline"
-          onClick={() => approveQuote(order.id)}
-          className="cursor-pointer flex flex-col justify-center items-center"
-        >
-          {isApproving ? (
-            <ClipLoader
-              color="#007cff"
-              loading={true}
-              size={15}
-              aria-label="Loading Spinner"
-              data-testid="loader"
-            />
-          ) : (
-            <>Approve Quote</>
-          )}
-        </Button>
       ),
     }));
 

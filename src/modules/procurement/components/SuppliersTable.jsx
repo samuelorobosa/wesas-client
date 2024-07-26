@@ -2,9 +2,10 @@ import DashboardTable from '@/src/core/components/DataTable.jsx';
 import { useEffect } from 'react';
 import { getSuppliersThunk } from '@/src/modules/procurement/net/procurementThunks.js';
 import { useDispatch, useSelector } from 'react-redux';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 
 export default function SuppliersTable() {
-  const { data: suppliers } = useSelector(
+  const { data: suppliers, loading } = useSelector(
     (state) => state.procurement.get_suppliers,
   );
   const dispatch = useDispatch();
@@ -76,8 +77,6 @@ export default function SuppliersTable() {
     dispatch(getSuppliersThunk());
   }, []);
 
-  console.log('suppliers', suppliers);
-
   const new_table_data =
     suppliers &&
     suppliers.length > 0 &&
@@ -93,7 +92,11 @@ export default function SuppliersTable() {
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable columns={columns} data={new_table_data} />
+      <DashboardTable
+        columns={columns}
+        data={new_table_data}
+        isLoading={loading === LoadingStates.pending}
+      />
     </section>
   );
 }

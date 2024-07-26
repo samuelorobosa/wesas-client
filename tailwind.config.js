@@ -57,6 +57,7 @@ module.exports = {
         sidebar: '#343a40',
         sidebarColor: '#c2c7d0',
         grey: '#F7F9FC',
+        'error-500': '#e8544b',
         grey_02: '#DFE6EC',
         grey_03: '#8B909A',
         'primary-tint-300': '#4DA3FF',

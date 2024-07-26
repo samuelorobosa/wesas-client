@@ -5,6 +5,7 @@ import { getShipmentsThunk } from '@/src/modules/logistics/net/logisticsThunks.j
 import { format } from 'date-fns';
 import { subRouteNames } from '@/src/core/navigation/routenames.js';
 import { useNavigate } from 'react-router-dom';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 
 export default function ShippedRequests() {
   const navigateTo = useNavigate();
@@ -72,8 +73,8 @@ export default function ShippedRequests() {
           return {
             id: shipment.id,
             created_at: format(shipment.createdAt, 'PPP'),
-            weight: shipment.weight,
-            shipping_fee: shipment.shippingFee,
+            weight: `${shipment.weight}kg`,
+            shipping_fee: `£${shipment.shippingFee}`,
             orders: (
               <span
                 onClick={routeToShipmentOrders(shipment.id)}
@@ -88,7 +89,11 @@ export default function ShippedRequests() {
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable columns={columns} data={new_table_data} />
+      <DashboardTable
+        columns={columns}
+        data={new_table_data}
+        isLoading={getShipmentsLoading === LoadingStates.pending}
+      />
     </section>
   );
 }

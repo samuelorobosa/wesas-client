@@ -19,7 +19,7 @@ function DashboardTable({
   data,
   hasPagination = true,
   onRowClick,
-  marginFromOutside = false,
+  isLoading = false,
 }) {
   const table = useReactTable({
     data,
@@ -52,7 +52,17 @@ function DashboardTable({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              Array.from({ length: 4 }, (_, index) => (
+                <TableRow key={index}>
+                  {columns.map((_, colIndex) => (
+                    <TableCell key={colIndex}>
+                      <div className="animate-pulse bg-gray-300 h-4 w-full rounded-md"></div>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

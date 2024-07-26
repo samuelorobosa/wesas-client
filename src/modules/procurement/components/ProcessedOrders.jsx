@@ -2,9 +2,12 @@ import DashboardTable from '@/src/core/components/DataTable.jsx';
 import { useEffect } from 'react';
 import { getOrdersThunk } from '@/src/modules/procurement/net/procurementThunks.js';
 import { useDispatch, useSelector } from 'react-redux';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 
 export default function ProcessedOrders() {
-  const { data: orders } = useSelector((state) => state.procurement.get_orders);
+  const { data: orders, loading } = useSelector(
+    (state) => state.procurement.get_orders,
+  );
   const dispatch = useDispatch();
   const columns = [
     {
@@ -79,13 +82,6 @@ export default function ProcessedOrders() {
         <div className="font-normal text-grey-08">{row.getValue('total')}</div>
       ),
     },
-    {
-      accessorKey: 'action',
-      header: () => <div className="text-grey-08 font-bold">Action</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('action')}</div>
-      ),
-    },
   ];
   const new_table_data =
     orders &&
@@ -95,19 +91,30 @@ export default function ProcessedOrders() {
       product_link: (
         <span>
           {order.product.length > 50 ? (
-            <span>{order.product.slice(0, 30)}...</span>
+            <a
+              className="text-blue underline underline-offset-1"
+              href={order.product}
+              target="_blank"
+            >
+              {order.product.slice(0, 30)}...
+            </a>
           ) : (
-            <span>{order.product}</span>
+            <a
+              className="text-blue underline underline-offset-1"
+              href={order.product}
+              target="_blank"
+            >
+              {order.product}
+            </a>
           )}
         </span>
       ),
-      unit_price: order.unitPrice,
+      unit_price: `£${order.unitPrice}`,
       qty: order.quantity,
-      subtotal: order.subTotal,
-      order_fee: order.orderFee,
-      supplier_fee: order.supplierFee,
-      total: order.total,
-      action: 'Remove',
+      subtotal: `£${order.subTotal}`,
+      order_fee: `£${order.orderFee}`,
+      supplier_fee: `£${order.supplierFee}`,
+      total: `£${order.total}`,
     }));
 
   useEffect(() => {
@@ -121,7 +128,11 @@ export default function ProcessedOrders() {
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable columns={columns} data={new_table_data} />
+      <DashboardTable
+        columns={columns}
+        data={new_table_data}
+        isLoading={loading === LoadingStates.pending}
+      />
     </section>
   );
 }

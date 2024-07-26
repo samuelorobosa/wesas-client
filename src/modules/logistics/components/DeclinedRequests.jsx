@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { getShipmentsThunk } from '@/src/modules/logistics/net/logisticsThunks.js';
 import { format } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
 import { subRouteNames } from '@/src/core/navigation/routenames.js';
+import { useNavigate } from 'react-router-dom';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 
-export default function PendingRequests() {
+export default function DeclinedRequests() {
   const navigateTo = useNavigate();
   const {
     get_shipments: { loading: getShipmentsLoading, data: shipments },
@@ -15,16 +15,15 @@ export default function PendingRequests() {
   const dispatch = useDispatch();
   useEffect(() => {
     const queryParams = {
-      status: 'pending',
+      status: 'declined',
     };
     dispatch(getShipmentsThunk(queryParams));
   }, []);
 
-  console.log(shipments);
-
   const routeToShipmentOrders = (shipmentId) => () => {
     navigateTo(`${subRouteNames.shipmentOrders}/${shipmentId}`);
   };
+
   const columns = [
     {
       accessorKey: 'id',
@@ -32,11 +31,18 @@ export default function PendingRequests() {
       cell: ({ row }) => row.getValue('id'),
     },
     {
-      accessorKey: 'created_at',
-      header: () => <div className="text-grey-08 font-bold">Creation Date</div>,
+      accessorKey: 'weight',
+      header: () => <div className="text-grey-08 font-bold">Weight</div>,
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">{row.getValue('weight')}</div>
+      ),
+    },
+    {
+      accessorKey: 'shipping_fee',
+      header: () => <div className="text-grey-08 font-bold">Shipping Fee</div>,
       cell: ({ row }) => (
         <div className="font-normal text-grey-08">
-          {row.getValue('created_at')}
+          {row.getValue('shipping_fee')}
         </div>
       ),
     },
@@ -49,6 +55,15 @@ export default function PendingRequests() {
         <div className="font-normal text-grey-08">{row.getValue('orders')}</div>
       ),
     },
+    {
+      accessorKey: 'created_at',
+      header: () => <div className="text-grey-08 font-bold">Creation Date</div>,
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">
+          {row.getValue('created_at')}
+        </div>
+      ),
+    },
   ];
   const new_table_data =
     shipments && shipments.length > 0
@@ -56,6 +71,8 @@ export default function PendingRequests() {
           return {
             id: shipment.id,
             created_at: format(shipment.createdAt, 'PPP'),
+            weight: `${shipment.weight}kg`,
+            shipping_fee: `£${shipment.shippingFee}`,
             orders: (
               <span
                 onClick={routeToShipmentOrders(shipment.id)}

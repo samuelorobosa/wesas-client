@@ -81,6 +81,7 @@ export default function LoginPage() {
     defaultValues: {
       email: '',
       password: '',
+      captcha: false,
     },
     mode: 'onChange',
   });
@@ -107,7 +108,7 @@ export default function LoginPage() {
               <b>Ship</b>
             </p>
           </header>
-          <Card className="w-[450px]">
+          <Card className="sm:max-w-[450px]">
             <CardHeader>
               <CardTitle>Sign in to your account</CardTitle>
             </CardHeader>
@@ -167,7 +168,18 @@ export default function LoginPage() {
                       )}
                     />
 
-                    <CaptchaInput onChange={handleCaptchaUpdate} />
+                    <FormField
+                      control={form.control}
+                      name="captcha"
+                      render={({ field }) => (
+                        <CaptchaInput
+                          onChange={(value) => {
+                            field.onChange(value);
+                            handleCaptchaUpdate(value);
+                          }}
+                        />
+                      )}
+                    />
 
                     <div className="flex justify-end">
                       <Link

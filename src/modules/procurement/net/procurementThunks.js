@@ -14,7 +14,8 @@ export const createOrderThunk = createAsyncThunk(
       const response = await createOrder(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      const message = err.response.data.errorMessage;
+      return rejectWithValue(message);
     }
   },
 );
@@ -38,7 +39,8 @@ export const createSupplierThunk = createAsyncThunk(
       const response = await createSupplier(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      const message = err.response.data.errorMessage;
+      return rejectWithValue(message);
     }
   },
 );
@@ -62,7 +64,8 @@ export const createShipmentRequestThunk = createAsyncThunk(
       const response = await createShipmentRequest(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      const message = err.response.data.errorMessage;
+      return rejectWithValue(message);
     }
   },
 );

@@ -3,6 +3,7 @@ import PendingRequests from '@/src/modules/logistics/components/PendingRequests.
 import ProcessedRequests from '@/src/modules/logistics/components/ProcessedRequests.jsx';
 import ShippedRequests from '@/src/modules/logistics/components/ShippedRequests.jsx';
 import ConfirmedRequests from '@/src/modules/logistics/components/ConfirmedRequests.jsx';
+import DeclinedRequests from '@/src/modules/logistics/components/DeclinedRequests.jsx';
 
 export default function ShippingRequests() {
   const tabs = [
@@ -25,6 +26,11 @@ export default function ShippingRequests() {
       key: 'shipped',
       title: 'Shipped',
       component: <ShippedRequests />,
+    },
+    {
+      key: 'declined',
+      title: 'Declined',
+      component: <DeclinedRequests />,
     },
   ];
 

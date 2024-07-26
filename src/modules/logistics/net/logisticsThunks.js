@@ -39,7 +39,8 @@ export const approveCourierQuoteThunk = createAsyncThunk(
       const response = await approveCourierQuote(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      const message = err.response.data.errorMessage;
+      return rejectWithValue(message);
     }
   },
 );

@@ -31,3 +31,7 @@ export const subscribeToAPlan = async (id) => {
 export const getPastSubscriptions = async () => {
   return await walletServiceClient.get(walletUrls.getPastSubscriptions);
 };
+
+export const getBanks = async () => {
+  return await walletServiceClient.get(walletUrls.getBanks);
+};

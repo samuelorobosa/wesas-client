@@ -5,10 +5,12 @@ import TimeAgo from 'react-timeago';
 import { CircleAlert } from 'lucide-react';
 import { createAvatar } from '@dicebear/core';
 import { shapes } from '@dicebear/collection';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
+import { Card, CardContent } from '@/src/core/components/ui/card.jsx';
 
 export default function EventHistoryPage() {
   const dispatch = useDispatch();
-  const { data: notifications } = useSelector(
+  const { data: notifications, loading } = useSelector(
     (state) => state.profile.get_notifications,
   );
   useEffect(() => {
@@ -20,28 +22,43 @@ export default function EventHistoryPage() {
       seed: seed,
     }).toDataUriSync();
   }
+
   return (
     <main className="w-full">
       <h1 className="font-medium text-xl">Event History</h1>
       <section className="bg-white rounded-md p-4 mt-4">
-        {notifications.data && notifications.data.length > 0 ? (
-          notifications?.data.map((notification, index, arr) => (
+        {loading === LoadingStates.pending ? (
+          <div className="flex-1 overflow-y-auto p-6 grid gap-6">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <Card key={index}>
+                <CardContent className="grid grid-cols-[1fr_auto] items-center gap-4 pt-6 h-32">
+                  <div className="flex gap-y-2 flex-col">
+                    <div className="animate-pulse bg-gray-300 h-4 w-1/2 rounded-md"></div>
+                    <div className="animate-pulse bg-gray-300 h-4 w-1/4 rounded-md"></div>
+                  </div>
+                  <div className="animate-pulse bg-gray-300 h-4 w-1/4 rounded-md"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : notifications.data && Object.keys(notifications.data).length > 0 ? (
+          Object.keys(notifications?.data).map((key, index, arr) => (
             <div
-              key={notification?.id}
+              key={notifications.data[key]?.id}
               className={`flex gap-x-3 items-center py-3 ${index !== arr.length - 1 && 'border-b border-grey_02'}`}
             >
               <figure className="w-24 h-24">
                 <img
                   className="w-full h-full object-cover"
-                  src={generateAvatar(notification?.id)}
+                  src={generateAvatar(notifications.data[key]?.id)}
                   alt="User Profile"
                 />
               </figure>
               <aside className="flex flex-col gap-y-2">
-                <p>{notification?.narration}</p>
+                <p>{notifications.data[key]?.narration}</p>
                 <span>
-                  <TimeAgo date={notification.createdAt} /> •{' '}
-                  {notification?.subject}
+                  <TimeAgo date={notifications.data[key]?.createdAt} /> •{' '}
+                  {notifications.data[key]?.subject}
                 </span>
               </aside>
             </div>

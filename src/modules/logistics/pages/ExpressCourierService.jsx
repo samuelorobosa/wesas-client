@@ -12,6 +12,7 @@ import PendingCouriers from '@/src/modules/logistics/components/PendingCouriers.
 import ProcessedCouriers from '@/src/modules/logistics/components/ProcessedCouriers.jsx';
 import ConfirmedCouriers from '@/src/modules/logistics/components/ConfirmedCouriers.jsx';
 import ShippedCouriers from '@/src/modules/logistics/components/ShippedCouriers.jsx';
+import DeclinedCouriers from '@/src/modules/logistics/components/DeclinedCouriers.jsx';
 
 export default function ExpressCourierService() {
   const [formData, setFormData] = useState({});
@@ -51,6 +52,7 @@ export default function ExpressCourierService() {
           setFormData={setFormData}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          setIsDialogOpen={setIsDialogOpen}
         />
       ),
     },
@@ -76,16 +78,18 @@ export default function ExpressCourierService() {
       title: 'Shipped',
       component: <ShippedCouriers />,
     },
+    {
+      key: 'declined',
+      title: 'Declined',
+      component: <DeclinedCouriers />,
+    },
   ];
   const [activeTable, setActiveTable] = useState(tables[0].key);
   return (
     <main className="w-full">
       <header className="flex items-center justify-between">
         <h1 className="font-medium text-xl">Express Courier Services</h1>
-        <Dialog
-          open={isDialogOpen}
-          onOpenChange={(_) => setIsDialogOpen(!isDialogOpen)}
-        >
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="ml-4 bg-blue hover:bg-primary-tint-300">
               Request Service
