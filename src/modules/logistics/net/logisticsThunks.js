@@ -15,7 +15,13 @@ export const createCourierRequestThunk = createAsyncThunk(
       const response = await createCourierRequest(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -27,7 +33,13 @@ export const getCouriersThunk = createAsyncThunk(
       const response = await getCouriers(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -39,8 +51,13 @@ export const approveCourierQuoteThunk = createAsyncThunk(
       const response = await approveCourierQuote(data);
       return response.data;
     } catch (err) {
-      const message = err.response.data.errorMessage;
-      return rejectWithValue(message);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -52,7 +69,13 @@ export const getShipmentsThunk = createAsyncThunk(
       const response = await getShipments(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -64,7 +87,13 @@ export const getShipmentThunk = createAsyncThunk(
       const response = await getShipment(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -76,7 +105,13 @@ export const approveShipmentThunk = createAsyncThunk(
       const response = await approveShipment(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );

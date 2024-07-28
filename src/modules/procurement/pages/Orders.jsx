@@ -22,13 +22,14 @@ import ProcessedOrders from '@/src/modules/procurement/components/ProcessedOrder
 import ReceivedOrders from '@/src/modules/procurement/components/ReceivedOrders.jsx';
 import ShippedOrders from '@/src/modules/procurement/components/ShippedOrders.jsx';
 import { useDispatch } from 'react-redux';
+import DeclinedOrders from '@/src/modules/procurement/components/DeclinedOrders.jsx';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
+import { Textarea } from '@/src/core/components/ui/textarea.jsx';
+import { toast } from 'sonner';
 import {
   createOrderThunk,
   getOrdersThunk,
 } from '@/src/modules/procurement/net/procurementThunks.js';
-import { toast } from 'sonner';
-import DeclinedOrders from '@/src/modules/procurement/components/DeclinedOrders.jsx';
-import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
 export default function Orders() {
   const [isCreating, setIsCreating] = useState(false);
@@ -65,6 +66,7 @@ export default function Orders() {
     product: z.string().nonempty('Product Link is required'),
     unitPrice: z.string().nonempty('Unit Price is required'),
     quantity: z.string().nonempty('Quantity is required'),
+    description: z.string(),
   });
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -73,6 +75,7 @@ export default function Orders() {
       unitPrice: '',
       quantity: '',
       supplierId: '',
+      description: '',
     },
     mode: 'onChange',
   });
@@ -104,7 +107,7 @@ export default function Orders() {
         <h1 className="font-medium text-xl">All Orders</h1>
         <Dialog
           open={isDialogOpen}
-          onOpenChange={(_) => setIsDialogOpen(!isDialogOpen)}
+          onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
         >
           <DialogTrigger asChild>
             <Button className="ml-4 bg-blue hover:bg-primary-tint-300">
@@ -181,15 +184,15 @@ export default function Orders() {
                     />
                     <FormField
                       control={form.control}
-                      name="supplierId"
+                      name="description"
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
                             <div className="flex flex-col space-y-1.5">
-                              <Input
+                              <Textarea
                                 type="text"
                                 {...field}
-                                placeholder="Supplier ID"
+                                placeholder="Describe the item, color, size, etc."
                               />
                             </div>
                           </FormControl>
@@ -197,6 +200,24 @@ export default function Orders() {
                         </FormItem>
                       )}
                     />
+                    {/*<FormField*/}
+                    {/*  control={form.control}*/}
+                    {/*  name="supplierId"*/}
+                    {/*  render={({ field }) => (*/}
+                    {/*    <FormItem>*/}
+                    {/*      <FormControl>*/}
+                    {/*        <div className="flex flex-col space-y-1.5">*/}
+                    {/*          <Input*/}
+                    {/*            type="text"*/}
+                    {/*            {...field}*/}
+                    {/*            placeholder="Supplier ID"*/}
+                    {/*          />*/}
+                    {/*        </div>*/}
+                    {/*      </FormControl>*/}
+                    {/*      <FormMessage className="text-left" />*/}
+                    {/*    </FormItem>*/}
+                    {/*  )}*/}
+                    {/*/>*/}
 
                     <Button
                       type="submit"

@@ -1,10 +1,31 @@
 import DashboardTable from '@/src/core/components/DataTable.jsx';
-import { useEffect } from 'react';
-import { getSuppliersThunk } from '@/src/modules/procurement/net/procurementThunks.js';
+import { useEffect, useState } from 'react';
+import {
+  deleteSupplierThunk,
+  getSuppliersThunk,
+} from '@/src/modules/procurement/net/procurementThunks.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/src/core/components/ui/alert-dialog.jsx';
+import { Button } from '@/src/core/components/ui/button.jsx';
+import { toast } from 'sonner';
+import { ClipLoader } from 'react-spinners';
+
 export default function SuppliersTable() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [deleteSupplierLoading, setDeleteSupplierLoading] = useState(false);
+  const [currentSupplierid, setCurrentSupplierid] = useState(null);
   const { data: suppliers, loading } = useSelector(
     (state) => state.procurement.get_suppliers,
   );
@@ -77,6 +98,20 @@ export default function SuppliersTable() {
     dispatch(getSuppliersThunk());
   }, []);
 
+  const handleDeleteSupplier = async () => {
+    try {
+      setDeleteSupplierLoading(true);
+      await dispatch(deleteSupplierThunk(currentSupplierid));
+      dispatch(getSuppliersThunk());
+      toast.success('Supplier has been deleted');
+    } catch (error) {
+      toast.error(error);
+    } finally {
+      setDeleteSupplierLoading(false);
+      setCurrentSupplierid(null);
+    }
+  };
+
   const new_table_data =
     suppliers &&
     suppliers.length > 0 &&
@@ -87,16 +122,57 @@ export default function SuppliersTable() {
       accountNo: supplier.accountNo,
       sortCode: supplier.sortCode,
       bankName: supplier.bankName,
-      action: 'Remove',
+      action: (
+        <Button
+          onClick={() => {
+            setIsDialogOpen(true);
+            setCurrentSupplierid(supplier.id);
+          }}
+          variant="destructive"
+          className="bg-red-500 text-white rounded-md p-2"
+        >
+          {deleteSupplierLoading ? (
+            <ClipLoader
+              color="#fff"
+              loading={true}
+              size={15}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          ) : (
+            <span>Delete Supplier</span>
+          )}
+        </Button>
+      ),
     }));
 
   return (
-    <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable
-        columns={columns}
-        data={new_table_data}
-        isLoading={loading === LoadingStates.pending}
-      />
-    </section>
+    <>
+      <section className="mt-4 bg-white p-4 rounded-md">
+        <DashboardTable
+          columns={columns}
+          data={new_table_data}
+          isLoading={loading === LoadingStates.pending}
+        />
+      </section>
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogTrigger></AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this
+              supplier and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteSupplier}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

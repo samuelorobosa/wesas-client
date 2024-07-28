@@ -23,6 +23,12 @@ export const getSuppliers = async () => {
   return await procurementServiceClient.get(procurementUrls.getSuppliers);
 };
 
+export const deleteSupplier = async (id) => {
+  return await procurementServiceClient.delete(
+    `${procurementUrls.deleteSupplier}/${id}`,
+  );
+};
+
 export const createShipmentRequest = async (data) => {
   return await procurementServiceClient.post(
     procurementUrls.createShipmentRequest,

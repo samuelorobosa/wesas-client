@@ -29,6 +29,15 @@ export default function PendingOrders() {
       ),
     },
     {
+      accessorKey: 'description',
+      header: () => <div className="text-grey-08 font-bold">Description</div>,
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">
+          {row.getValue('description')}
+        </div>
+      ),
+    },
+    {
       accessorKey: 'unit_price',
       header: () => <div className="text-grey-08 font-bold">Unit Price</div>,
       cell: ({ row }) => (
@@ -122,6 +131,7 @@ export default function PendingOrders() {
       subtotal: `£${order.subTotal}`,
       order_fee: `£${order.orderFee}`,
       supplier_fee: `£${order.supplierFee}`,
+      description: order.description,
       total: `£${order.total}`,
     }));
 

@@ -4,6 +4,7 @@ import {
   createOrderThunk,
   createShipmentRequestThunk,
   createSupplierThunk,
+  deleteSupplierThunk,
   getOrdersThunk,
   getSuppliersThunk,
 } from '@/src/modules/procurement/net/procurementThunks.js';
@@ -20,6 +21,11 @@ const initialState = {
     error: null,
   },
   create_supplier: {
+    loading: LoadingStates.base,
+    data: [],
+    error: null,
+  },
+  delete_supplier: {
     loading: LoadingStates.base,
     data: [],
     error: null,
@@ -78,6 +84,19 @@ const procurementSlice = createSlice({
     builder.addCase(createSupplierThunk.rejected, (state, { payload }) => {
       state.create_supplier.loading = LoadingStates.rejected;
       state.create_supplier.error = payload;
+    });
+
+    // Delete Supplier Thunk
+    builder.addCase(deleteSupplierThunk.pending, (state) => {
+      state.delete_supplier.loading = LoadingStates.pending;
+    });
+    builder.addCase(deleteSupplierThunk.fulfilled, (state, { payload }) => {
+      state.delete_supplier.loading = LoadingStates.fulfilled;
+      state.delete_supplier.data = payload.data;
+    });
+    builder.addCase(deleteSupplierThunk.rejected, (state, { payload }) => {
+      state.delete_supplier.loading = LoadingStates.rejected;
+      state.delete_supplier.error = payload;
     });
 
     // Get Suppliers Thunk

@@ -19,5 +19,9 @@ export const newHttpClient = (instance = defaultAxiosInstance) => {
       const res = await this.axiosInstance.patch(url, body, options);
       return res;
     },
+    delete: async function (url, body, options = {}) {
+      const res = await this.axiosInstance.delete(url, body, options);
+      return res;
+    },
   };
 };

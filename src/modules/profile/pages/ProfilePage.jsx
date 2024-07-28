@@ -1,10 +1,6 @@
 import { ArrowLeftRight } from 'lucide-react';
 import { Button } from '@/src/core/components/ui/button.jsx';
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from '@/src/core/components/ui/dialog.jsx';
+import { Dialog, DialogContent } from '@/src/core/components/ui/dialog.jsx';
 import {
   Form,
   FormControl,
@@ -29,6 +25,7 @@ import {
 } from '@/src/core/components/ui/select.jsx';
 import { ClipLoader } from 'react-spinners';
 import {
+  editProfileThunk,
   getExchangeRatesThunk,
   getProfileThunk,
 } from '@/src/modules/profile/net/profileThunks.js';
@@ -38,8 +35,12 @@ import { getWalletDetailsThunk } from '@/src/modules/wallet/net/walletThunks.js'
 import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 import { identicon } from '@dicebear/collection';
 import { createAvatar } from '@dicebear/core';
+import { toast } from 'sonner';
+import { Textarea } from '@/src/core/components/ui/textarea.jsx';
 
 export default function ProfilePage() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isShippingDialogOpen, setIsShippingDialogOpen] = useState(false);
   const {
     profile: {
       get_profile: { loading: profileLoading, data: profileData },
@@ -54,6 +55,7 @@ export default function ProfilePage() {
   } = useSelector((state) => state);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading_2, setIsLoading_2] = useState(false);
   const { countries } = useSelector((state) => state.auth);
   const countryOptions = countries.data.map(({ name, value }) => ({
     label: name,
@@ -74,6 +76,19 @@ export default function ProfilePage() {
     address: z.string().min(1, { message: 'Address is required' }),
   });
 
+  const formSchema2 = z.object({
+    receiverName: z.string().min(1, { message: 'Receiver  name is required' }),
+    receiverAddress: z.string().min(1, { message: 'Address is required' }),
+    receiverPhone: z.string().min(1, { message: 'Phone number is required' }),
+    city: z.string().min(1, { message: 'City is required' }),
+    postalCode: z.string(),
+    country: z
+      .enum(countryValues)
+      .refine((value) => countryValues?.includes(value), {
+        message: 'Invalid country selected',
+      }),
+  });
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -82,14 +97,71 @@ export default function ProfilePage() {
       email: profileData && profileData.email,
       country: profileData && profileData.country,
       phone: profileData && profileData.phone,
-      address: profileData && profileData.shippingAddress,
+      address: profileData && profileData.address,
+    },
+    mode: 'onChange',
+  });
+
+  const form2 = useForm({
+    resolver: zodResolver(formSchema2),
+    defaultValues: {
+      receiverName:
+        profileData && profileData?.shippingAddress?.receiverName
+          ? profileData?.shippingAddress?.receiverName
+          : '',
+      receiverAddress:
+        profileData && profileData?.shippingAddress?.receiverAddress
+          ? profileData?.shippingAddress?.receiverAddress
+          : '',
+      receiverPhone:
+        profileData && profileData?.shippingAddress?.receiverPhone
+          ? profileData?.shippingAddress?.receiverPhone
+          : '',
+      city:
+        profileData && profileData?.shippingAddress?.city
+          ? profileData?.shippingAddress?.city
+          : '',
+      postalCode:
+        profileData && profileData?.shippingAddress?.postalCode
+          ? profileData?.shippingAddress?.postalCode
+          : '',
+      country:
+        profileData && profileData?.shippingAddress?.country
+          ? profileData?.shippingAddress?.country
+          : '',
     },
     mode: 'onChange',
   });
 
   async function onSubmit(formData) {
-    // setIsLoading(true);
-    console.log(formData);
+    try {
+      setIsLoading(true);
+      await dispatch(editProfileThunk(formData)).unwrap();
+      setIsDialogOpen(false);
+      toast.success('Profile updated successfully');
+      dispatch(getProfileThunk());
+    } catch (e) {
+      toast.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function onSubmit2(formData) {
+    const data = {
+      shippingAddress: formData,
+    };
+    try {
+      setIsLoading_2(true);
+      await dispatch(editProfileThunk(data)).unwrap();
+      setIsShippingDialogOpen(false);
+      toast.success('Address updated successfully');
+      dispatch(getProfileThunk());
+    } catch (e) {
+      toast.error(e);
+    } finally {
+      setIsLoading_2(false);
+    }
   }
 
   useEffect(() => {
@@ -132,7 +204,7 @@ export default function ProfilePage() {
               <span className="text-3xl font-semibold">
                 {exchangeRatesLoading === LoadingStates.pending ? (
                   <Skeleton height={20} width={150} />
-                ) : exchangeRates.data ? (
+                ) : exchangeRates.data?.[0]?.['naira'] ? (
                   <>
                     {formatNumberWithCommas(exchangeRates['data'][0]['naira'])}
                   </>
@@ -158,185 +230,12 @@ export default function ProfilePage() {
               <p className="text-sm text-gray-500">ejwkkik160@vvatxiy.com</p>
             </div>
           </aside>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="bg-blue hover:bg-primary-tint-300 text-white p-4 rounded-md cursor-pointer">
-                Edit Profile
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-[400px]">
-              <header className="text-center text-2xl font-semibold leading-none tracking-tight">
-                Edit Profile
-              </header>
-              <div className="grid w-full items-center gap-4">
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <div className="grid w-full items-center gap-4">
-                      <FormField
-                        control={form.control}
-                        name="firstname"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <div className="flex flex-col space-y-1.5">
-                                <Input
-                                  defaultValue={
-                                    profileData && profileData.firstname
-                                  }
-                                  type="text"
-                                  {...field}
-                                  placeholder="First Name"
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage className="text-left" />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="lastname"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <div className="flex flex-col space-y-1.5">
-                                <Input
-                                  defaultValue={
-                                    profileData && profileData.lastname
-                                  }
-                                  type="text"
-                                  {...field}
-                                  placeholder="Last Name"
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage className="text-left" />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <div className="flex flex-col space-y-1.5">
-                                <Input
-                                  defaultValue={
-                                    profileData && profileData.email
-                                  }
-                                  {...field}
-                                  type="email"
-                                  placeholder="Email"
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage className="text-left" />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="phone"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <div className="flex flex-col space-y-1.5">
-                                <Input
-                                  defaultValue={
-                                    profileData && profileData.phone
-                                  }
-                                  {...field}
-                                  type="text"
-                                  placeholder="Phone"
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage className="text-left" />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="country"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <div className="flex flex-col space-y-1.5">
-                                <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={
-                                    profileData && profileData.country
-                                  }
-                                >
-                                  <SelectTrigger className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background text-left placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                                    <SelectValue placeholder="Select a country" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectGroup>
-                                      {countryOptions.map((option) => (
-                                        <SelectItem
-                                          key={option.label}
-                                          value={option.label}
-                                        >
-                                          {option.label}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            </FormControl>
-                            <FormMessage className="text-left" />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        defaultValue={
-                          profileData && profileData.shippingAddress
-                        }
-                        control={form.control}
-                        name="address"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <div className="flex flex-col space-y-1.5">
-                                <Input
-                                  {...field}
-                                  type="text"
-                                  placeholder="Address"
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage className="text-left" />
-                          </FormItem>
-                        )}
-                      />
-                      <Button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full"
-                      >
-                        {isLoading ? (
-                          <ClipLoader
-                            color="#fff"
-                            loading={isLoading}
-                            size={15}
-                            aria-label="Loading Spinner"
-                            data-testid="loader"
-                          />
-                        ) : (
-                          <span>Save</span>
-                        )}
-                      </Button>
-                    </div>
-                  </form>
-                </Form>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <Button
+            onClick={() => setIsDialogOpen(true)}
+            className="bg-blue hover:bg-primary-tint-300 text-white p-4 rounded-md cursor-pointer"
+          >
+            Edit Profile
+          </Button>
         </section>
         <div className="mx-4 mt-6 grid grid-cols-[1fr_20px_1fr] gap-x-4">
           <aside>
@@ -427,31 +326,393 @@ export default function ProfilePage() {
           </aside>
           <div className="h-full bg-gray-300 w-px rounded-md"></div>
           <aside>
-            <p className="text-gray-500 uppercase text-sm">Shipping Address</p>
+            <div className="flex justify-between items-center">
+              <p className="text-gray-500 uppercase text-sm">
+                Shipping Address
+              </p>
+              <Button
+                onClick={() => setIsShippingDialogOpen(true)}
+                className="bg-blue hover:bg-primary-tint-300 text-white p-4 rounded-md cursor-pointer"
+              >
+                Set up
+              </Button>
+            </div>
             <p className="mt-6 text-sm mb-10">
               {profileLoading === LoadingStates.pending ? (
                 <Skeleton height={20} width={150} />
+              ) : profileData.shippingAddress ? (
+                <div className="flex flex-col gap-y-2">
+                  <div className="text-grey-08 font-normal">
+                    {profileData.shippingAddress.receiverName}
+                  </div>
+                  <div className="text-grey-08 font-normal">
+                    {profileData.shippingAddress.receiverAddress},{' '}
+                    {profileData.shippingAddress.city},{' '}
+                    {profileData.shippingAddress.country}
+                  </div>
+                  <div className="text-grey-08 font-normal">
+                    {profileData.shippingAddress.receiverPhone}
+                  </div>
+                </div>
               ) : (
-                profileData.shippingAddress || 'Shipping Address not set'
+                `Shipping Address not set`
               )}
             </p>
-            <section className="flex items-center justify-between">
-              <div className="flex flex-col gap-y-2">
-                <span className="text-2xl font-semibold">150</span>
-                <span className="text-gray-500">Total Order</span>
-              </div>
-              <div className="flex flex-col gap-y-2">
-                <span className="text-2xl font-semibold">140</span>
-                <span className="text-gray-500">Completed</span>
-              </div>
-              <div className="flex flex-col gap-y-2">
-                <span className="text-2xl font-semibold">10</span>
-                <span className="text-gray-500">Cancelled</span>
-              </div>
-            </section>
           </aside>
         </div>
       </div>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-[400px]">
+          <header className="text-center text-2xl font-semibold leading-none tracking-tight">
+            Edit Profile
+          </header>
+          <div className="grid w-full items-center gap-4">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <div className="grid w-full items-center gap-4">
+                  <FormField
+                    control={form.control}
+                    name="firstname"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Input
+                              defaultValue={
+                                profileData && profileData.firstname
+                              }
+                              type="text"
+                              {...field}
+                              placeholder="First Name"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="lastname"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Input
+                              defaultValue={profileData && profileData.lastname}
+                              type="text"
+                              {...field}
+                              placeholder="Last Name"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Input
+                              defaultValue={profileData && profileData.email}
+                              {...field}
+                              type="email"
+                              placeholder="Email"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Input
+                              defaultValue={profileData && profileData.phone}
+                              {...field}
+                              type="text"
+                              placeholder="Phone"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={profileData && profileData.country}
+                            >
+                              <SelectTrigger className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background text-left placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                <SelectValue placeholder="Select a country" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  {countryOptions.map((option) => (
+                                    <SelectItem
+                                      key={option.label}
+                                      value={option.label}
+                                    >
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    defaultValue={profileData && profileData.shippingAddress}
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Textarea
+                              {...field}
+                              type="text"
+                              placeholder="Address"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" disabled={isLoading} className="w-full">
+                    {isLoading ? (
+                      <ClipLoader
+                        color="#fff"
+                        loading={isLoading}
+                        size={15}
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                      />
+                    ) : (
+                      <span>Save</span>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={isShippingDialogOpen}
+        onOpenChange={setIsShippingDialogOpen}
+      >
+        <DialogContent className="max-w-[400px]">
+          <header className="text-center text-2xl font-semibold leading-none tracking-tight">
+            Shipping Address
+          </header>
+          <div className="grid w-full items-center gap-4">
+            <Form {...form2}>
+              <form onSubmit={form2.handleSubmit(onSubmit2)}>
+                <div className="grid w-full items-center gap-4">
+                  <FormField
+                    control={form2.control}
+                    name="receiverName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Input
+                              defaultValue={
+                                profileData &&
+                                profileData?.shippingAddress?.receiverName
+                                  ? profileData?.shippingAddress?.receiverName
+                                  : ''
+                              }
+                              type="text"
+                              {...field}
+                              placeholder="Receiver Name"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form2.control}
+                    name="receiverAddress"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Input
+                              defaultValue={
+                                profileData &&
+                                profileData?.shippingAddress?.receiverAddress
+                                  ? profileData?.shippingAddress
+                                      ?.receiverAddress
+                                  : ''
+                              }
+                              type="text"
+                              {...field}
+                              placeholder="Reciever Address"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form2.control}
+                    name="receiverPhone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Input
+                              defaultValue={
+                                profileData &&
+                                profileData?.shippingAddress?.receiverPhone
+                                  ? profileData?.shippingAddress?.receiverPhone
+                                  : ''
+                              }
+                              {...field}
+                              type="text"
+                              placeholder="Receiver Phone"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form2.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Input
+                              defaultValue={
+                                profileData &&
+                                profileData?.shippingAddress?.city
+                                  ? profileData?.shippingAddress?.city
+                                  : ''
+                              }
+                              {...field}
+                              type="text"
+                              placeholder="City"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form2.control}
+                    name="postalCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Input
+                              defaultValue={
+                                profileData &&
+                                profileData?.shippingAddress?.postalCode
+                                  ? profileData?.shippingAddress?.postalCode
+                                  : ''
+                              }
+                              {...field}
+                              type="text"
+                              placeholder="Postal Code"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form2.control}
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={profileData && profileData.country}
+                            >
+                              <SelectTrigger className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background text-left placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                <SelectValue placeholder="Select a country" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  {countryOptions.map((option) => (
+                                    <SelectItem
+                                      key={option.label}
+                                      value={option.label}
+                                    >
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <Button
+                    type="submit"
+                    disabled={isLoading_2 || !form2.formState.isValid}
+                    className="w-full"
+                  >
+                    {isLoading_2 ? (
+                      <ClipLoader
+                        color="#fff"
+                        loading={true}
+                        size={15}
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                      />
+                    ) : (
+                      <span>Submit</span>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }

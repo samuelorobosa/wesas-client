@@ -86,9 +86,7 @@ export default function NigerianBankTab() {
       accessorKey: 'amountReceived',
       header: () => <div className="text-grey-08 font-bold">Amount Paid</div>,
       cell: ({ row }) => (
-        <div className="font-normal text-grey-08">
-          {row.getValue('amountReceived')}
-        </div>
+        <div className="font-normal text-grey-08">{row.getValue('amount')}</div>
       ),
     },
     {
@@ -97,7 +95,9 @@ export default function NigerianBankTab() {
         <div className="text-grey-08 font-bold">Amount Credited</div>
       ),
       cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('amount')}</div>
+        <div className="font-normal text-grey-08">
+          {row.getValue('amountReceived')}
+        </div>
       ),
     },
     {
@@ -143,8 +143,8 @@ export default function NigerianBankTab() {
     transactionHistory.map((transaction) => ({
       id: transaction.id,
       name: transaction.name,
-      amountReceived: `₦${formatNumberWithCommas(transaction.amountReceived)}`,
-      amount: `£${formatNumberWithCommas(transaction.amount)}`,
+      amountReceived: `£${formatNumberWithCommas(transaction.amountReceived)}`,
+      amount: `₦${formatNumberWithCommas(transaction.amount)}`,
       amount_paid_to: (
         <section className="flex flex-col gap-y-1">
           <span>{transaction?.recipientAccount?.accountNo}</span>
@@ -340,10 +340,10 @@ export default function NigerianBankTab() {
                           <div className="flex flex-col space-y-1.5">
                             <Input
                               type="text"
-                              value={`£${formatNumberWithCommas(value)}`}
+                              value={`₦${formatNumberWithCommas(value)}`}
                               onChange={(e) => {
                                 const rawValue = e.target.value.replace(
-                                  /[£,]/g,
+                                  /[₦,]/g,
                                   '',
                                 );
                                 onChange(rawValue);
@@ -354,7 +354,7 @@ export default function NigerianBankTab() {
                             />
                             <div className="text-muted-foreground text-xs">
                               {value &&
-                                `£${value} = ₦${formatNumberWithCommas(exchangeRate * value)}`}
+                                `₦${formatNumberWithCommas(value)} = £${formatNumberWithCommas(value / exchangeRate)}`}
                             </div>
                           </div>
                         </FormControl>

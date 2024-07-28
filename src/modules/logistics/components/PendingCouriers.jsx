@@ -3,8 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCouriersThunk } from '@/src/modules/logistics/net/logisticsThunks.js';
 import DashboardTable from '@/src/core/components/DataTable.jsx';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
-import { Dialog, DialogContent } from '@/src/core/components/ui/dialog.jsx';
-import { DialogTrigger } from '@radix-ui/react-dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from '@/src/core/components/ui/dialog.jsx';
 
 export default function PendingCouriers() {
   const { data: couriers, loading } = useSelector(

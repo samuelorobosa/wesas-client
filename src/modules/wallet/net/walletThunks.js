@@ -17,7 +17,13 @@ export const addFundsThunk = createAsyncThunk(
       const response = await addFunds(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -29,7 +35,13 @@ export const addGBPViaCardThunk = createAsyncThunk(
       const response = await addGBPViaCard(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -41,7 +53,13 @@ export const getWalletDetailsThunk = createAsyncThunk(
       const response = await getWalletDetails();
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -53,7 +71,13 @@ export const getTransactionHistoryThunk = createAsyncThunk(
       const response = await getTransactionHistory(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -65,7 +89,13 @@ export const getPlansThunk = createAsyncThunk(
       const response = await getPlans();
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -77,7 +107,13 @@ export const subscribeToAPlanThunk = createAsyncThunk(
       const response = await subscribeToAPlan(id);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -89,7 +125,13 @@ export const getPastSubscriptionsThunk = createAsyncThunk(
       const response = await getPastSubscriptions();
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -101,7 +143,13 @@ export const getBanksThunk = createAsyncThunk(
       const response = await getBanks();
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );

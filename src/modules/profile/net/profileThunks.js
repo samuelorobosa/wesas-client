@@ -13,7 +13,13 @@ export const getProfileThunk = createAsyncThunk(
       const response = await getProfile(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -25,7 +31,13 @@ export const editProfileThunk = createAsyncThunk(
       const response = await editProfile(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -37,7 +49,13 @@ export const getExchangeRatesThunk = createAsyncThunk(
       const response = await getExchangeRates();
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -49,7 +67,13 @@ export const getNotificationsThunk = createAsyncThunk(
       const response = await getNotifications();
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );

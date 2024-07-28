@@ -3,6 +3,7 @@ import {
   createOrder,
   createShipmentRequest,
   createSupplier,
+  deleteSupplier,
   getOrders,
   getSuppliers,
 } from '@/src/modules/procurement/service/procurementService.js';
@@ -14,8 +15,13 @@ export const createOrderThunk = createAsyncThunk(
       const response = await createOrder(data);
       return response.data;
     } catch (err) {
-      const message = err.response.data.errorMessage;
-      return rejectWithValue(message);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -27,7 +33,13 @@ export const getOrdersThunk = createAsyncThunk(
       const response = await getOrders(data);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -39,8 +51,13 @@ export const createSupplierThunk = createAsyncThunk(
       const response = await createSupplier(data);
       return response.data;
     } catch (err) {
-      const message = err.response.data.errorMessage;
-      return rejectWithValue(message);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -52,7 +69,31 @@ export const getSuppliersThunk = createAsyncThunk(
       const response = await getSuppliers();
       return response.data;
     } catch (err) {
-      return rejectWithValue(err);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
+    }
+  },
+);
+
+export const deleteSupplierThunk = createAsyncThunk(
+  'procurement/deleteSupplierThunk',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await deleteSupplier(id);
+      return response.data;
+    } catch (err) {
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
@@ -64,8 +105,13 @@ export const createShipmentRequestThunk = createAsyncThunk(
       const response = await createShipmentRequest(data);
       return response.data;
     } catch (err) {
-      const message = err.response.data.errorMessage;
-      return rejectWithValue(message);
+      if (err.response.status === 400) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
     }
   },
 );
