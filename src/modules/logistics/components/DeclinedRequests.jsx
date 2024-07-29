@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { subRouteNames } from '@/src/core/navigation/routenames.js';
 import { useNavigate } from 'react-router-dom';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
 export default function DeclinedRequests() {
   const navigateTo = useNavigate();
@@ -72,7 +73,7 @@ export default function DeclinedRequests() {
             id: shipment.id,
             created_at: format(shipment.createdAt, 'PPP'),
             weight: `${shipment.weight}kg`,
-            shipping_fee: `£${shipment.shippingFee}`,
+            shipping_fee: `£${formatNumberWithCommas(shipment.shippingFee)}`,
             orders: (
               <span
                 onClick={routeToShipmentOrders(shipment.id)}

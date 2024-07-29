@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogTrigger,
 } from '@/src/core/components/ui/dialog.jsx';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
 export default function PendingCouriers() {
   const { data: couriers, loading } = useSelector(
@@ -107,7 +108,7 @@ export default function PendingCouriers() {
       receiver_name: order.receiver.name,
       receiver_email: order.receiver.email,
       shipment_content: order.shipment.content,
-      shipment_value: `£${order.shipment.value}`,
+      shipment_value: `£${formatNumberWithCommas(order.shipment.value)}`,
       summary: (
         <Dialog>
           <DialogTrigger asChild>

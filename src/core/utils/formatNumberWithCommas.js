@@ -13,8 +13,9 @@ export default function formatNumberWithCommas(number) {
       ',',
     );
 
-    // Combine formatted integer part and decimal part
-    return `${formattedIntegerPart}.${decimalPart}`;
+    // Combine formatted integer part and decimal part and fix to 2 decimal places
+
+    return `${formattedIntegerPart}.${decimalPart.slice(0, 2)}`;
   } else {
     // Format integer part with commas
     return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, ',');

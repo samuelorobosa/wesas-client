@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { getOrdersThunk } from '@/src/modules/procurement/net/procurementThunks.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
 export default function ShippedOrders() {
   const { data: orders, loading } = useSelector(
@@ -125,13 +126,13 @@ export default function ShippedOrders() {
           )}
         </span>
       ),
-      unit_price: `£${order.unitPrice}`,
+      unit_price: `£${formatNumberWithCommas(order.unitPrice)}`,
       qty: order.quantity,
-      subtotal: `£${order.subTotal}`,
-      order_fee: `£${order.orderFee}`,
-      supplier_fee: `£${order.supplierFee}`,
+      subtotal: `£${formatNumberWithCommas(order.subTotal)}`,
+      order_fee: `£${formatNumberWithCommas(order.orderFee)}`,
+      supplier_fee: `£${formatNumberWithCommas(order.supplierFee)}`,
       description: order.description,
-      total: `£${order.total}`,
+      total: `£${formatNumberWithCommas(order.total)}`,
     }));
 
   return (

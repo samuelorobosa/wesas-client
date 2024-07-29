@@ -48,7 +48,7 @@ import { resetAddFundsLoadingState } from '@/src/modules/wallet/state/walletSlic
 export default function NigerianBankTab() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const {
-    banks: { data: banks, loading: getBanksLoading },
+    banks: { data: banks },
   } = useSelector((state) => state.wallet);
   const [exchangeRate, setExchangeRate] = useState(0);
   const {

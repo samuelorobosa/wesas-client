@@ -10,6 +10,7 @@ import { Button } from '@/src/core/components/ui/button.jsx';
 import { ClipLoader } from 'react-spinners';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 import { toast } from 'sonner';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
 export default function ReceivedOrders() {
   const [loading, setLoading] = useState(false);
@@ -179,13 +180,13 @@ export default function ReceivedOrders() {
             )}
           </span>
         ),
-        unit_price: `£${order.unitPrice}`,
+        unit_price: `£${formatNumberWithCommas(order.unitPrice)}`,
         qty: order.quantity,
-        subtotal: `£${order.subTotal}`,
-        order_fee: `£${order.orderFee}`,
-        supplier_fee: `£${order.supplierFee}`,
+        subtotal: `£${formatNumberWithCommas(order.subTotal)}`,
+        order_fee: `£${formatNumberWithCommas(order.orderFee)}`,
+        supplier_fee: `£${formatNumberWithCommas(order.supplierFee)}`,
         description: order.description,
-        total: `£${order.total}`,
+        total: `£${formatNumberWithCommas(order.total)}`,
       };
     });
 

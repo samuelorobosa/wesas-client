@@ -11,6 +11,7 @@ import { Button } from '@/src/core/components/ui/button.jsx';
 import { toast } from 'sonner';
 import { Dialog, DialogContent } from '@/src/core/components/ui/dialog.jsx';
 import { DialogTrigger } from '@radix-ui/react-dialog';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
 export default function ProcessedCouriers() {
   const [isApproving, setIsApproving] = useState(false);
@@ -149,8 +150,8 @@ export default function ProcessedCouriers() {
       receiver_name: order.receiver.name,
       receiver_email: order.receiver.email,
       shipment_content: order.shipment.content,
-      shipment_value: order.shipment.value,
-      courier_fee: order.courierFee,
+      shipment_value: `£${formatNumberWithCommas(order.shipment.value)}`,
+      courier_fee: `£${formatNumberWithCommas(order.courierFee)}`,
       summary: (
         <Dialog>
           <DialogTrigger asChild>

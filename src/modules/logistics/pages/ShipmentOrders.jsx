@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { getShipmentThunk } from '@/src/modules/logistics/net/logisticsThunks.js';
 import { IoIosArrowRoundBack } from 'react-icons/io';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
 export default function ShipmentOrders() {
   const navigateTo = useNavigate();
@@ -90,12 +91,12 @@ export default function ShipmentOrders() {
       return {
         id: order.orderId,
         product: order.product,
-        order_fee: order.orderFee,
-        supplier_fee: order.supplierFee,
-        unit_price: order.unitPrice,
+        order_fee: `£${formatNumberWithCommas(order.orderFee)}`,
+        supplier_fee: `£${formatNumberWithCommas(order.supplierFee)}`,
+        unit_price: `£${formatNumberWithCommas(order.unitPrice)}`,
         quantity: order.quantity,
-        sub_total: order.subTotal,
-        total: order.total,
+        sub_total: `£${formatNumberWithCommas(order.subTotal)}`,
+        total: `£${formatNumberWithCommas(order.total)}`,
       };
     }) || [];
 

@@ -21,6 +21,7 @@ import {
 import { ClipLoader } from 'react-spinners';
 import { Settings } from 'lucide-react';
 import { toast } from 'sonner';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
 export default function ProcessedRequests() {
   const [isApproveLoading, setIsApproveLoading] = useState(false);
@@ -117,7 +118,7 @@ export default function ProcessedRequests() {
             id: shipment.id,
             created_at: format(shipment.createdAt, 'PPP'),
             weight: `${shipment.weight} kg`,
-            shipping_fee: `£${shipment.shippingFee}`,
+            shipping_fee: `£${formatNumberWithCommas(shipment.shippingFee)}`,
             orders: (
               <span
                 onClick={routeToShipmentOrders(shipment.id)}

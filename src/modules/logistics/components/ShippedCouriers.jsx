@@ -5,6 +5,7 @@ import DashboardTable from '@/src/core/components/DataTable.jsx';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 import { Dialog, DialogContent } from '@/src/core/components/ui/dialog.jsx';
 import { DialogTrigger } from '@radix-ui/react-dialog';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 
 export default function ShippedCouriers() {
   const {
@@ -113,8 +114,8 @@ export default function ShippedCouriers() {
       receiver_name: order.receiver.name,
       receiver_email: order.receiver.email,
       shipment_content: order.shipment.content,
-      shipment_value: `£${order.shipment.value}`,
-      courier_fee: `£${order.courierFee}`,
+      shipment_value: `£${formatNumberWithCommas(order.shipment.value)}`,
+      courier_fee: `£${formatNumberWithCommas(order.courierFee)}`,
       summary: (
         <Dialog>
           <DialogTrigger asChild>
