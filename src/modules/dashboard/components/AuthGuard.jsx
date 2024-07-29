@@ -24,7 +24,7 @@ export default function AuthGuard({ children }) {
     }
 
     return () => {
-      setToken('');
+      setToken(null);
     };
   }, []);
   return (

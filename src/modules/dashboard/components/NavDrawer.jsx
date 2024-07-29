@@ -3,14 +3,21 @@ import { useMemo } from 'react';
 import {
   BookUserIcon,
   DollarSign,
+  LogOut,
   ShoppingCartIcon,
   TruckIcon,
   User,
 } from 'lucide-react';
 import { subRouteNames } from '@/src/core/navigation/routenames.js';
 import NavDrawerItem from '@/src/modules/dashboard/components/NavDrawerItem.jsx';
+import { secretKeys } from '@/src/core/utils/secretKeys.js';
+import deleteFromLocalStorage from '@/src/core/utils/deleteFromLocalStorage.js';
 
 export default function NavDrawer() {
+  const handleLogout = () => {
+    deleteFromLocalStorage(secretKeys.USER_TOKEN);
+    window.location.reload();
+  };
   const sidebarMenu = useMemo(
     () => [
       {
@@ -110,6 +117,15 @@ export default function NavDrawer() {
           itemKey={key}
         />
       ))}
+      <div
+        onClick={() => handleLogout()}
+        className={`clickable flex items-center p-2 cursor-pointer`}
+      >
+        <span className="text-sidebarColor inline-block mr-2">
+          <LogOut size={20} />
+        </span>
+        <p className="flex-1 text-sm">Logout</p>
+      </div>
     </nav>
   );
 }
