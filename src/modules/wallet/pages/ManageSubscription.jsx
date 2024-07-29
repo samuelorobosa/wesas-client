@@ -75,8 +75,6 @@ export default function ManageSubscription() {
     dispatch(getPastSubscriptionsThunk());
   }, []);
 
-  console.log(pastSubscriptions);
-
   return (
     <main className="w-full">
       <h1 className="font-medium text-xl">Manage Subscription</h1>

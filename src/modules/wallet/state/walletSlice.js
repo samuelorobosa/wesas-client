@@ -160,7 +160,6 @@ const walletSlice = createSlice({
       getPastSubscriptionsThunk.fulfilled,
       (state, { payload }) => {
         state.get_past_subscriptions.loading = LoadingStates.fulfilled;
-        console.log(payload.data);
         state.get_past_subscriptions.data = payload.data;
       },
     );

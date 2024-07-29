@@ -135,8 +135,6 @@ export default function ProcessedOrders() {
     dispatch(getOrdersThunk(queryParams));
   }, []);
 
-  console.log('orders', orders);
-
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
       <DashboardTable

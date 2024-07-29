@@ -21,8 +21,6 @@ export default function ShippedRequests() {
     dispatch(getShipmentsThunk(queryParams));
   }, []);
 
-  console.log(shipments);
-
   const routeToShipmentOrders = (shipmentId) => () => {
     navigateTo(`${subRouteNames.shipmentOrders}/${shipmentId}`);
   };
