@@ -186,9 +186,6 @@ export default function NigerianBankTab() {
         accountName: bank.accountName,
       }));
 
-  console.log(bankOptions);
-  console.log(banks);
-
   useEffect(() => {
     dispatch(getBanksThunk());
   }, []);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -21,17 +21,29 @@ import PendingOrders from '@/src/modules/procurement/components/PendingOrders.js
 import ProcessedOrders from '@/src/modules/procurement/components/ProcessedOrders.jsx';
 import ReceivedOrders from '@/src/modules/procurement/components/ReceivedOrders.jsx';
 import ShippedOrders from '@/src/modules/procurement/components/ShippedOrders.jsx';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DeclinedOrders from '@/src/modules/procurement/components/DeclinedOrders.jsx';
 import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 import { Textarea } from '@/src/core/components/ui/textarea.jsx';
-import { toast } from 'sonner';
 import {
   createOrderThunk,
   getOrdersThunk,
+  getSuppliersThunk,
 } from '@/src/modules/procurement/net/procurementThunks.js';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/src/core/components/ui/select.jsx';
+import { toast } from 'sonner';
 
 export default function Orders() {
+  const {
+    get_suppliers: { data: suppliers },
+  } = useSelector((state) => state.procurement);
   const [isCreating, setIsCreating] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const dispatch = useDispatch();
@@ -67,6 +79,7 @@ export default function Orders() {
     unitPrice: z.string().nonempty('Unit Price is required'),
     quantity: z.string().nonempty('Quantity is required'),
     description: z.string(),
+    supplierId: z.string(),
   });
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -79,10 +92,20 @@ export default function Orders() {
     },
     mode: 'onChange',
   });
+
+  useEffect(() => {
+    dispatch(getSuppliersThunk());
+  }, []);
+
   async function onSubmit(formData) {
     //Convert unitPrice and quantity to number
     formData.unitPrice = Number(formData.unitPrice);
     formData.quantity = Number(formData.quantity);
+    if (formData.supplierId === '') {
+      delete formData.supplierId;
+    } else {
+      formData.supplierId = Number(formData.supplierId);
+    }
     try {
       setIsCreating(true);
       await dispatch(createOrderThunk(formData)).unwrap();
@@ -194,6 +217,47 @@ export default function Orders() {
                                 {...field}
                                 placeholder="Describe the item, color, size, etc."
                               />
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-left" />
+                        </FormItem>
+                      )}
+                    />
+                    <p className="text-sm">Using a supplier?</p>
+                    <FormField
+                      control={form.control}
+                      name="supplierId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="flex flex-col space-y-1.5">
+                              <Select
+                                value={
+                                  suppliers.find(
+                                    (option) =>
+                                      option.id === Number(field.value),
+                                  )?.id
+                                }
+                                onValueChange={(e) => {
+                                  field.onChange(e);
+                                }}
+                              >
+                                <SelectTrigger className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background text-left placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                  <SelectValue placeholder="Select a supplier" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    {suppliers.map((option) => (
+                                      <SelectItem
+                                        key={option.name}
+                                        value={option.id}
+                                      >
+                                        {option.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
                             </div>
                           </FormControl>
                           <FormMessage className="text-left" />
