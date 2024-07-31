@@ -66,7 +66,7 @@ const procurementSlice = createSlice({
     });
     builder.addCase(getOrdersThunk.fulfilled, (state, { payload }) => {
       state.get_orders.loading = LoadingStates.fulfilled;
-      state.get_orders.data = payload.data;
+      state.get_orders.data = payload;
     });
     builder.addCase(getOrdersThunk.rejected, (state, { payload }) => {
       state.get_orders.loading = LoadingStates.rejected;
@@ -105,7 +105,7 @@ const procurementSlice = createSlice({
     });
     builder.addCase(getSuppliersThunk.fulfilled, (state, { payload }) => {
       state.get_suppliers.loading = LoadingStates.fulfilled;
-      state.get_suppliers.data = payload.data;
+      state.get_suppliers.data = payload;
     });
     builder.addCase(getSuppliersThunk.rejected, (state, { payload }) => {
       state.get_suppliers.loading = LoadingStates.rejected;

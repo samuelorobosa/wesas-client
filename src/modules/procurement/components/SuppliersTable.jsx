@@ -113,9 +113,9 @@ export default function SuppliersTable() {
   };
 
   const new_table_data =
-    suppliers &&
-    suppliers.length > 0 &&
-    suppliers.map((supplier) => ({
+    suppliers.data &&
+    suppliers.data.length > 0 &&
+    suppliers.data.map((supplier) => ({
       supplier_id: supplier.id,
       name: supplier.name,
       phoneNumber: supplier.phoneNumber,
@@ -146,14 +146,26 @@ export default function SuppliersTable() {
       ),
     }));
 
+  const paginatedThunkCall = (page) => {
+    dispatch(
+      getSuppliersThunk({
+        page,
+      }),
+    );
+  };
+
   return (
     <>
       <section className="mt-4 bg-white p-4 rounded-md">
-        <DashboardTable
-          columns={columns}
-          data={new_table_data}
-          isLoading={loading === LoadingStates.pending}
-        />
+        {suppliers.data && (
+          <DashboardTable
+            columns={columns}
+            data={new_table_data}
+            isLoading={loading === LoadingStates.pending}
+            pageInfo={suppliers?.pageInfo}
+            paginatedThunkCall={paginatedThunkCall}
+          />
+        )}
       </section>
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <AlertDialogTrigger></AlertDialogTrigger>

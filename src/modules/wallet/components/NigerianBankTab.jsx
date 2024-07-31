@@ -139,8 +139,9 @@ export default function NigerianBankTab() {
   ];
   const new_table_data =
     transactionHistory &&
-    transactionHistory.length > 0 &&
-    transactionHistory.map((transaction) => ({
+    transactionHistory.data &&
+    transactionHistory.data.length > 0 &&
+    transactionHistory.data.map((transaction) => ({
       id: transaction.id,
       name: transaction.name,
       amountReceived: `£${formatNumberWithCommas(transaction.amountReceived)}`,
@@ -256,6 +257,15 @@ export default function NigerianBankTab() {
     setIsDialogOpen(true);
   };
 
+  const paginatedThunkCall = (page) => {
+    dispatch(
+      getTransactionHistoryThunk({
+        currency: 'NGN',
+        page,
+      }),
+    );
+  };
+
   return (
     <>
       <section className="mt-4 bg-white p-4 rounded-md">
@@ -268,11 +278,13 @@ export default function NigerianBankTab() {
             Add Funds
           </Button>
         </div>
-        {transactionHistory && (
+        {transactionHistory.data && (
           <DashboardTable
             columns={columns}
             data={new_table_data}
             isLoading={transactionHistoryLoading === LoadingStates.pending}
+            pageInfo={transactionHistory?.pageInfo}
+            paginatedThunkCall={paginatedThunkCall}
           />
         )}
       </section>

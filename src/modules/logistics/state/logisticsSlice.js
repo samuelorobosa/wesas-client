@@ -72,7 +72,7 @@ const logisticsSlice = createSlice({
     });
     builder.addCase(getCouriersThunk.fulfilled, (state, { payload }) => {
       state.get_couriers.loading = LoadingStates.fulfilled;
-      state.get_couriers.data = payload.data;
+      state.get_couriers.data = payload;
     });
     builder.addCase(getCouriersThunk.rejected, (state, { payload }) => {
       state.get_couriers.loading = LoadingStates.rejected;
@@ -101,7 +101,7 @@ const logisticsSlice = createSlice({
     });
     builder.addCase(getShipmentsThunk.fulfilled, (state, { payload }) => {
       state.get_shipments.loading = LoadingStates.fulfilled;
-      state.get_shipments.data = payload.data;
+      state.get_shipments.data = payload;
     });
     builder.addCase(getShipmentsThunk.rejected, (state, { payload }) => {
       state.get_shipments.loading = LoadingStates.rejected;

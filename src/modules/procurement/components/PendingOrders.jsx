@@ -10,6 +10,14 @@ export default function PendingOrders() {
     (state) => state.procurement.get_orders,
   );
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const queryParams = {
+      status: 'pending',
+    };
+    dispatch(getOrdersThunk(queryParams));
+  }, []);
+
   const columns = [
     {
       accessorKey: 'order_id',
@@ -94,17 +102,11 @@ export default function PendingOrders() {
     },
   ];
 
-  useEffect(() => {
-    const queryParams = {
-      status: 'pending',
-    };
-    dispatch(getOrdersThunk(queryParams));
-  }, []);
-
   const new_table_data =
     orders &&
-    orders.length > 0 &&
-    orders.map((order) => ({
+    orders.data &&
+    orders.data.length > 0 &&
+    orders.data.map((order) => ({
       order_id: order.orderId,
       product_link: (
         <span>
@@ -136,13 +138,26 @@ export default function PendingOrders() {
       total: `£${formatNumberWithCommas(order.total)}`,
     }));
 
+  const paginatedThunkCall = (page) => {
+    dispatch(
+      getOrdersThunk({
+        status: 'pending',
+        page,
+      }),
+    );
+  };
+
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable
-        columns={columns}
-        data={new_table_data}
-        isLoading={loading === LoadingStates.pending}
-      />
+      {orders.data && (
+        <DashboardTable
+          columns={columns}
+          data={new_table_data}
+          isLoading={loading === LoadingStates.pending}
+          pageInfo={orders?.pageInfo}
+          paginatedThunkCall={paginatedThunkCall}
+        />
+      )}
     </section>
   );
 }

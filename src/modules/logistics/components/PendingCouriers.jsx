@@ -98,10 +98,20 @@ export default function PendingCouriers() {
     dispatch(getCouriersThunk(queryParams));
   }, []);
 
+  const paginatedThunkCall = (page) => {
+    dispatch(
+      getCouriersThunk({
+        status: 'pending',
+        page,
+      }),
+    );
+  };
+
   const new_table_data =
     couriers &&
-    couriers.length > 0 &&
-    couriers.map((order) => ({
+    couriers.data &&
+    couriers.data.length > 0 &&
+    couriers.data.map((order) => ({
       courier_id: order.id,
       sender_name: order.sender.name,
       sender_email: order.sender.email,
@@ -211,11 +221,15 @@ export default function PendingCouriers() {
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable
-        columns={columns}
-        data={new_table_data}
-        isLoading={loading === LoadingStates.pending}
-      />
+      {couriers.data && (
+        <DashboardTable
+          columns={columns}
+          data={new_table_data}
+          isLoading={loading === LoadingStates.pending}
+          pageInfo={couriers?.pageInfo}
+          paginatedThunkCall={paginatedThunkCall}
+        />
+      )}
     </section>
   );
 }

@@ -182,7 +182,12 @@ export default function CardPaymentTab() {
           </DialogContent>
         </Dialog>
       </div>
-      <DashboardTable columns={columns} data={new_table_data} />
+      <DashboardTable
+        columns={columns}
+        data={new_table_data}
+        pageInfo={() => {}}
+        paginatedThunkCall={() => {}}
+      />
     </section>
   );
 }

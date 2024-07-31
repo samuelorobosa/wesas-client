@@ -248,6 +248,15 @@ export default function UKBankTransferTab() {
     }
   };
 
+  const paginatedThunkCall = (page) => {
+    dispatch(
+      getTransactionHistoryThunk({
+        currency: 'GBP',
+        page,
+      }),
+    );
+  };
+
   return (
     <>
       <section className="mt-4 bg-white p-4 rounded-md">
@@ -273,6 +282,8 @@ export default function UKBankTransferTab() {
           columns={columns}
           data={new_table_data}
           isLoading={transactionHistoryLoading === LoadingStates.pending}
+          pageInfo={transactionHistory?.pageInfo}
+          paginatedThunkCall={paginatedThunkCall}
         />
       </section>
       <Dialog open={isDialogOpen2} onOpenChange={setIsDialogOpen2}>

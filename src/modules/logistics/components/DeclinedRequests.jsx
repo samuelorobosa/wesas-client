@@ -21,6 +21,15 @@ export default function DeclinedRequests() {
     dispatch(getShipmentsThunk(queryParams));
   }, []);
 
+  const paginatedThunkCall = (page) => {
+    dispatch(
+      getShipmentsThunk({
+        status: 'declined',
+        page,
+      }),
+    );
+  };
+
   const routeToShipmentOrders = (shipmentId) => () => {
     navigateTo(`${subRouteNames.shipmentOrders}/${shipmentId}`);
   };
@@ -67,8 +76,8 @@ export default function DeclinedRequests() {
     },
   ];
   const new_table_data =
-    shipments && shipments.length > 0
-      ? shipments.map((shipment) => {
+    shipments && shipments.data && shipments.data.length > 0
+      ? shipments.data.map((shipment) => {
           return {
             id: shipment.id,
             created_at: format(shipment.createdAt, 'PPP'),
@@ -88,11 +97,15 @@ export default function DeclinedRequests() {
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable
-        columns={columns}
-        data={new_table_data}
-        isLoading={getShipmentsLoading === LoadingStates.pending}
-      />
+      {shipments.data && (
+        <DashboardTable
+          columns={columns}
+          data={new_table_data}
+          isLoading={getShipmentsLoading === LoadingStates.pending}
+          pageInfo={shipments?.pageInfo}
+          paginatedThunkCall={paginatedThunkCall}
+        />
+      )}
     </section>
   );
 }

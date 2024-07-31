@@ -216,25 +216,6 @@ export default function Suppliers() {
                             </FormItem>
                           )}
                         />
-                        {/*<FormField*/}
-                        {/*  control={form.control}*/}
-                        {/*  name="sortCode"*/}
-                        {/*  render={({ field }) => (*/}
-                        {/*    <FormItem>*/}
-                        {/*      <FormControl>*/}
-                        {/*        <div className="flex flex-col space-y-1.5">*/}
-                        {/*          <Input*/}
-                        {/*            type="text"*/}
-                        {/*            {...field}*/}
-                        {/*            placeholder="Sort Code"*/}
-                        {/*          />*/}
-                        {/*        </div>*/}
-                        {/*      </FormControl>*/}
-                        {/*      <FormMessage className="text-left" />*/}
-                        {/*    </FormItem>*/}
-                        {/*  )}*/}
-                        {/*/>*/}
-
                         <Button
                           type="submit"
                           disabled={isCreating || !form.formState.isValid}

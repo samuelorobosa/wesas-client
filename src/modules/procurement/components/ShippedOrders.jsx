@@ -102,8 +102,9 @@ export default function ShippedOrders() {
 
   const new_table_data =
     orders &&
-    orders.length > 0 &&
-    orders.map((order) => ({
+    orders.data &&
+    orders.data.length > 0 &&
+    orders.data.map((order) => ({
       order_id: order.orderId,
       product_link: (
         <span>
@@ -135,13 +136,26 @@ export default function ShippedOrders() {
       total: `£${formatNumberWithCommas(order.total)}`,
     }));
 
+  const paginatedThunkCall = (page) => {
+    dispatch(
+      getOrdersThunk({
+        status: 'shipped',
+        page,
+      }),
+    );
+  };
+
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable
-        columns={columns}
-        data={new_table_data}
-        isLoading={loading === LoadingStates.pending}
-      />
+      {orders.data && (
+        <DashboardTable
+          columns={columns}
+          data={new_table_data}
+          isLoading={loading === LoadingStates.pending}
+          pageInfo={orders?.pageInfo}
+          paginatedThunkCall={paginatedThunkCall}
+        />
+      )}
     </section>
   );
 }

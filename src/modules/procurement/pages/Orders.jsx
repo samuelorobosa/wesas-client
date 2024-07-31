@@ -233,7 +233,7 @@ export default function Orders() {
                             <div className="flex flex-col space-y-1.5">
                               <Select
                                 value={
-                                  suppliers.find(
+                                  suppliers.data.find(
                                     (option) =>
                                       option.id === Number(field.value),
                                   )?.id
@@ -247,7 +247,7 @@ export default function Orders() {
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectGroup>
-                                    {suppliers.map((option) => (
+                                    {suppliers.data.map((option) => (
                                       <SelectItem
                                         key={option.name}
                                         value={option.id}
@@ -264,24 +264,6 @@ export default function Orders() {
                         </FormItem>
                       )}
                     />
-                    {/*<FormField*/}
-                    {/*  control={form.control}*/}
-                    {/*  name="supplierId"*/}
-                    {/*  render={({ field }) => (*/}
-                    {/*    <FormItem>*/}
-                    {/*      <FormControl>*/}
-                    {/*        <div className="flex flex-col space-y-1.5">*/}
-                    {/*          <Input*/}
-                    {/*            type="text"*/}
-                    {/*            {...field}*/}
-                    {/*            placeholder="Supplier ID"*/}
-                    {/*          />*/}
-                    {/*        </div>*/}
-                    {/*      </FormControl>*/}
-                    {/*      <FormMessage className="text-left" />*/}
-                    {/*    </FormItem>*/}
-                    {/*  )}*/}
-                    {/*/>*/}
 
                     <Button
                       type="submit"

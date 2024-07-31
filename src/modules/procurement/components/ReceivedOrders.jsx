@@ -8,9 +8,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Checkbox } from '@/src/core/components/ui/checkbox.jsx';
 import { Button } from '@/src/core/components/ui/button.jsx';
 import { ClipLoader } from 'react-spinners';
-import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 import { toast } from 'sonner';
 import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 
 export default function ReceivedOrders() {
   const [loading, setLoading] = useState(false);
@@ -150,8 +150,9 @@ export default function ReceivedOrders() {
 
   const filteredOrders =
     orders &&
-    orders.length > 0 &&
-    orders.filter((order) => order.shipmentId == null);
+    orders.data &&
+    orders.data.length > 0 &&
+    orders.data.filter((order) => order.shipmentId == null);
 
   const new_table_data =
     filteredOrders &&
@@ -210,13 +211,26 @@ export default function ReceivedOrders() {
     }
   };
 
+  const paginatedThunkCall = (page) => {
+    dispatch(
+      getOrdersThunk({
+        status: 'received',
+        page,
+      }),
+    );
+  };
+
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      <DashboardTable
-        columns={columns}
-        data={new_table_data}
-        isLoading={getOrdersLoading === LoadingStates.pending}
-      />
+      {orders.data && (
+        <DashboardTable
+          columns={columns}
+          data={new_table_data}
+          isLoading={getOrdersLoading === LoadingStates.pending}
+          pageInfo={orders?.pageInfo}
+          paginatedThunkCall={paginatedThunkCall}
+        />
+      )}
       <div className="flex justify-end items-center mt-5">
         {selectedRows.length > 0 && (
           <Button

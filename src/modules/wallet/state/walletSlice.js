@@ -102,7 +102,7 @@ const walletSlice = createSlice({
       getTransactionHistoryThunk.fulfilled,
       (state, { payload }) => {
         state.get_transaction_history.loading = LoadingStates.fulfilled;
-        state.get_transaction_history.data = payload.data;
+        state.get_transaction_history.data = payload;
       },
     );
     builder.addCase(

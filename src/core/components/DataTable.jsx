@@ -20,6 +20,8 @@ function DashboardTable({
   hasPagination = true,
   onRowClick,
   isLoading = false,
+  pageInfo,
+  paginatedThunkCall,
 }) {
   const table = useReactTable({
     data,
@@ -94,7 +96,10 @@ function DashboardTable({
       </section>
       {hasPagination && (
         <section className="mx-4 mt-6">
-          <TablePagination table={table} />
+          <TablePagination
+            pageInfo={pageInfo}
+            paginatedThunkCall={paginatedThunkCall}
+          />
         </section>
       )}
     </div>
