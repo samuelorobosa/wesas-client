@@ -486,7 +486,7 @@ export default function RegistrationPage() {
       </div>
       <AlertDialog
         open={isDialogOpen}
-        onOpenChange={(_) => setIsDialogOpen(!isDialogOpen)}
+        onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
       >
         <AlertDialogContent className="max-w-[400px] text-center rounded-md">
           <h1 className="text-xl font-semibold leading-none tracking-tight mt-4">
