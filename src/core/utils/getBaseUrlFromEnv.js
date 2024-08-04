@@ -1,9 +1,9 @@
 export const getBaseUrlFromEnv = () => {
-    const urlFromEnvironment = {
-        development: 'https://xlaux-b3b674c8b7d0.herokuapp.com',
-        production: 'production-url',
-        testing: 'testing-url',
-    };
-    const env = process.env.NODE_ENV;
-    return urlFromEnvironment[env];
+  const urlFromEnvironment = {
+    development: import.meta.env.VITE_PUBLIC_URL,
+    production: import.meta.env.VITE_PUBLIC_URL,
+    testing: import.meta.env.VITE_PUBLIC_URL,
+  };
+  const env = import.meta.env.MODE;
+  return urlFromEnvironment[env];
 };

@@ -12,6 +12,7 @@ import Suppliers from '@/src/modules/procurement/pages/Suppliers.jsx';
 import ExpressCourierService from '@/src/modules/logistics/pages/ExpressCourierService.jsx';
 import ShippingRequests from '@/src/modules/logistics/pages/ShippingRequests.jsx';
 import ShipmentOrders from '@/src/modules/logistics/pages/ShipmentOrders.jsx';
+import ForgotPassword from '@/src/modules/auth/pages/ForgotPassword.jsx';
 
 const appRouter = createBrowserRouter([
   {
@@ -46,10 +47,6 @@ const appRouter = createBrowserRouter([
         path: `${subRouteNames.shippingRequests}/${subRouteNames.shipmentOrders}/:orderId`,
         element: <ShipmentOrders />,
       },
-      // {
-      //   path: subRouteNames.transactionHistory,
-      //   element: <TransactionHistory />,
-      // },
       {
         path: subRouteNames.orders,
         element: <Orders />,
@@ -58,10 +55,6 @@ const appRouter = createBrowserRouter([
         path: subRouteNames.suppliers,
         element: <Suppliers />,
       },
-      // {
-      //   path: subRouteNames.requestShipping,
-      //   element: <RequestShipping />,
-      // },
       {
         path: subRouteNames.requestExpressCourierService,
         element: <ExpressCourierService />,
@@ -75,6 +68,10 @@ const appRouter = createBrowserRouter([
   {
     path: routeNames.login,
     element: <LoginPage />,
+  },
+  {
+    path: routeNames.forgotPassword,
+    element: <ForgotPassword />,
   },
 ]);
 

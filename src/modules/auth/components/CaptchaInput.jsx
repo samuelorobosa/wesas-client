@@ -44,7 +44,7 @@ export default function CaptchaInput({ onChange }) {
         <Input
           onInput={handleChange}
           className="border-l-0 rounded-l-none focus-visible:ring-0 focus-visible:outline-0 focus-visible:ring-offset-0"
-          placeholder="Input answeer"
+          placeholder="Input answer"
         />
       </div>
       <div className="text-destructive text-left">

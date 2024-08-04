@@ -183,7 +183,7 @@ export default function LoginPage() {
 
                     <div className="flex justify-end">
                       <Link
-                        to={''}
+                        to={routeNames.forgotPassword}
                         className="text-blue text-right inline-block hover:underline"
                       >
                         Forgot Password
