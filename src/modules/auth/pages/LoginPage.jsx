@@ -50,10 +50,7 @@ export default function LoginPage() {
       openPage(`${routeNames.dashboard}/${subRouteNames.profile}`);
     } else if (login_user.loading === LoadingStates.rejected) {
       setIsLoading(false);
-      toast.error(
-        login_user.error?.response?.data?.errorMessage ||
-          'Failed to login. Please try again.',
-      );
+      toast.error(login_user.error);
     }
   }, [login_user.loading]);
 

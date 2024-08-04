@@ -90,10 +90,7 @@ export default function RegistrationPage() {
       setIsDialogOpen(true);
     } else if (register_user.loading === LoadingStates.rejected) {
       setIsLoading(false);
-      toast.error(
-        register_user.error?.response?.data?.errorMessage ||
-          'Failed to register. Please try again.',
-      );
+      toast.error(register_user.error);
     }
   }, [register_user.loading]);
 
@@ -108,10 +105,7 @@ export default function RegistrationPage() {
       openPage(`${routeNames.dashboard}/${subRouteNames.profile}`);
     } else if (verify_email.loading === LoadingStates.rejected) {
       setIsVerifying(false);
-      toast.error(
-        verify_email.error?.response?.data?.errorMessage ||
-          'Failed to verify email. Please try again.',
-      );
+      toast.error(verify_email.error);
     }
   }, [verify_email.loading]);
 
