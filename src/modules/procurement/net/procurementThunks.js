@@ -64,9 +64,9 @@ export const createSupplierThunk = createAsyncThunk(
 
 export const getSuppliersThunk = createAsyncThunk(
   'procurement/getSuppliersThunk',
-  async (_, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await getSuppliers();
+      const response = await getSuppliers(data);
       return response.data;
     } catch (err) {
       if (err.response.status === 400) {

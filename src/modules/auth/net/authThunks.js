@@ -33,7 +33,7 @@ export const registerUserThunk = createAsyncThunk(
       const response = await registerUser(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {

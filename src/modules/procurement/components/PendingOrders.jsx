@@ -83,17 +83,6 @@ export default function PendingOrders() {
       ),
     },
     {
-      accessorKey: 'supplier_fee',
-      header: () => (
-        <div className="text-grey-08 font-bold">Supplier Fee (3%)</div>
-      ),
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">
-          {row.getValue('supplier_fee')}
-        </div>
-      ),
-    },
-    {
       accessorKey: 'total',
       header: () => <div className="text-grey-08 font-bold">Total</div>,
       cell: ({ row }) => (
@@ -133,7 +122,6 @@ export default function PendingOrders() {
       qty: order.quantity,
       subtotal: `£${formatNumberWithCommas(order.subTotal)}`,
       order_fee: `£${formatNumberWithCommas(order.orderFee)}`,
-      supplier_fee: `£${formatNumberWithCommas(order.supplierFee)}`,
       description: order.description,
       total: `£${formatNumberWithCommas(order.total)}`,
     }));

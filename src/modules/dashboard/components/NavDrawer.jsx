@@ -67,6 +67,10 @@ export default function NavDrawer() {
             title: 'Suppliers',
             path: subRouteNames.suppliers,
           },
+          {
+            title: 'Pay Supplier',
+            path: subRouteNames.paySupplier,
+          },
         ],
       },
       {

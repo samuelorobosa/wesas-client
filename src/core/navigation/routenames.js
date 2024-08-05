@@ -10,6 +10,7 @@ export const subRouteNames = {
   requestExpressCourierService: 'request-express-courier-service',
   shippingRequests: 'shipping-requests',
   shipmentOrders: 'shipment-orders',
+  paySupplier: 'pay-supplier',
 };
 
 export const routeNames = {

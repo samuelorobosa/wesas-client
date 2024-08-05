@@ -14,6 +14,7 @@ import ShippingRequests from '@/src/modules/logistics/pages/ShippingRequests.jsx
 import ShipmentOrders from '@/src/modules/logistics/pages/ShipmentOrders.jsx';
 import ForgotPassword from '@/src/modules/auth/pages/ForgotPassword.jsx';
 import Error404 from '@/src/core/components/Error404.jsx';
+import PaySupplier from '@/src/modules/procurement/pages/PaySupplier.jsx';
 
 const appRouter = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ const appRouter = createBrowserRouter([
       {
         path: subRouteNames.requestExpressCourierService,
         element: <ExpressCourierService />,
+      },
+      {
+        path: subRouteNames.paySupplier,
+        element: <PaySupplier />,
       },
     ],
   },

@@ -19,8 +19,8 @@ export const createSupplier = async (data) => {
   );
 };
 
-export const getSuppliers = async () => {
-  return await procurementServiceClient.get(procurementUrls.getSuppliers);
+export const getSuppliers = async (data) => {
+  return await procurementServiceClient.get(procurementUrls.getSuppliers, data);
 };
 
 export const deleteSupplier = async (id) => {

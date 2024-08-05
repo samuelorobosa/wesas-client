@@ -2,7 +2,7 @@ import DashboardTable from '@/src/core/components/DataTable.jsx';
 import { useEffect, useState } from 'react';
 import {
   createShipmentRequestThunk,
-  getOrdersThunk,
+  getSuppliersThunk,
 } from '@/src/modules/procurement/net/procurementThunks.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { Checkbox } from '@/src/core/components/ui/checkbox.jsx';
@@ -12,10 +12,10 @@ import { toast } from 'sonner';
 import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 
-export default function ReceivedOrders() {
+export default function ReceivedPaySupplier() {
   const [loading, setLoading] = useState(false);
   const {
-    get_orders: { data: orders, loading: getOrdersLoading },
+    get_suppliers: { data: suppliers, loading: getOrdersLoading },
   } = useSelector((state) => state.procurement);
   const dispatch = useDispatch();
   const [selectedRows, setSelectedRows] = useState([]);
@@ -48,7 +48,7 @@ export default function ReceivedOrders() {
               setSelectedRows((prev) => [...prev, row.original]);
             } else {
               setSelectedRows((prev) =>
-                prev.filter((r) => r.order_id !== row.original.order_id),
+                prev.filter((r) => r.id !== row.original.id),
               );
             }
           }}
@@ -59,65 +59,50 @@ export default function ReceivedOrders() {
       enableHiding: false,
     },
     {
-      accessorKey: 'order_id',
-      header: () => <div className="text-grey-08 font-bold">Order ID</div>,
+      accessorKey: 'id',
+      header: () => <div className="text-grey-08 font-bold">ID</div>,
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">{row.getValue('id')}</div>
+      ),
+    },
+    {
+      accessorKey: 'content',
+      header: () => <div className="text-grey-08 font-bold">Content</div>,
       cell: ({ row }) => (
         <div className="font-normal text-grey-08">
-          {row.getValue('order_id')}
+          {row.getValue('content')}
         </div>
       ),
     },
     {
-      accessorKey: 'product_link',
-      header: () => <div className="text-grey-08 font-bold">Product Link</div>,
+      accessorKey: 'currency',
+      header: () => <div className="text-grey-08 font-bold">Currency</div>,
       cell: ({ row }) => (
         <div className="font-normal text-grey-08">
-          {row.getValue('product_link')}
+          {row.getValue('currency')}
         </div>
       ),
     },
     {
-      accessorKey: 'description',
-      header: () => <div className="text-grey-08 font-bold">Description</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">
-          {row.getValue('description')}
-        </div>
-      ),
+      accessorKey: 'bankDetails',
+      header: () => <div className="text-grey-08 font-bold">Bank Details</div>,
+      cell: ({ row }) => row.getValue('bankDetails'),
     },
     {
-      accessorKey: 'unit_price',
-      header: () => <div className="text-grey-08 font-bold">Unit Price</div>,
+      accessorKey: 'supplier_fee',
+      header: () => <div className="text-grey-08 font-bold">Supplier Fee</div>,
       cell: ({ row }) => (
         <div className="font-normal text-grey-08">
-          {row.getValue('unit_price')}
+          {row.getValue('supplier_fee')}
         </div>
-      ),
-    },
-    {
-      accessorKey: 'qty',
-      header: () => <div className="text-grey-08 font-bold">Quantity</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('qty')}</div>
       ),
     },
     {
       accessorKey: 'subtotal',
-      header: () => <div className="text-grey-08 font-bold">Subtotal</div>,
+      header: () => <div className="text-grey-08 font-bold">SubTotal</div>,
       cell: ({ row }) => (
         <div className="font-normal text-grey-08">
           {row.getValue('subtotal')}
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'order_fee',
-      header: () => (
-        <div className="text-grey-08 font-bold">Order Fee (5%)</div>
-      ),
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">
-          {row.getValue('order_fee')}
         </div>
       ),
     },
@@ -134,54 +119,39 @@ export default function ReceivedOrders() {
     const queryParams = {
       status: 'received',
     };
-    dispatch(getOrdersThunk(queryParams));
+    dispatch(getSuppliersThunk(queryParams));
   }, []);
 
-  const filteredOrders =
-    orders &&
-    orders.data &&
-    orders.data.length > 0 &&
-    orders.data.filter((order) => order.shipmentId == null);
+  const filteredSuppliers =
+    suppliers &&
+    suppliers.data &&
+    suppliers.data.length > 0 &&
+    suppliers.data.filter((supplier) => supplier.shipmentId == null);
 
   const new_table_data =
-    filteredOrders &&
-    filteredOrders.length > 0 &&
-    filteredOrders.map((order) => {
+    filteredSuppliers &&
+    filteredSuppliers.length > 0 &&
+    filteredSuppliers.map((supplier) => {
       return {
-        order_id: order.orderId,
-        product_link: (
-          <span>
-            {order.product.length > 50 ? (
-              <a
-                className="text-blue underline underline-offset-1"
-                href={order.product}
-                target="_blank"
-              >
-                {order.product.slice(0, 30)}...
-              </a>
-            ) : (
-              <a
-                className="text-blue underline underline-offset-1"
-                href={order.product}
-                target="_blank"
-              >
-                {order.product}
-              </a>
-            )}
-          </span>
+        id: supplier.id,
+        content: supplier.content,
+        currency: supplier.currency,
+        subtotal: `£${formatNumberWithCommas(supplier.subTotal)}`,
+        supplier_fee: `£${formatNumberWithCommas(supplier.supplierFee)}`,
+        total: `£${formatNumberWithCommas(supplier.total)}`,
+        bankDetails: (
+          <div className="flex flex-col gap-y-2">
+            <span>{supplier.bankName}</span>
+            <span>{supplier.accountName}</span>
+            <span>{supplier.accountNo}</span>
+          </div>
         ),
-        unit_price: `£${formatNumberWithCommas(order.unitPrice)}`,
-        qty: order.quantity,
-        subtotal: `£${formatNumberWithCommas(order.subTotal)}`,
-        order_fee: `£${formatNumberWithCommas(order.orderFee)}`,
-        description: order.description,
-        total: `£${formatNumberWithCommas(order.total)}`,
       };
     });
 
   const createShipmentRequest = async () => {
     const data = {
-      orders: selectedRows.map((row) => row.order_id),
+      suppliers: selectedRows.map((row) => row.id),
     };
     try {
       setLoading(true);
@@ -190,7 +160,7 @@ export default function ReceivedOrders() {
       const queryParams = {
         status: 'received',
       };
-      dispatch(getOrdersThunk(queryParams));
+      dispatch(getSuppliersThunk(queryParams));
       setSelectedRows([]);
     } catch (e) {
       toast.error(e);
@@ -201,7 +171,7 @@ export default function ReceivedOrders() {
 
   const paginatedThunkCall = (page) => {
     dispatch(
-      getOrdersThunk({
+      getSuppliersThunk({
         status: 'received',
         page,
       }),
@@ -210,12 +180,12 @@ export default function ReceivedOrders() {
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      {orders.data && (
+      {suppliers.data && (
         <DashboardTable
           columns={columns}
           data={new_table_data}
           isLoading={getOrdersLoading === LoadingStates.pending}
-          pageInfo={orders?.pageInfo}
+          pageInfo={suppliers?.pageInfo}
           paginatedThunkCall={paginatedThunkCall}
         />
       )}

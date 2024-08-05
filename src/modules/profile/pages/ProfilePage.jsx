@@ -456,10 +456,7 @@ export default function ProfilePage() {
                       <FormItem>
                         <FormControl>
                           <div className="flex flex-col space-y-1.5">
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={profileData && profileData.country}
-                            >
+                            <Select onValueChange={field.onChange}>
                               <SelectTrigger className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background text-left placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                                 <SelectValue placeholder="Select a country" />
                               </SelectTrigger>
@@ -665,7 +662,7 @@ export default function ProfilePage() {
                           <div className="flex flex-col space-y-1.5">
                             <Select
                               onValueChange={field.onChange}
-                              defaultValue={profileData && profileData.country}
+                              defaultValue=""
                             >
                               <SelectTrigger className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background text-left placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                                 <SelectValue placeholder="Select a country" />
