@@ -25,7 +25,7 @@ export default function NavDrawerItem({ title, itemKey, icon, links }) {
   ];
 
   return (
-    <div className="w-[250px]">
+    <div className="w-full">
       <div
         onClick={handleClick}
         className={`clickable ${selectedItemKey === itemKey && 'border-l-[3px] border-l-blue'} flex items-center p-2`}

@@ -260,19 +260,22 @@ export default function UKBankTransferTab() {
   return (
     <>
       <section className="mt-4 bg-white p-4 rounded-md">
-        <div className="flex w-full justify-between items-center mb-6">
-          <span className="font-bold text-base">UK Bank Transfer</span>
-          <div>
+        <div className="flex w-full md:flex-row flex-col  gap-y-2.5 justify-between md:items-center items-start mb-6">
+          <span className="font-bold text-base whitespace-nowrap">
+            UK Bank Transfer
+          </span>
+          <div className="flex items-center gap-x-2">
             <Button
+              size="sm"
               onClick={() => openDialog(2)}
-              className="ml-4 bg-blue hover:bg-primary-tint-300"
+              className="bg-blue hover:bg-primary-tint-300"
             >
               Pay via Card
             </Button>
-            {/**/}
             <Button
+              size="sm"
               onClick={() => openDialog(1)}
-              className="ml-4 bg-blue hover:bg-primary-tint-300"
+              className="bg-blue hover:bg-primary-tint-300"
             >
               Add Funds via Bank
             </Button>

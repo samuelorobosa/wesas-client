@@ -13,8 +13,13 @@ import ProcessedCouriers from '@/src/modules/logistics/components/ProcessedCouri
 import ConfirmedCouriers from '@/src/modules/logistics/components/ConfirmedCouriers.jsx';
 import ShippedCouriers from '@/src/modules/logistics/components/ShippedCouriers.jsx';
 import DeclinedCouriers from '@/src/modules/logistics/components/DeclinedCouriers.jsx';
+import useWindowSize from '@/src/core/utils/useWindowSize.js';
+import { toggleCollapse } from '@/src/modules/dashboard/state/navDrawerSlice.js';
+import { useDispatch } from 'react-redux';
+import { RxHamburgerMenu } from 'react-icons/rx';
 
 export default function ExpressCourierService() {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
@@ -85,10 +90,24 @@ export default function ExpressCourierService() {
     },
   ];
   const [activeTable, setActiveTable] = useState(tables[0].key);
+  const { width } = useWindowSize();
+  const handleNavDrawerToggle = () => {
+    dispatch(toggleCollapse());
+  };
   return (
     <main className="w-full">
       <header className="flex items-center justify-between">
-        <h1 className="font-medium text-xl">Express Courier Services</h1>
+        <aside className="flex items-center gap-x-2">
+          {width <= 768 ? (
+            <RxHamburgerMenu
+              className="cursor-pointer"
+              onClick={handleNavDrawerToggle}
+            />
+          ) : null}
+          <h1 className="font-medium text-lg whitespace-nowrap">
+            Express Courier Service
+          </h1>
+        </aside>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="ml-4 bg-blue hover:bg-primary-tint-300">
@@ -138,7 +157,7 @@ export default function ExpressCourierService() {
           </DialogContent>
         </Dialog>
       </header>
-      <ul className="flex items-center justify-start border-b border-b-grey_02 mt-4">
+      <ul className="flex items-center justify-start border-b border-b-grey_02 mt-4 overflow-auto">
         {tables.map((table) => (
           <li
             key={table.key}

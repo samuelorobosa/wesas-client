@@ -4,8 +4,17 @@ import ProcessedRequests from '@/src/modules/logistics/components/ProcessedReque
 import ShippedRequests from '@/src/modules/logistics/components/ShippedRequests.jsx';
 import ConfirmedRequests from '@/src/modules/logistics/components/ConfirmedRequests.jsx';
 import DeclinedRequests from '@/src/modules/logistics/components/DeclinedRequests.jsx';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import useWindowSize from '@/src/core/utils/useWindowSize.js';
+import { toggleCollapse } from '@/src/modules/dashboard/state/navDrawerSlice.js';
+import { useDispatch } from 'react-redux';
 
 export default function ShippingRequests() {
+  const dispatch = useDispatch();
+  const { width } = useWindowSize();
+  const handleNavDrawerToggle = () => {
+    dispatch(toggleCollapse());
+  };
   const tabs = [
     {
       key: 'pending',
@@ -38,9 +47,17 @@ export default function ShippingRequests() {
   return (
     <main className="w-full">
       <header className="flex items-center justify-between">
-        <h1 className="font-medium text-xl">Shipping Requests</h1>
+        <aside className="flex items-center gap-x-2">
+          {width <= 768 ? (
+            <RxHamburgerMenu
+              className="cursor-pointer"
+              onClick={handleNavDrawerToggle}
+            />
+          ) : null}
+          <h1 className="font-medium text-xl">Shipping Requests</h1>
+        </aside>
       </header>
-      <ul className="flex items-center justify-start border-b border-b-grey_02 mt-4">
+      <ul className="flex items-center justify-start border-b border-b-grey_02 mt-4 overflow-auto">
         {tabs.map((tab) => (
           <li
             key={tab.key}

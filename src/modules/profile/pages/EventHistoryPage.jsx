@@ -7,9 +7,16 @@ import { createAvatar } from '@dicebear/core';
 import { shapes } from '@dicebear/collection';
 import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 import { Card, CardContent } from '@/src/core/components/ui/card.jsx';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import { toggleCollapse } from '@/src/modules/dashboard/state/navDrawerSlice.js';
+import useWindowSize from '@/src/core/utils/useWindowSize.js';
 
 export default function EventHistoryPage() {
   const dispatch = useDispatch();
+  const { width } = useWindowSize();
+  const handleNavDrawerToggle = () => {
+    dispatch(toggleCollapse());
+  };
   const { data: notifications, loading } = useSelector(
     (state) => state.profile.get_notifications,
   );
@@ -25,7 +32,15 @@ export default function EventHistoryPage() {
 
   return (
     <main className="w-full">
-      <h1 className="font-medium text-xl">Event History</h1>
+      <aside className="flex items-center gap-x-2">
+        {width <= 768 ? (
+          <RxHamburgerMenu
+            className="cursor-pointer"
+            onClick={handleNavDrawerToggle}
+          />
+        ) : null}
+        <h1 className="font-medium text-xl">Event History</h1>
+      </aside>
       <section className="bg-white rounded-md p-4 mt-4">
         {loading === LoadingStates.pending ? (
           <div className="flex-1 overflow-y-auto p-6 grid gap-6">

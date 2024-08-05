@@ -31,8 +31,15 @@ import ProcessedPaySupplier from '@/src/modules/procurement/components/Processed
 import ReceivedPaySupplier from '@/src/modules/procurement/components/ReceivedPaySupplier.jsx';
 import ShippedPaySupplier from '@/src/modules/procurement/components/ShippedPaySupplier.jsx';
 import DeclinedPaySupplier from '@/src/modules/procurement/components/DeclinedPaySupplier.jsx';
+import useWindowSize from '@/src/core/utils/useWindowSize.js';
+import { toggleCollapse } from '@/src/modules/dashboard/state/navDrawerSlice.js';
+import { RxHamburgerMenu } from 'react-icons/rx';
 
 export default function PaySupplier() {
+  const { width } = useWindowSize();
+  const handleNavDrawerToggle = () => {
+    dispatch(toggleCollapse());
+  };
   const [supplierToBeAdded, setSupplierToBePaid] = useState('ngn');
   const [isCreating, setIsCreating] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -141,7 +148,15 @@ export default function PaySupplier() {
   return (
     <main className="w-full">
       <header className="flex items-center justify-between">
-        <h1 className="font-medium text-xl">Pay Supplier</h1>
+        <aside className="flex items-center gap-x-2">
+          {width <= 768 ? (
+            <RxHamburgerMenu
+              className="cursor-pointer"
+              onClick={handleNavDrawerToggle}
+            />
+          ) : null}
+          <h1 className="font-medium text-xl">Pay Suppliers</h1>
+        </aside>
         <Dialog
           open={isDialogOpen}
           onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
@@ -438,7 +453,7 @@ export default function PaySupplier() {
           </DialogContent>
         </Dialog>
       </header>
-      <ul className="flex items-center justify-start border-b border-b-grey_02 mt-4">
+      <ul className="flex items-center justify-start border-b border-b-grey_02 mt-4 overflow-auto">
         {tabs.map((tab) => (
           <li
             key={tab.key}

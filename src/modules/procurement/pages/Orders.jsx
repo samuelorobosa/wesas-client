@@ -31,8 +31,12 @@ import {
   getSuppliersThunk,
 } from '@/src/modules/procurement/net/procurementThunks.js';
 import { toast } from 'sonner';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import { toggleCollapse } from '@/src/modules/dashboard/state/navDrawerSlice.js';
+import useWindowSize from '@/src/core/utils/useWindowSize.js';
 
 export default function Orders() {
+  const { width } = useWindowSize();
   const [isCreating, setIsCreating] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const dispatch = useDispatch();
@@ -105,11 +109,23 @@ export default function Orders() {
     }
   }
 
+  const handleNavDrawerToggle = () => {
+    dispatch(toggleCollapse());
+  };
+
   const [activeTab, setActiveTab] = useState(tabs[0].key);
   return (
     <main className="w-full">
       <header className="flex items-center justify-between">
-        <h1 className="font-medium text-xl">All Orders</h1>
+        <aside className="flex items-center gap-x-2">
+          {width <= 768 ? (
+            <RxHamburgerMenu
+              className="cursor-pointer"
+              onClick={handleNavDrawerToggle}
+            />
+          ) : null}
+          <h1 className="font-medium text-xl">All Orders</h1>
+        </aside>
         <Dialog
           open={isDialogOpen}
           onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
@@ -230,7 +246,7 @@ export default function Orders() {
           </DialogContent>
         </Dialog>
       </header>
-      <ul className="flex items-center justify-start border-b border-b-grey_02 mt-4">
+      <ul className="flex items-center justify-start border-b border-b-grey_02 mt-4 overflow-auto">
         {tabs.map((tab) => (
           <li
             key={tab.key}

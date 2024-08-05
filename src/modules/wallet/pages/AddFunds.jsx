@@ -3,8 +3,14 @@ import NigerianBankTab from '@/src/modules/wallet/components/NigerianBankTab.jsx
 import UKBankTransferTab from '@/src/modules/wallet/components/UKBankTransferTab.jsx';
 import CardPaymentTab from '@/src/modules/wallet/components/CardPaymentTab.jsx';
 import { useSearchParams } from 'react-router-dom';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import useWindowSize from '@/src/core/utils/useWindowSize.js';
+import { toggleCollapse } from '@/src/modules/dashboard/state/navDrawerSlice.js';
+import { useDispatch } from 'react-redux';
 
 export default function AddFunds() {
+  const { width } = useWindowSize();
+  const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const tabs = [
     {
@@ -32,14 +38,26 @@ export default function AddFunds() {
     }
   }, []);
 
+  const handleNavDrawerToggle = () => {
+    dispatch(toggleCollapse());
+  };
+
   return (
     <main className="w-full">
-      <h1 className="font-medium text-xl">Add Funds</h1>
-      <ul className="flex items-center justify-start border-b border-b-grey_02 mt-4">
+      <aside className="flex items-center gap-x-2">
+        {width <= 768 ? (
+          <RxHamburgerMenu
+            className="cursor-pointer"
+            onClick={handleNavDrawerToggle}
+          />
+        ) : null}
+        <h1 className="font-medium text-xl">Add Funds</h1>
+      </aside>
+      <ul className="flex items-center justify-start border-b border-b-grey_02 mt-4 overflow-auto">
         {tabs.map((tab) => (
           <li
             key={tab.key}
-            className={`cursor-pointer px-4 py-2 ${
+            className={`cursor-pointer px-4 py-2 whitespace-nowrap ${
               activeTab === tab.key
                 ? 'border-b-2 border-blue text-blue'
                 : 'text-grey_03'

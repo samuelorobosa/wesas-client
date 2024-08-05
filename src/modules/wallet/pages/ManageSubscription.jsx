@@ -34,8 +34,12 @@ import {
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import convertDateToISOString from '@/src/core/utils/convertDatetoISOString.js';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import useWindowSize from '@/src/core/utils/useWindowSize.js';
+import { toggleCollapse } from '@/src/modules/dashboard/state/navDrawerSlice.js';
 
 export default function ManageSubscription() {
+  const { width } = useWindowSize();
   const {
     get_plans: { data, loading },
     subscribe: { loading: subscribeLoading },
@@ -75,9 +79,21 @@ export default function ManageSubscription() {
     dispatch(getPastSubscriptionsThunk());
   }, []);
 
+  const handleNavDrawerToggle = () => {
+    dispatch(toggleCollapse());
+  };
+
   return (
     <main className="w-full">
-      <h1 className="font-medium text-xl">Manage Subscription</h1>
+      <aside className="flex items-center gap-x-2">
+        {width <= 768 ? (
+          <RxHamburgerMenu
+            className="cursor-pointer"
+            onClick={handleNavDrawerToggle}
+          />
+        ) : null}
+        <h1 className="font-medium text-xl">Manage Subscription</h1>
+      </aside>
       <section>
         <p className="mt-3">
           You can manage your subscription here. Please contact support if you

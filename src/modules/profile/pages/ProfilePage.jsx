@@ -37,8 +37,12 @@ import { identicon } from '@dicebear/collection';
 import { createAvatar } from '@dicebear/core';
 import { toast } from 'sonner';
 import { Textarea } from '@/src/core/components/ui/textarea.jsx';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import { toggleCollapse } from '@/src/modules/dashboard/state/navDrawerSlice.js';
+import useWindowSize from '@/src/core/utils/useWindowSize.js';
 
 export default function ProfilePage() {
+  const { width } = useWindowSize();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isShippingDialogOpen, setIsShippingDialogOpen] = useState(false);
   const {
@@ -183,9 +187,21 @@ export default function ProfilePage() {
     }).toDataUriSync();
   }, []);
 
+  const handleNavDrawerToggle = () => {
+    dispatch(toggleCollapse());
+  };
+
   return (
     <main className="w-full">
-      <h1 className="font-medium text-xl">User Profile</h1>
+      <aside className="flex items-center gap-x-2">
+        {width <= 768 ? (
+          <RxHamburgerMenu
+            className="cursor-pointer"
+            onClick={handleNavDrawerToggle}
+          />
+        ) : null}
+        <h1 className="font-medium text-xl">User Profile</h1>
+      </aside>
       <div className="bg-white rounded-md mt-4 w-full p-4">
         <p className="text-xl font-semibold pb-3 mt-1">
           Today&apos;s Exchange Rate
@@ -195,8 +211,8 @@ export default function ProfilePage() {
             <span>£</span>
             <span className="text-3xl font-semibold">1.00</span>
           </p>
-          <div className="bg-blue p-4 rounded-full text-white">
-            <ArrowLeftRight size={30} />
+          <div className="bg-blue p-2 rounded-full text-white">
+            <ArrowLeftRight size={20} />
           </div>
           <div className="flex flex-col">
             <p className="flex gap-x-2 items-center">
@@ -220,7 +236,7 @@ export default function ProfilePage() {
         <header className="flex items-center justify-between px-4 border-b border-b-grey_02">
           <p className="text-xl font-semibold pb-3 mt-1">Personal Data</p>
         </header>
-        <section className="flex justify-between items-center bg-grey mx-4 mt-6 rounded-md">
+        <section className="flex md:flex-row flex-col justify-between md:items-center items-start pb-2 bg-grey mx-4 mt-6 rounded-md">
           <aside className="flex gap-x-3 items-center p-4">
             <figure className="w-16 h-16">
               <img className="w-full h-full object-cover" src={svg} alt="" />
@@ -231,13 +247,14 @@ export default function ProfilePage() {
             </div>
           </aside>
           <Button
+            size="sm"
             onClick={() => setIsDialogOpen(true)}
             className="bg-blue hover:bg-primary-tint-300 text-white p-4 rounded-md cursor-pointer"
           >
             Edit Profile
           </Button>
         </section>
-        <div className="mx-4 mt-6 grid grid-cols-[1fr_20px_1fr] gap-x-4">
+        <div className="mx-4 mt-6 grid md:grid-cols-[1fr_20px_1fr] grid-cols-1   gap-x-4">
           <aside>
             <p className="text-gray-500 uppercase text-sm">
               Personal Information
@@ -325,7 +342,7 @@ export default function ProfilePage() {
             </div>
           </aside>
           <div className="h-full bg-gray-300 w-px rounded-md"></div>
-          <aside>
+          <aside className="md:mt-0 mt-10">
             <div className="flex justify-between items-center">
               <p className="text-gray-500 uppercase text-sm">
                 Shipping Address
