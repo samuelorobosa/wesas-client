@@ -8,7 +8,6 @@ import EventHistoryPage from '@/src/modules/profile/pages/EventHistoryPage.jsx';
 import AddFunds from '@/src/modules/wallet/pages/AddFunds.jsx';
 import ManageSubscription from '@/src/modules/wallet/pages/ManageSubscription.jsx';
 import Orders from '@/src/modules/procurement/pages/Orders.jsx';
-import Suppliers from '@/src/modules/procurement/pages/Suppliers.jsx';
 import ExpressCourierService from '@/src/modules/logistics/pages/ExpressCourierService.jsx';
 import ShippingRequests from '@/src/modules/logistics/pages/ShippingRequests.jsx';
 import ShipmentOrders from '@/src/modules/logistics/pages/ShipmentOrders.jsx';
@@ -52,10 +51,6 @@ const appRouter = createBrowserRouter([
       {
         path: subRouteNames.orders,
         element: <Orders />,
-      },
-      {
-        path: subRouteNames.suppliers,
-        element: <Suppliers />,
       },
       {
         path: subRouteNames.requestExpressCourierService,
