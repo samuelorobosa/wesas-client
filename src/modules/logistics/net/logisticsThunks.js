@@ -15,7 +15,7 @@ export const createCourierRequestThunk = createAsyncThunk(
       const response = await createCourierRequest(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -33,7 +33,7 @@ export const getCouriersThunk = createAsyncThunk(
       const response = await getCouriers(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -51,7 +51,7 @@ export const approveCourierQuoteThunk = createAsyncThunk(
       const response = await approveCourierQuote(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -69,7 +69,7 @@ export const getShipmentsThunk = createAsyncThunk(
       const response = await getShipments(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -87,7 +87,7 @@ export const getShipmentThunk = createAsyncThunk(
       const response = await getShipment(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -105,7 +105,7 @@ export const approveShipmentThunk = createAsyncThunk(
       const response = await approveShipment(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {

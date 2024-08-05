@@ -17,7 +17,7 @@ export const addFundsThunk = createAsyncThunk(
       const response = await addFunds(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -35,7 +35,7 @@ export const addGBPViaCardThunk = createAsyncThunk(
       const response = await addGBPViaCard(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -53,7 +53,7 @@ export const getWalletDetailsThunk = createAsyncThunk(
       const response = await getWalletDetails();
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -71,7 +71,7 @@ export const getTransactionHistoryThunk = createAsyncThunk(
       const response = await getTransactionHistory(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -89,7 +89,7 @@ export const getPlansThunk = createAsyncThunk(
       const response = await getPlans();
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -107,7 +107,7 @@ export const subscribeToAPlanThunk = createAsyncThunk(
       const response = await subscribeToAPlan(id);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -125,7 +125,7 @@ export const getPastSubscriptionsThunk = createAsyncThunk(
       const response = await getPastSubscriptions();
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -143,7 +143,7 @@ export const getBanksThunk = createAsyncThunk(
       const response = await getBanks();
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {

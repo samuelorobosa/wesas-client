@@ -51,7 +51,7 @@ export const verifyEmailThunk = createAsyncThunk(
       const response = await verifyEmail(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -69,7 +69,7 @@ export const loginThunk = createAsyncThunk(
       const response = await login(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -87,7 +87,7 @@ export const forgotPasswordThunk = createAsyncThunk(
       const response = await forgotPassword(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {
@@ -105,7 +105,7 @@ export const resetPasswordThunk = createAsyncThunk(
       const response = await resetPassword(data);
       return response.data;
     } catch (err) {
-      if (err.response.status === 400) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
       } else {

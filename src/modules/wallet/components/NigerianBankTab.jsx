@@ -53,7 +53,7 @@ export default function NigerianBankTab() {
   const [exchangeRate, setExchangeRate] = useState(0);
   const {
     wallet: {
-      add_funds: { loading },
+      add_funds: { loading, error: addFundsError },
       get_transaction_history: {
         data: transactionHistory,
         loading: transactionHistoryLoading,
@@ -229,7 +229,7 @@ export default function NigerianBankTab() {
       form.reset();
       dispatch(resetAddFundsLoadingState());
     } else if (loading === LoadingStates.rejected) {
-      toast.error('Failed to add funds');
+      toast.error(addFundsError);
       dispatch(resetAddFundsLoadingState());
     }
   }, [loading]);

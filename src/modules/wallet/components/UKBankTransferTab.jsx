@@ -56,7 +56,7 @@ export default function UKBankTransferTab() {
   } = useSelector((state) => state.wallet);
   const {
     wallet: {
-      add_funds: { loading },
+      add_funds: { loading, error: addFundsError },
       add_gbp_via_card: { loading: loading2 },
       get_transaction_history: {
         data: transactionHistory,
@@ -207,7 +207,7 @@ export default function UKBankTransferTab() {
       setIsDialogOpen(false);
       dispatch(resetAddFundsLoadingState());
     } else if (loading === LoadingStates.rejected) {
-      toast.error('Failed to add funds');
+      toast.error(addFundsError);
       dispatch(resetAddFundsLoadingState());
     }
   }, [loading]);
