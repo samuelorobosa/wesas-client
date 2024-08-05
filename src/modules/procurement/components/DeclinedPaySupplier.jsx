@@ -63,6 +63,15 @@ export default function DeclinedPaySupplier() {
       ),
     },
     {
+      accessorKey: 'sortCode',
+      header: () => <div className="text-grey-08 font-bold">Sort Code</div>,
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">
+          {row.getValue('sortCode') || 'N/A'}
+        </div>
+      ),
+    },
+    {
       accessorKey: 'total',
       header: () => <div className="text-grey-08 font-bold">Total</div>,
       cell: ({ row }) => (
@@ -96,6 +105,7 @@ export default function DeclinedPaySupplier() {
           <span>{supplier.accountNo}</span>
         </div>
       ),
+      ...(supplier.sortCode && { sortCode: supplier.sortCode }),
     }));
 
   const paginatedThunkCall = (page) => {

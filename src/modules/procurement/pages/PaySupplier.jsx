@@ -71,6 +71,15 @@ export default function PaySupplier() {
     accountNo: z.string().nonempty('Account Number is required'),
     accountName: z.string().nonempty('Account Name is required'),
   });
+
+  const formSchema2 = z.object({
+    content: z.string().nonempty('Content of Shipment is required'),
+    amount: z.string().nonempty('Amount is required'),
+    bankName: z.string().nonempty('Bank Name is required'),
+    accountNo: z.string().nonempty('Account Number is required'),
+    accountName: z.string().nonempty('Account Name is required'),
+    sortCode: z.string().nonempty('Sort Code is required'),
+  });
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -79,6 +88,19 @@ export default function PaySupplier() {
       bankName: '',
       accountNo: '',
       accountName: '',
+    },
+    mode: 'onChange',
+  });
+
+  const form2 = useForm({
+    resolver: zodResolver(formSchema2),
+    defaultValues: {
+      content: '',
+      amount: '',
+      bankName: '',
+      accountNo: '',
+      accountName: '',
+      sortCode: '',
     },
     mode: 'onChange',
   });
@@ -268,7 +290,149 @@ export default function PaySupplier() {
                     </form>
                   </Form>
                 </TabsContent>
-                <TabsContent value="gbp">Handled</TabsContent>
+                <TabsContent value="gbp">
+                  <Form {...form2}>
+                    <form onSubmit={form2.handleSubmit(onSubmit)}>
+                      <div className="grid w-full items-center gap-4">
+                        <FormField
+                          control={form2.control}
+                          name="content"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="flex flex-col space-y-1.5">
+                                  <Input
+                                    type="text"
+                                    {...field}
+                                    placeholder="Content"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage className="text-left" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form2.control}
+                          name="amount"
+                          render={({ field: { onChange, value, ref } }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="flex flex-col space-y-1.5">
+                                  <Input
+                                    value={`£${formatNumberWithCommas(value)}`}
+                                    type="text"
+                                    placeholder="Amount"
+                                    ref={ref}
+                                    onChange={(e) => {
+                                      const rawValue = e.target.value.replace(
+                                        /[£,]/g,
+                                        '',
+                                      );
+                                      onChange(rawValue);
+                                    }}
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage className="text-left" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form2.control}
+                          name="bankName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="flex flex-col space-y-1.5">
+                                  <Input
+                                    type="text"
+                                    {...field}
+                                    placeholder="Bank Name"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage className="text-left" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form2.control}
+                          name="accountNo"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="flex flex-col space-y-1.5">
+                                  <Input
+                                    type="text"
+                                    {...field}
+                                    placeholder="Account Number"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage className="text-left" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form2.control}
+                          name="accountName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="flex flex-col space-y-1.5">
+                                  <Input
+                                    type="text"
+                                    {...field}
+                                    placeholder="Account Name"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage className="text-left" />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form2.control}
+                          name="sortCode"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="flex flex-col space-y-1.5">
+                                  <Input
+                                    type="text"
+                                    {...field}
+                                    placeholder="Sort Code"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage className="text-left" />
+                            </FormItem>
+                          )}
+                        />
+
+                        <Button
+                          type="submit"
+                          disabled={isCreating || !form2.formState.isValid}
+                          className="w-full"
+                        >
+                          {isCreating ? (
+                            <ClipLoader
+                              color="#fff"
+                              loading={true}
+                              size={15}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          ) : (
+                            <span>Create Order</span>
+                          )}
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                </TabsContent>
               </Tabs>
             </div>
           </DialogContent>

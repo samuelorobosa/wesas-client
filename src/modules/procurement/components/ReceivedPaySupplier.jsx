@@ -107,6 +107,15 @@ export default function ReceivedPaySupplier() {
       ),
     },
     {
+      accessorKey: 'sortCode',
+      header: () => <div className="text-grey-08 font-bold">Sort Code</div>,
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">
+          {row.getValue('sortCode') || 'N/A'}
+        </div>
+      ),
+    },
+    {
       accessorKey: 'total',
       header: () => <div className="text-grey-08 font-bold">Total</div>,
       cell: ({ row }) => (
@@ -146,6 +155,7 @@ export default function ReceivedPaySupplier() {
             <span>{supplier.accountNo}</span>
           </div>
         ),
+        ...(supplier.sortCode && { sortCode: supplier.sortCode }),
       };
     });
 
