@@ -19,105 +19,84 @@ import { Input } from '@/src/core/components/ui/input.jsx';
 import { ClipLoader } from 'react-spinners';
 import { useEffect, useState } from 'react';
 import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
-import { addNGNViaPayStackThunk } from '@/src/modules/wallet/net/walletThunks.js';
-import { useDispatch } from 'react-redux';
+import {
+  addNGNViaPayStackThunk,
+  getTransactionHistoryThunk,
+} from '@/src/modules/wallet/net/walletThunks.js';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
+import convertDateToISOString from '@/src/core/utils/convertDatetoISOString.js';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 
 export default function CardPaymentTab() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    wallet: {
+      get_transaction_history: {
+        data: transactionHistory,
+        loading: transactionHistoryLoading,
+      },
+    },
+  } = useSelector((state) => state);
   const columns = [
     {
-      accessorKey: 'trxID',
+      accessorKey: 'id',
       header: () => (
         <div className="text-grey-08 font-bold">Transaction ID</div>
       ),
-      cell: ({ row }) => row.getValue('trxID'),
+      cell: ({ row }) => row.getValue('id'),
     },
     {
-      accessorKey: 'amount_paid',
-      header: () => <div className="text-grey-08 font-bold">Amount Paid</div>,
+      accessorKey: 'name',
+      header: () => <div className="text-grey-08 font-bold">Payer</div>,
       cell: ({ row }) => (
-        <div className="font-normal text-grey-08">
-          {row.getValue('amount_paid')}
-        </div>
+        <div className="font-normal text-grey-08">{row.getValue('name')}</div>
       ),
     },
     {
-      accessorKey: 'amount_credited',
+      accessorKey: 'amount',
       header: () => (
         <div className="text-grey-08 font-bold">Amount Credited</div>
       ),
       cell: ({ row }) => (
-        <div className="font-normal text-grey-08">
-          {row.getValue('amount_credited')}
-        </div>
+        <div className="font-normal text-grey-08">{row.getValue('amount')}</div>
       ),
     },
     {
-      accessorKey: 'date',
+      accessorKey: 'createdAt',
       header: () => <div className="text-grey-08 font-bold">Date</div>,
       cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('date')}</div>
-      ),
-    },
-    {
-      accessorKey: 'rate',
-      header: () => <div className="text-grey-08 font-bold">Exchange Rate</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('rate')}</div>
-      ),
-    },
-    {
-      accessorKey: 'action',
-      header: () => <div className="text-grey-08 font-bold">Action</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('action')}</div>
+        <div className="font-normal text-grey-08">
+          {row.getValue('createdAt')}
+        </div>
       ),
     },
     {
       accessorKey: 'status',
       header: () => <div className="text-grey-08 font-bold">Status</div>,
       cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('status')}</div>
+        <div className="font-normal text-grey-08 capitalize">
+          {row.getValue('status')}
+        </div>
       ),
     },
   ];
-  const new_table_data = [
-    {
-      trxID: crypto.randomUUID(),
-      amount_paid: '₦1,000',
-      amount_paid_to: 'John Doe',
-      amount_credited: '£1',
-      rate: '₦1 = £1',
-      date: '2021-08-23',
-      action: 'Update',
-      status: 'Pending',
-    },
-    {
-      trxID: crypto.randomUUID(),
-      amount_paid: '₦1,000',
-      amount_paid_to: 'John Doe',
-      amount_credited: '£1',
-      rate: '₦1 = £1',
-      date: '2021-08-23',
-      action: 'Update',
-      status: 'Pending',
-    },
-    {
-      trxID: crypto.randomUUID(),
-      amount_paid: '₦1,000',
-      amount_paid_to: 'John Doe',
-      amount_credited: '£1',
-      rate: '₦1 = £1',
-      date: '2021-08-23',
-      action: 'Update',
-      status: 'Pending',
-    },
-  ];
+  const new_table_data =
+    transactionHistory &&
+    transactionHistory.length > 0 &&
+    transactionHistory.map((transaction) => ({
+      id: transaction.id,
+      name: transaction.name,
+      amountReceived: `₦${formatNumberWithCommas(transaction.amountReceived)}`,
+      amount: `£${formatNumberWithCommas(transaction.amount)}`,
+      createdAt: convertDateToISOString(transaction.createdAt),
+      rate: `£1 = ₦${transaction.exchangeRate}`,
+      status: transaction.status,
+    }));
 
   const formSchema = z.object({
     amount: z.string().nonempty('Amount is required'),
@@ -164,6 +143,23 @@ export default function CardPaymentTab() {
       setIsLoading(false);
     }
   }
+  const paginatedThunkCall = (page) => {
+    dispatch(
+      getTransactionHistoryThunk({
+        currency: 'GBP',
+        page,
+      }),
+    );
+  };
+
+  useEffect(() => {
+    dispatch(
+      getTransactionHistoryThunk({
+        currency: 'GBP',
+      }),
+    );
+  }, []);
+
   return (
     <>
       <section className="mt-4 bg-white p-4 rounded-md">
@@ -179,8 +175,9 @@ export default function CardPaymentTab() {
         <DashboardTable
           columns={columns}
           data={new_table_data}
-          pageInfo={() => {}}
-          paginatedThunkCall={() => {}}
+          isLoading={transactionHistoryLoading === LoadingStates.pending}
+          pageInfo={transactionHistory?.pageInfo}
+          paginatedThunkCall={paginatedThunkCall}
         />
       </section>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
