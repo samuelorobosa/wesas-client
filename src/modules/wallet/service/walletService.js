@@ -12,6 +12,10 @@ export const addGBPViaCard = async (data) => {
   return await walletServiceClient.post(walletUrls.addGBPViaCard, data);
 };
 
+export const addNGNViaPayStack = async (data) => {
+  return await walletServiceClient.post(walletUrls.addGBPViaCard, data);
+};
+
 export const getWalletDetails = async () => {
   return await walletServiceClient.get(walletUrls.getWalletDetails);
 };

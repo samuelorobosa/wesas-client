@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   addFunds,
   addGBPViaCard,
+  addNGNViaPayStack,
   getBanks,
   getPastSubscriptions,
   getPlans,
@@ -33,6 +34,24 @@ export const addGBPViaCardThunk = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await addGBPViaCard(data);
+      return response.data;
+    } catch (err) {
+      if (err.response.status >= 400 && err.response.status <= 499) {
+        const message = err.response.data.errorMessage;
+        return rejectWithValue(message);
+      } else {
+        const message = err.response.data;
+        return rejectWithValue(message);
+      }
+    }
+  },
+);
+
+export const addNGNViaPayStackThunk = createAsyncThunk(
+  'wallet/addNGNViaPayStackThunk',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await addNGNViaPayStack(data);
       return response.data;
     } catch (err) {
       if (err.response.status >= 400 && err.response.status <= 499) {

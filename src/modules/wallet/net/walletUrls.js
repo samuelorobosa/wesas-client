@@ -1,6 +1,7 @@
 const walletUrls = {
   addFunds: '/wallet/deposits',
   addGBPViaCard: '/wallet/stripe',
+  addNGNViaPayStack: '/wallet/paystack',
   getWalletDetails: '/wallet',
   getTransactionHistory: '/wallet/transactions',
   getPlans: '/plans',

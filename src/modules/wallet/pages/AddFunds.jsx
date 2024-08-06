@@ -35,6 +35,8 @@ export default function AddFunds() {
     const type = searchParams.get('type');
     if (type && type === 'uk-card-payment') {
       setActiveTab('uk-bank-transfer');
+    } else if (type && type === 'card-payment') {
+      setActiveTab('card-payment');
     }
   }, []);
 
