@@ -97,15 +97,13 @@ export default function DeclinedRequests() {
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      {shipments.data && (
-        <DashboardTable
-          columns={columns}
-          data={new_table_data}
-          isLoading={getShipmentsLoading === LoadingStates.pending}
-          pageInfo={shipments?.pageInfo}
-          paginatedThunkCall={paginatedThunkCall}
-        />
-      )}
+      <DashboardTable
+        columns={columns}
+        data={new_table_data || []}
+        isLoading={getShipmentsLoading === LoadingStates.pending}
+        pageInfo={shipments?.pageInfo || {}}
+        paginatedThunkCall={paginatedThunkCall}
+      />
     </section>
   );
 }

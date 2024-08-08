@@ -14,6 +14,8 @@ import ShipmentOrders from '@/src/modules/logistics/pages/ShipmentOrders.jsx';
 import ForgotPassword from '@/src/modules/auth/pages/ForgotPassword.jsx';
 import Error404 from '@/src/core/components/Error404.jsx';
 import PaySupplier from '@/src/modules/procurement/pages/PaySupplier.jsx';
+import TermsAndPrivacyPolicy from '@/src/modules/auth/pages/TermsandPrivacyPolicy.jsx';
+import CustomErrorBoundary from '@/src/core/components/ErrorBoundary.jsx';
 
 const appRouter = createBrowserRouter([
   {
@@ -23,6 +25,7 @@ const appRouter = createBrowserRouter([
   {
     path: routeNames.dashboard,
     element: <DashboardPage />,
+    errorElement: <CustomErrorBoundary />,
     children: [
       {
         path: subRouteNames.profile,
@@ -65,14 +68,22 @@ const appRouter = createBrowserRouter([
   {
     path: routeNames.register,
     element: <RegistrationPage />,
+    errorElement: <CustomErrorBoundary />,
   },
   {
     path: routeNames.login,
     element: <LoginPage />,
+    errorElement: <CustomErrorBoundary />,
   },
   {
     path: routeNames.forgotPassword,
     element: <ForgotPassword />,
+    errorElement: <CustomErrorBoundary />,
+  },
+  {
+    path: routeNames.termsAndConditions,
+    element: <TermsAndPrivacyPolicy />,
+    errorElement: <CustomErrorBoundary />,
   },
   {
     path: '*',

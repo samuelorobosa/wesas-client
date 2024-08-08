@@ -190,15 +190,13 @@ export default function ReceivedPaySupplier() {
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      {suppliers.data && (
-        <DashboardTable
-          columns={columns}
-          data={new_table_data}
-          isLoading={getOrdersLoading === LoadingStates.pending}
-          pageInfo={suppliers?.pageInfo}
-          paginatedThunkCall={paginatedThunkCall}
-        />
-      )}
+      <DashboardTable
+        columns={columns}
+        data={new_table_data || []}
+        isLoading={getOrdersLoading === LoadingStates.pending}
+        pageInfo={suppliers?.pageInfo || {}}
+        paginatedThunkCall={paginatedThunkCall}
+      />
       <div className="flex justify-end items-center mt-5">
         {selectedRows.length > 0 && (
           <Button

@@ -17,7 +17,7 @@ export function TablePagination({ pageInfo, paginatedThunkCall }) {
         Previous
       </button>
 
-      <div className="text-grey-08 font-normal">
+      <div className="text-grey-08 font-normal text-sm">
         {pageInfo.totalPage > 1 ? (
           <>
             Showing Page {pageInfo.presentPage} out of {pageInfo.totalPage}

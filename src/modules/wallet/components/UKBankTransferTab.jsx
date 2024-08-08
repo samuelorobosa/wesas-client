@@ -283,9 +283,9 @@ export default function UKBankTransferTab() {
         </div>
         <DashboardTable
           columns={columns}
-          data={new_table_data}
+          data={new_table_data || []}
           isLoading={transactionHistoryLoading === LoadingStates.pending}
-          pageInfo={transactionHistory?.pageInfo}
+          pageInfo={transactionHistory?.pageInfo || {}}
           paginatedThunkCall={paginatedThunkCall}
         />
       </section>

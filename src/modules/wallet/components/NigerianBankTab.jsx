@@ -278,15 +278,13 @@ export default function NigerianBankTab() {
             Add Funds
           </Button>
         </div>
-        {transactionHistory.data && (
-          <DashboardTable
-            columns={columns}
-            data={new_table_data}
-            isLoading={transactionHistoryLoading === LoadingStates.pending}
-            pageInfo={transactionHistory?.pageInfo}
-            paginatedThunkCall={paginatedThunkCall}
-          />
-        )}
+        <DashboardTable
+          columns={columns}
+          data={new_table_data || []}
+          isLoading={transactionHistoryLoading === LoadingStates.pending}
+          pageInfo={transactionHistory?.pageInfo || {}}
+          paginatedThunkCall={paginatedThunkCall}
+        />
       </section>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="rounded-md">

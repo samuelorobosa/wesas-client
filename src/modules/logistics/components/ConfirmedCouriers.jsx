@@ -228,15 +228,13 @@ export default function ConfirmedCouriers() {
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      {couriers.data && (
-        <DashboardTable
-          columns={columns}
-          data={new_table_data}
-          isLoading={loading === LoadingStates.pending}
-          pageInfo={couriers?.pageInfo}
-          paginatedThunkCall={paginatedThunkCall}
-        />
-      )}
+      <DashboardTable
+        columns={columns}
+        data={new_table_data || []}
+        isLoading={loading === LoadingStates.pending}
+        pageInfo={couriers?.pageInfo || {}}
+        paginatedThunkCall={paginatedThunkCall}
+      />
     </section>
   );
 }

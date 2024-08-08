@@ -211,8 +211,8 @@ export default function ShipmentOrders() {
         <section className="mt-4 bg-white p-4 rounded-md">
           <DashboardTable
             columns={columns}
-            data={new_table_data}
-            pageInfo={shipments?.pageInfo}
+            data={new_table_data || []}
+            pageInfo={shipments?.pageInfo || {}}
           />
         </section>
       </section>

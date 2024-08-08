@@ -157,15 +157,13 @@ export default function SuppliersTable() {
   return (
     <>
       <section className="mt-4 bg-white p-4 rounded-md">
-        {suppliers.data && (
-          <DashboardTable
-            columns={columns}
-            data={new_table_data}
-            isLoading={loading === LoadingStates.pending}
-            pageInfo={suppliers?.pageInfo}
-            paginatedThunkCall={paginatedThunkCall}
-          />
-        )}
+        <DashboardTable
+          columns={columns}
+          data={new_table_data || []}
+          isLoading={loading === LoadingStates.pending}
+          pageInfo={suppliers?.pageInfo || {}}
+          paginatedThunkCall={paginatedThunkCall}
+        />
       </section>
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <AlertDialogTrigger></AlertDialogTrigger>

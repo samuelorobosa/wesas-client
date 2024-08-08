@@ -15,10 +15,10 @@ export default function Error500() {
         </p>
         <div className="mt-6">
           <Button
-            href={() => window.history.back()}
+            onClick={() => window.location.reload()}
             className="inline-flex items-center rounded-md bg-blue px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-blue/90"
           >
-            Go Back
+            Try again
           </Button>
         </div>
       </div>

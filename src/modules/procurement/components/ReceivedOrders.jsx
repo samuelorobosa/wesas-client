@@ -210,15 +210,13 @@ export default function ReceivedOrders() {
 
   return (
     <section className="mt-4 bg-white p-4 rounded-md">
-      {orders.data && (
-        <DashboardTable
-          columns={columns}
-          data={new_table_data}
-          isLoading={getOrdersLoading === LoadingStates.pending}
-          pageInfo={orders?.pageInfo}
-          paginatedThunkCall={paginatedThunkCall}
-        />
-      )}
+      <DashboardTable
+        columns={columns}
+        data={new_table_data || []}
+        isLoading={getOrdersLoading === LoadingStates.pending}
+        pageInfo={orders?.pageInfo || {}}
+        paginatedThunkCall={paginatedThunkCall}
+      />
       <div className="flex justify-end items-center mt-5">
         {selectedRows.length > 0 && (
           <Button

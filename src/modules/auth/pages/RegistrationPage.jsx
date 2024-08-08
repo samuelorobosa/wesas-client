@@ -431,8 +431,9 @@ export default function RegistrationPage() {
                               >
                                 I agree to the &nbsp;
                                 <Link
-                                  to={''}
+                                  to={routeNames.termsAndConditions}
                                   className="text-blue hover:underline"
+                                  target={'_blank'}
                                 >
                                   terms and conditions
                                 </Link>

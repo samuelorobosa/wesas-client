@@ -95,7 +95,7 @@ function DashboardTable({
         </Table>
       </section>
       {hasPagination && (
-        <section className="mx-4 mt-6">
+        <section className="mt-6">
           <TablePagination
             pageInfo={pageInfo}
             paginatedThunkCall={paginatedThunkCall}
