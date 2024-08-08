@@ -8,7 +8,7 @@ package.json
 package-lock.json
 
 # Ignore .env:
-.env
+.env.development
 
 # Ignore .env.example:
 .env.example
