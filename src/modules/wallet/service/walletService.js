@@ -13,7 +13,7 @@ export const addGBPViaCard = async (data) => {
 };
 
 export const addNGNViaPayStack = async (data) => {
-  return await walletServiceClient.post(walletUrls.addGBPViaCard, data);
+  return await walletServiceClient.post(walletUrls.addNGNViaPayStack, data);
 };
 
 export const getWalletDetails = async () => {
