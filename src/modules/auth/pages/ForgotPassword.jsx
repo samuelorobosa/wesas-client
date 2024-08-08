@@ -40,6 +40,7 @@ import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 
 export default function ForgotPassword() {
+  const [currentEmail, setCurrentEmail] = useState('');
   const navigate = useNavigate();
   const [otp, setOtp] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -97,6 +98,7 @@ export default function ForgotPassword() {
   });
 
   async function onSubmit(data) {
+    setCurrentEmail(data.email);
     try {
       setIsLoading(true);
       await dispatch(forgotPasswordThunk(data)).unwrap();
@@ -245,6 +247,27 @@ export default function ForgotPassword() {
                 />
               </InputOTPGroup>
             </InputOTP>
+            <p className="text-sm text-center mt-4">
+              Didn&apos;t receive the OTP? &nbsp;
+              <span
+                onClick={() => {
+                  onSubmit({ email: currentEmail });
+                }}
+                className="text-blue cursor-pointer"
+              >
+                {isLoading ? (
+                  <ClipLoader
+                    color="#007cff"
+                    loading={true}
+                    size={15}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                ) : (
+                  <span>Resend OTP</span>
+                )}
+              </span>
+            </p>
           </div>
           <Button
             onClick={handleEmailVerification}
