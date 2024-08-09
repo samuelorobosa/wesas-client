@@ -6,34 +6,21 @@ export default function TermsAndPrivacyPolicy() {
       </h1>
 
       <div className="text-[#666]">
-        <h2 className="font-medium text-base md:text-lg mb-3">
-          WESHOPANDSHIP, operating and trading under the registered name, “GABS
-          INTEGRATED SERVICES LTD (SC781915)” offers an online
-          shopping/procurement and shipping services in and outside the United
-          Kingdom.
-        </h2>
+        <h2 className="font-medium text-base md:text-lg mb-3">Introduction</h2>
 
         <p className="text-base mb-3">
-          WESHOPANDSHIP offers to shop/procure products for customers, herein
-          referred to as User(s) or Shipper(s), using contact details of
-          sellers, descriptions of products, URLs of products (for online
-          stores) provided by customers, repackage/consolidate (in cases of
-          multiple orders) and facilitate delivery/shipping of products to
-          customers&apos; desired address, as well as, offers payment and
-          shipping services where Users/Customers can complete
-          shopping/procurement by themselves and engage WESHOPANDSHIP for
-          payment to supplier and/or shipping services.{' '}
-        </p>
-
-        <p className="text-base mb-3">
-          Also, offers to provide shipping services for customers who wish to
-          ship personal or corporate documents/parcels locally and
-          internationally.
-        </p>
-
-        <p className="font-semibold text-base mb-3">
-          By using WESHOPANDSHIP services, the Customer agrees to the following
-          terms and conditions:
+          WeShopAndShip, operating and trading under the registered name “GABS
+          INTEGRATED SERVICES LTD (SC781915),” offers online shopping,
+          procurement, and shipping services in and outside the United Kingdom.
+          Our services include shopping/procuring products for customers,
+          consolidating multiple purchases into single shipments, and
+          facilitating delivery/shipping to customers&apos; desired addresses.
+          Additionally, we offer payment and shipping services, allowing
+          customers to complete shopping/procurement themselves and engage us
+          for payment to suppliers and/or shipping services. We also provide
+          shipping services for personal or corporate documents/parcels locally
+          and internationally. By using WeShopAndShip services, the Customer
+          agrees to the following terms and conditions:
         </p>
 
         <ol className="list-decimal">
@@ -42,175 +29,132 @@ export default function TermsAndPrivacyPolicy() {
           </li>
 
           <p className="mb-3">
-            Customers accept to provide sufficient information/details of the
-            seller and the products including but not limited to Company name,
-            address, contact phone number, full description and specification of
-            products, URLs of products, price, color, size, etc.{' '}
+            Customers must provide detailed information about the seller and
+            products, including company name, address, contact phone number,
+            product descriptions and specifications, URLs, prices, colours,
+            sizes, etc. Customers confirm that all orders placed will be for
+            legal, non-perishable, and acceptable products. WeShopAndShip
+            reserves the right to refuse or reject any order/transaction deemed
+            fraudulent, illegal, or unacceptable for shipping.
           </p>
           <p className="mb-3">
-            Customer confirms that all orders placed will be for legal and
-            non-perishable and acceptable products as WESHOPANDSHIP reserves the
-            right to refuse or reject any order/transaction it deems fraudulent,
-            illegal and unacceptable for shipping.
+            Unacceptable Products: Include but are not limited to counterfeit
+            goods, animals or human parts, bullion, currency, gemstones,
+            weapons, explosives, illegal items like ivory and narcotics,
+            perishables, etc.
           </p>
           <p className="mb-3">
-            A product is deemed UNACCEPTABLE if it contains but not limited to
-            counterfeit goods, animals or human parts or remains, bullion,
-            currency, gemstones, weapons, explosives and ammunition, illegal
-            items like ivory and narcotics, perishables, etc.
-          </p>
-          <p className="mb-3">
-            WESHOPANDSHIP offers to carry out shopping/procurement services for
-            a service charge of 5% of total cost of products/orders (at a
-            minimum of GBP5) as may have been agreed by seller/supplier and
-            customer or as displayed on seller&apos;s online shop and Customer
-            accepts to pay the service charge, total cost of products and any
-            local shipping charges that may apply to move customer&apos;s
-            products/orders to WESHOPANDSHIP&apos;s address before service is
-            rendered by WESHOPANDSHIP.{' '}
-          </p>
-          <p className="mb-5">
-            And where payment service is requested, WESHOPANDSHIP undertakes to
-            render such service for 3% of total value of payment at a minimum of
-            GBP5. WESHOPANDSHIP is only bound to pick up and ship ONLY
-            acceptable products as described above.
+            Service Charge: WeShopAndShip charges a service fee of 5% of the
+            total cost of products/orders (minimum GBP 5) and, where payment
+            service is requested, 3% of the total payment value (minimum GBP 5).
+            Customers must pay these charges, along with the total cost of
+            products and any local shipping charges, before services are
+            rendered.
           </p>
 
           <li className="font-semibold text-base mb-3 text-[#007bff]">
             PACKAGING AND DELIVERIES
           </li>
           <p className="mb-3">
-            Where shopping/procurement are made from multiple sellers or
-            sources, WESHOPANDSHIP will consolidate/repackage all
-            orders/products before shipping to customer.{' '}
+            For orders from multiple sellers or sources, WeShopAndShip will
+            consolidate/repackage all products before shipping. For shipping
+            services only, WeShopAndShip will pick up shipments (documents and
+            parcels) from service points or sender’s addresses after payment
+            confirmation. We reserve the right to inspect shipments for
+            acceptability.
           </p>
           <p className="mb-3">
-            Where only shipping service is rendered, WESHOPANDSHIP will pick up
-            shipments (documents and parcels) dropped off at our service points
-            or picked from sender&apos;s address after payment has been
-            confirmed and WESHOPANDSHIP reserves the right to physically inspect
-            any shipment to ensure acceptability.
-          </p>
-          <p className="mb-3">
-            WESHOPANDSHIP does not deliver to PO boxes hence products/shipment
-            will be delivered to the home or office address that would be
-            provided by the customer without necessarily being signed for by the
-            customer and where there is a general receiving area,
-            product/shipment would be delivered to such area.
-          </p>
-          <p className="mb-5">
-            In the event that delivery fails, WESHOPANDSHIP commits to reattempt
-            delivery twice and if delivery still fails, orders/shipments will be
-            redirected to a holding facility or returned to WESHOPANDSHIP
-            address and customer is liable for any cost incurred for such hold
-            or return before orders/shipment can be redelivered.
+            <b>Delivery:</b> WeShopAndShip does not deliver to PO boxes.
+            Products/shipments will be delivered to the provided home or office
+            address without requiring a signature. In the event of failed
+            delivery, WeShopAndShip will reattempt delivery twice before
+            redirecting to a holding facility or returning to our address.
+            Customers are liable for any costs incurred for holding or return.
           </p>
 
           <li className="font-semibold text-base mb-3 text-[#007bff]">
             SHIPPING CHARGES AND FEES
           </li>
           <p className="mb-3">
-            Shipping charge is based on the weight of shipments and customers
-            will be billed on the higher of ACTUAL or VOLUMETRIC WEIGHT (for
-            product/shipment packaged with a box) Where the weight of the
-            shipment is more than the shipper paid for, shipment shall be placed
-            on hold until shipper/customer completes payment.
+            Shipping charges are based on the higher of actual or volumetric
+            weight (for boxed shipments). If the weight exceeds the pre-paid
+            amount, the shipment will be held until the customer completes
+            payment.
           </p>
           <p className="mb-3">
-            Volumetric weight = L(cm) X W(cm) X H(cm)/5000.
+            Volumetric Weight Calculation: L(cm) x W(cm) x H(cm) / 5000.
           </p>
           <p className="mb-5">
-            N/B: Shipping charges are exclusive of Customs duties and charges
-            which may be charged by the receiver&apos;s or customer&apos;s local
-            Customs and is payable by the receiver or customer.{' '}
+            Note: Shipping charges do not include customs duties and charges,
+            which are payable by the receiver/customer
           </p>
 
           <li className="font-semibold text-base mb-3 text-[#007bff]">
             WESHOPANDSHIP&apos;s LIABLITIES
           </li>
           <p className="mb-5">
-            WESHOPANDSHIP will work within every possible means to shop/procure
-            and deliver customer’s orders/shipments within the estimated transit
-            times, but these estimates are not binding on WESHOPANDSHIP. Hence
-            WESHOPANDSHIP will not be held liable for any loss or damage
-            resulting from such delay. WESHOPANDSHIP will also not be held
-            liable for any loss or damage resulting from circumstances beyond
-            our control which includes, but are not limited to, bad weather,
-            plane crash, natural disaster, civil unrest, industrial action, any
-            act of omission by anybody not employed or contracted by
-            WESHOPANDSHIP, customs or any other government agencies.
+            WeShopAndShip aims to deliver within estimated transit times but is
+            not liable for delays. We are not liable for loss or damage due to
+            circumstances beyond our control, including bad weather, plane
+            crashes, natural disasters, civil unrest, industrial action, customs
+            actions, or any act/omission by third parties.
           </p>
 
           <li className="font-semibold text-base mb-3 text-[#007bff]">
             CLAIMS
           </li>
           <p className="mb-3">
-            All claims regarding damage or loss must be submitted in writing to
-            WESHOPANDSHIP through any of our contact channels within 5days of
-            order/shipment delivery after which WESHOPANDSHIP will not be held
-            liable.
+            Claims for damage or loss must be submitted in writing within 5 days
+            of delivery. WeShopAndShip will not be liable for claims submitted
+            after this period.
           </p>
 
           <li className="font-semibold text-base mb-3 text-[#007bff]">
             INSURANCE
           </li>
           <p className="mb-3">
-            WESHOPANDSHIP may provide insurance covering the declared value in
-            respect to loss or damage in cases where User/shipper subscribes to
-            and pays the insurance premium.
+            WeShopAndShip offers optional insurance for shipment loss or damage.
           </p>
-          <p className="mb-3 font-semibold">
-            Shipper/User subscribes to insurance for a premium of GBP15 for
-            shipments value of up to GBP1500 and 1.7% of shipment values of more
-            than GBP1500.
+          <p className="mb-3">
+            <b>Insurance Premium:</b> GBP 15 for shipments up to GBP 1500 and
+            1.7% of shipment values above GBP 1500. Insurance premiums are
+            non-refundable.
           </p>
-          <p className="mb-3">N/B: Insurance premium is nonrefundable.</p>
-          <p>
-            {' '}
-            In event of physical loss or damage of shipment the following
-            applies:
-          </p>
+          <p> Compensation:</p>
           <ul className="list-disc mb-5">
             <li>
-              <span className="font-semibold">For insured items:</span>{' '}
-              WESHOPANDSHIP shall compensate shipper the full declared value of
-              shipment on the waybill/commercial invoice only.
+              <span className="font-semibold">Insured items: </span>Full
+              declared value of shipment.
             </li>
             <li>
-              <span className="font-semibold">For uninsured items:</span>{' '}
-              WESHOPANDSHIP shall pay a one-off compensation of GBP20 only
-              irrespective of the value of shipment or any form of compensation
-              acceptable by Shipper/User and WESHOPANDSHIP including but not
-              limited to option of reconstruction or free shipping.
+              <span className="font-semibold">Uninsured items:</span> One-off
+              compensation of GBP 20 or an alternative agreed upon by the
+              customer and WESHOPANDSHIP.
             </li>
           </ul>
 
           <li className="font-semibold text-base mb-3 text-[#007bff]">
             WARRANTIES AND INDEMNITY
           </li>
-          <p>
-            WESHOPANDSHIP shall be indemnified and held harmless for loss or
-            damages arising from shipper&apos;s or User&apos;s failure to comply
-            with the below warranties:
-          </p>
+          <p>Customers must ensure:</p>
           <ul className="list-disc mb-5">
-            <li>All information provided is accurate and complete.</li>
+            <li>All provided information is accurate and complete.</li>
+            <li>Orders/shipments are not classified as unacceptable.</li>
+            <li>Transactions are not fraudulent or made under duress.</li>
             <li>
-              Order/Shipment is not classified as UNACCEPTABLE as specified in
-              section 1.
+              Compliance with all applicable customs, import, export laws, and
+              sanctions.
             </li>
             <li>
-              Order/transaction is not considered fraudulent or Shipment was not
-              made under undue influence or duress.
-            </li>
-            <li>
-              User/Shipper complies with all applicable customs, import and
-              export laws and sanctions and User/shipper has obtained all
-              necessary consents in relation to personal data provided to
-              WESHOPANDSHIP and that of receiver for transport, customs
-              clearance and delivery.
+              Necessary consents for personal data provided to WeShopAndShip for
+              transport, customs clearance, and delivery.
             </li>
           </ul>
+          <p>
+            WeShopAndShip shall be indemnified and held harmless for losses or
+            damages arising from customers’ failure to comply with these
+            warranties.
+          </p>
         </ol>
       </div>
     </div>
