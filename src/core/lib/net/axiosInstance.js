@@ -1,7 +1,5 @@
 import axios from 'axios';
 import { getBaseUrlFromEnv } from '@/src/core/utils/getBaseUrlFromEnv.js';
-import { getFromLocalStorage } from '@/src/core/utils/getFromLocalStorage.js';
-import { secretKeys } from '@/src/core/utils/secretKeys.js';
 
 export const defaultAxiosInstance = axios.create({
   baseURL: getBaseUrlFromEnv(),
@@ -14,12 +12,13 @@ export const countriesAxiosInstance = axios.create({
   baseURL: 'https://restcountries.com/v3.1',
 });
 
-defaultAxiosInstance.interceptors.request.use(async (config) => {
-  const accessToken = getFromLocalStorage(secretKeys.USER_TOKEN);
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-  return config;
-});
+// defaultAxiosInstance.interceptors.request.use(async (config) => {
+//   const accessToken = getFromLocalStorage(secretKeys.USER_TOKEN);
+//   console.log('accessToken', accessToken);
+//   if (accessToken) {
+//     config.headers.Authorization = `Bearer ${accessToken}`;
+//   }
+//   return config;
+// });
 
 export default defaultAxiosInstance;

@@ -4,11 +4,11 @@ import { attachQueryFieldsToUrl } from '@/src/core/utils/attachQueryFieldsToUrl.
 export const newHttpClient = (instance = defaultAxiosInstance) => {
   return {
     axiosInstance: instance,
-    get: async function (url, queryParams) {
+    get: async function (url, queryParams, options = {}) {
       let parsedUrl = url;
       if (queryParams !== undefined)
         parsedUrl = attachQueryFieldsToUrl(parsedUrl, queryParams);
-      const res = await this.axiosInstance.get(parsedUrl);
+      const res = await this.axiosInstance.get(parsedUrl, options);
       return res;
     },
     post: async function (url, body, options = {}) {

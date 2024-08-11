@@ -223,6 +223,7 @@ export default function NigerianBankTab() {
       dispatch(
         getTransactionHistoryThunk({
           currency: 'NGN',
+          channel: 'bank',
         }),
       );
       setIsDialogOpen(false);
@@ -248,6 +249,7 @@ export default function NigerianBankTab() {
     dispatch(
       getTransactionHistoryThunk({
         currency: 'NGN',
+        channel: 'bank',
       }),
     );
   }, []);
@@ -261,6 +263,7 @@ export default function NigerianBankTab() {
     dispatch(
       getTransactionHistoryThunk({
         currency: 'NGN',
+        channel: 'bank',
         page,
       }),
     );

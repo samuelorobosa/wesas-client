@@ -69,6 +69,7 @@ export const loginThunk = createAsyncThunk(
       const response = await login(data);
       return response.data;
     } catch (err) {
+      console.log('err', err);
       if (err.response.status >= 400 && err.response.status <= 499) {
         const message = err.response.data.errorMessage;
         return rejectWithValue(message);
