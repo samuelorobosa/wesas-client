@@ -125,6 +125,9 @@ export default function PaySupplier() {
         accountNo: formData.accountNo,
         accountName: formData.accountName,
         currency: supplierToBeAdded.toUpperCase(),
+        ...(formData.sortCode && {
+          sortCode: formData.sortCode,
+        }),
       },
     };
     try {

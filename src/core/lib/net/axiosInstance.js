@@ -12,13 +12,4 @@ export const countriesAxiosInstance = axios.create({
   baseURL: 'https://restcountries.com/v3.1',
 });
 
-// defaultAxiosInstance.interceptors.request.use(async (config) => {
-//   const accessToken = getFromLocalStorage(secretKeys.USER_TOKEN);
-//   console.log('accessToken', accessToken);
-//   if (accessToken) {
-//     config.headers.Authorization = `Bearer ${accessToken}`;
-//   }
-//   return config;
-// });
-
 export default defaultAxiosInstance;

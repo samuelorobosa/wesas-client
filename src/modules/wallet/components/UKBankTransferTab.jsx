@@ -107,6 +107,7 @@ export default function UKBankTransferTab() {
       ),
     },
   ];
+
   const new_table_data =
     transactionHistory &&
     transactionHistory.data &&
@@ -114,7 +115,6 @@ export default function UKBankTransferTab() {
     transactionHistory.data.map((transaction) => ({
       id: transaction.id,
       name: transaction.name,
-      amountReceived: `₦${formatNumberWithCommas(transaction.amountReceived)}`,
       amount: `£${formatNumberWithCommas(transaction.amount)}`,
       createdAt: convertDateToISOString(transaction.createdAt),
       rate: `£1 = ₦${transaction.exchangeRate}`,
