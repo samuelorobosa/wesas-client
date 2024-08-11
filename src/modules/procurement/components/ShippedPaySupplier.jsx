@@ -60,6 +60,15 @@ export default function ShippedPaySupplier() {
       ),
     },
     {
+      accessorKey: 'phoneNumber',
+      header: () => <div className="text-grey-08 font-bold">Phone Number</div>,
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">
+          {row.getValue('phoneNumber')}
+        </div>
+      ),
+    },
+    {
       accessorKey: 'sortCode',
       header: () => <div className="text-grey-08 font-bold">Sort Code</div>,
       cell: ({ row }) => (
@@ -94,6 +103,7 @@ export default function ShippedPaySupplier() {
       subtotal: `£${formatNumberWithCommas(supplier.subTotal)}`,
       supplier_fee: `£${formatNumberWithCommas(supplier.supplierFee)}`,
       total: `£${formatNumberWithCommas(supplier.total)}`,
+      phoneNumber: supplier.phoneNumber,
       bankDetails: (
         <div className="flex flex-col gap-y-2">
           <span>{supplier.bankName}</span>

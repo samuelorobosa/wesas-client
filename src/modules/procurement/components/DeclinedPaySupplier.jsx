@@ -72,6 +72,15 @@ export default function DeclinedPaySupplier() {
       ),
     },
     {
+      accessorKey: 'phoneNumber',
+      header: () => <div className="text-grey-08 font-bold">Phone Number</div>,
+      cell: ({ row }) => (
+        <div className="font-normal text-grey-08">
+          {row.getValue('phoneNumber')}
+        </div>
+      ),
+    },
+    {
       accessorKey: 'total',
       header: () => <div className="text-grey-08 font-bold">Total</div>,
       cell: ({ row }) => (
@@ -98,6 +107,7 @@ export default function DeclinedPaySupplier() {
       subtotal: `£${formatNumberWithCommas(supplier.subTotal)}`,
       supplier_fee: `£${formatNumberWithCommas(supplier.supplierFee)}`,
       total: `£${formatNumberWithCommas(supplier.total)}`,
+      phoneNumber: supplier.phoneNumber,
       bankDetails: (
         <div className="flex flex-col gap-y-2">
           <span>{supplier.bankName}</span>

@@ -92,7 +92,6 @@ export default function CardPaymentTab() {
     transactionHistory.data.map((transaction) => ({
       id: transaction.id,
       name: transaction.name,
-      amountReceived: `₦${formatNumberWithCommas(transaction.amountReceived)}`,
       amount: `£${formatNumberWithCommas(transaction.amount)}`,
       createdAt: convertDateToISOString(transaction.createdAt),
       rate: `£1 = ₦${transaction.exchangeRate}`,
@@ -148,6 +147,7 @@ export default function CardPaymentTab() {
     dispatch(
       getTransactionHistoryThunk({
         channel: 'paystack',
+        type: 'DEPOSIT',
         page,
       }),
     );
@@ -157,6 +157,7 @@ export default function CardPaymentTab() {
     dispatch(
       getTransactionHistoryThunk({
         channel: 'paystack',
+        type: 'DEPOSIT',
       }),
     );
   }, []);

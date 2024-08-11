@@ -12,6 +12,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Input } from '@/src/core/components/ui/input.jsx';
+import { ClipLoader } from 'react-spinners';
+import { Badge } from '@/src/core/components/ui/badge.jsx';
+import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
 import {
   Select,
   SelectContent,
@@ -20,53 +23,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/src/core/components/ui/select.jsx';
-import { Calendar } from '@/src/core/components/ui/calendar.jsx';
-import { ClipLoader } from 'react-spinners';
-import { useEffect, useState } from 'react';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/src/core/components/ui/popover.jsx';
 import { cn } from '@/src/core/lib/cn/cn.js';
-import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { Calendar } from '@/src/core/components/ui/calendar.jsx';
+import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addFundsThunk,
-  getBanksThunk,
+  addGBPViaCardThunk,
   getTransactionHistoryThunk,
 } from '@/src/modules/wallet/net/walletThunks.js';
-import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import formatNumberWithCommas from '@/src/core/utils/formatNumberWithCommas.js';
-import { getExchangeRatesThunk } from '@/src/modules/profile/net/profileThunks.js';
-import { Badge } from '@/src/core/components/ui/badge.jsx';
 import convertDateToISOString from '@/src/core/utils/convertDatetoISOString.js';
+import { useSearchParams } from 'react-router-dom';
+import { getExchangeRatesThunk } from '@/src/modules/profile/net/profileThunks.js';
 import { resetAddFundsLoadingState } from '@/src/modules/wallet/state/walletSlice.js';
 
-export default function NigerianBankTab() {
+export default function UKBankTransTab() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen2, setIsDialogOpen2] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useDispatch();
   const {
     banks: { data: banks },
   } = useSelector((state) => state.wallet);
-  const [exchangeRate, setExchangeRate] = useState(0);
   const {
     wallet: {
       add_funds: { loading, error: addFundsError },
+      add_gbp_via_card: { loading: loading2 },
       get_transaction_history: {
         data: transactionHistory,
         loading: transactionHistoryLoading,
       },
     },
-    profile: {
-      get_exchange_rates: {
-        data: exchangeRates,
-        loading: exchangeRatesLoading,
-      },
-    },
   } = useSelector((state) => state);
-  const dispatch = useDispatch();
   const columns = [
     {
       accessorKey: 'id',
@@ -83,32 +80,12 @@ export default function NigerianBankTab() {
       ),
     },
     {
-      accessorKey: 'amountReceived',
-      header: () => <div className="text-grey-08 font-bold">Amount Paid</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('amount')}</div>
-      ),
-    },
-    {
       accessorKey: 'amount',
       header: () => (
         <div className="text-grey-08 font-bold">Amount Credited</div>
       ),
       cell: ({ row }) => (
-        <div className="font-normal text-grey-08">
-          {row.getValue('amountReceived')}
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'amount_paid_to',
-      header: () => (
-        <div className="text-grey-08 font-bold">Amount Paid To</div>
-      ),
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">
-          {row.getValue('amount_paid_to')}
-        </div>
+        <div className="font-normal text-grey-08">{row.getValue('amount')}</div>
       ),
     },
     {
@@ -121,13 +98,6 @@ export default function NigerianBankTab() {
       ),
     },
     {
-      accessorKey: 'rate',
-      header: () => <div className="text-grey-08 font-bold">Rate</div>,
-      cell: ({ row }) => (
-        <div className="font-normal text-grey-08">{row.getValue('rate')}</div>
-      ),
-    },
-    {
       accessorKey: 'status',
       header: () => <div className="text-grey-08 font-bold">Status</div>,
       cell: ({ row }) => (
@@ -137,6 +107,7 @@ export default function NigerianBankTab() {
       ),
     },
   ];
+
   const new_table_data =
     transactionHistory &&
     transactionHistory.data &&
@@ -144,24 +115,33 @@ export default function NigerianBankTab() {
     transactionHistory.data.map((transaction) => ({
       id: transaction.id,
       name: transaction.name,
-      amountReceived: `£${formatNumberWithCommas(transaction.amountReceived)}`,
-      amount: `₦${formatNumberWithCommas(transaction.amount)}`,
-      amount_paid_to: (
-        <section className="flex flex-col gap-y-1">
-          <span>{transaction?.recipientAccount?.accountNo}</span>
-          <span>{transaction?.recipientAccount?.bankName}</span>
-        </section>
-      ),
+      amount: `£${formatNumberWithCommas(transaction.amount)}`,
       createdAt: convertDateToISOString(transaction.createdAt),
       rate: `£1 = ₦${transaction.exchangeRate}`,
       status: transaction.status,
     }));
+
+  const bankOptions =
+    banks &&
+    Object.values(banks)
+      .filter((account) => account.currency === 'GBP')
+      .map((bank) => ({
+        id: bank.id,
+        label: bank.bankName,
+        value: bank.bankName,
+        accountNo: bank.accountNo,
+        accountName: bank.accountName,
+        ...(bank.sortCode && { sortCode: bank.sortCode }),
+      }));
 
   const formSchema = z.object({
     payerName: z.string().nonempty('Payer name is required'),
     amount: z.string().nonempty('Amount is required'),
     bankName: z.string().nonempty('Bank is required'),
     paymentDate: z.date({ required_error: 'Payment date is required' }),
+  });
+  const formSchema2 = z.object({
+    amount: z.string().nonempty('Amount is required'),
   });
 
   const form = useForm({
@@ -175,21 +155,13 @@ export default function NigerianBankTab() {
     mode: 'onChange',
   });
 
-  const bankOptions =
-    banks &&
-    banks
-      .filter((account) => account.currency === 'NGN')
-      .map((bank) => ({
-        id: bank.id,
-        label: bank.bankName,
-        value: bank.bankName,
-        accountNo: bank.accountNo,
-        accountName: bank.accountName,
-      }));
-
-  useEffect(() => {
-    dispatch(getBanksThunk());
-  }, []);
+  const form2 = useForm({
+    resolver: zodResolver(formSchema2),
+    defaultValues: {
+      amount: '',
+    },
+    mode: 'onChange',
+  });
 
   async function onSubmit(values) {
     const __formData = {
@@ -202,11 +174,18 @@ export default function NigerianBankTab() {
           (option) => option.id === Number(values.bankName),
         ).accountNo,
       },
-      currency: 'NGN',
+      currency: 'GBP',
       payerName: values.payerName,
       paymentDate: values.paymentDate,
     };
     dispatch(addFundsThunk(__formData));
+  }
+
+  async function onSubmit2(values) {
+    const __formData = {
+      amount: Number(values.amount),
+    };
+    dispatch(addGBPViaCardThunk(__formData));
   }
 
   useEffect(() => {
@@ -222,13 +201,13 @@ export default function NigerianBankTab() {
       );
       dispatch(
         getTransactionHistoryThunk({
-          currency: 'NGN',
-          channel: 'bank',
+          currency: 'GBP',
           type: 'DEPOSIT',
+          channel: 'bank',
         }),
       );
-      setIsDialogOpen(false);
       form.reset();
+      setIsDialogOpen(false);
       dispatch(resetAddFundsLoadingState());
     } else if (loading === LoadingStates.rejected) {
       toast.error(addFundsError);
@@ -236,37 +215,50 @@ export default function NigerianBankTab() {
     }
   }, [loading]);
 
-  function getExchangeRate() {
-    dispatch(getExchangeRatesThunk());
-  }
-
-  useEffect(() => {
-    if (exchangeRatesLoading === LoadingStates.fulfilled) {
-      setExchangeRate(exchangeRates.data[0]?.naira);
-    }
-  }, [exchangeRatesLoading]);
-
   useEffect(() => {
     dispatch(
       getTransactionHistoryThunk({
-        currency: 'NGN',
-        channel: 'bank',
+        currency: 'GBP',
         type: 'DEPOSIT',
+        channel: 'bank',
       }),
     );
   }, []);
 
-  const openDialog = () => {
+  const removeQueryParams = (paramKeys) => {
+    const newParams = new URLSearchParams(searchParams);
+    paramKeys.forEach((key) => newParams.delete(key));
+    setSearchParams(newParams);
+  };
+
+  useEffect(() => {
+    const payment = searchParams.get('payment');
+    if (payment === 'successful') {
+      toast.success('Payment successful', {
+        closeButton: true,
+      });
+    }
+    removeQueryParams(['type', 'payment']);
+  }, []);
+  function getExchangeRate() {
+    dispatch(getExchangeRatesThunk());
+  }
+
+  const openDialog = (num) => {
     getExchangeRate();
-    setIsDialogOpen(true);
+    if (num === 1) {
+      setIsDialogOpen(true);
+    } else if (num === 2) {
+      setIsDialogOpen2(true);
+    }
   };
 
   const paginatedThunkCall = (page) => {
     dispatch(
       getTransactionHistoryThunk({
-        currency: 'NGN',
-        channel: 'bank',
+        currency: 'GBP',
         type: 'DEPOSIT',
+        channel: 'bank',
         page,
       }),
     );
@@ -275,14 +267,19 @@ export default function NigerianBankTab() {
   return (
     <>
       <section className="mt-4 bg-white p-4 rounded-md">
-        <div className="flex w-full justify-between items-center mb-6">
-          <span className="font-bold text-base">Nigerian Bank</span>
-          <Button
-            onClick={() => openDialog()}
-            className="ml-4 bg-blue hover:bg-primary-tint-300"
-          >
-            Add Funds
-          </Button>
+        <div className="flex w-full md:flex-row flex-col  gap-y-2.5 justify-between md:items-center items-start mb-6">
+          <span className="font-bold text-base whitespace-nowrap">
+            UK Bank Transfer
+          </span>
+          <div className="flex items-center gap-x-2">
+            <Button
+              size="sm"
+              onClick={() => openDialog(1)}
+              className="bg-blue hover:bg-primary-tint-300"
+            >
+              Add Funds via Bank
+            </Button>
+          </div>
         </div>
         <DashboardTable
           columns={columns}
@@ -292,30 +289,116 @@ export default function NigerianBankTab() {
           paginatedThunkCall={paginatedThunkCall}
         />
       </section>
+      <Dialog open={isDialogOpen2} onOpenChange={setIsDialogOpen2}>
+        <DialogContent className="rounded-md">
+          <header className="font-semibold text-base">
+            Add Funds via Card
+          </header>
+          <div className="grid w-full items-center gap-4">
+            <Form {...form2}>
+              <form onSubmit={form2.handleSubmit(onSubmit2)}>
+                <div className="grid w-full items-center gap-4">
+                  <FormField
+                    control={form2.control}
+                    name="amount"
+                    render={({ field: { onChange, value, ref } }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col space-y-1.5">
+                            <Input
+                              type="text"
+                              value={`£${formatNumberWithCommas(value)}`}
+                              onChange={(e) => {
+                                const rawValue = e.target.value.replace(
+                                  /[£,]/g,
+                                  '',
+                                );
+                                onChange(rawValue);
+                              }}
+                              ref={ref}
+                              placeholder="Amount"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-left" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <Button
+                    type="submit"
+                    disabled={
+                      loading2 === LoadingStates.pending ||
+                      !form2.formState.isValid
+                    }
+                    className="w-full"
+                  >
+                    {loading2 === LoadingStates.pending ? (
+                      <ClipLoader
+                        color="#fff"
+                        loading={loading2 === LoadingStates.pending}
+                        size={15}
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                      />
+                    ) : (
+                      <span>Proceed</span>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        </DialogContent>
+      </Dialog>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="rounded-md">
-          <header className="font-semibold text-base">Add Funds</header>
+          <header className="font-semibold text-base">
+            Add Funds via Bank
+          </header>
           <Badge
             variant="default"
             className="mt-2 py-1 justify-center flex-col gap-y-2"
           >
             {form.getValues('bankName') ? (
-              <section className="flex gap-y-2 flex-col items-center">
+              <section className="flex gap-y-2 flex-col justify-center items-center">
                 <span>Pay into the following bank and submit:</span>
-                <div>
-                  {
-                    bankOptions.find(
-                      (option) =>
-                        option.id === Number(form.getValues('bankName')),
-                    )?.label
-                  }
-                  &nbsp; - &nbsp;
-                  {
-                    bankOptions.find(
-                      (option) =>
-                        option.id === Number(form.getValues('bankName')),
-                    )?.accountNo
-                  }
+                <div className="flex flex-col items-center gap-y-1">
+                  <span>
+                    Bank:{' '}
+                    {
+                      bankOptions.find(
+                        (option) =>
+                          option.id === Number(form.getValues('bankName')),
+                      )?.label
+                    }
+                  </span>
+                  <span>
+                    Account Name:{' '}
+                    {
+                      bankOptions.find(
+                        (option) =>
+                          option.id === Number(form.getValues('bankName')),
+                      )?.accountName
+                    }
+                  </span>
+                  <span>
+                    Account Number:{' '}
+                    {
+                      bankOptions.find((option) => {
+                        return option.id === Number(form.getValues('bankName'));
+                      })?.accountNo
+                    }
+                  </span>
+                  <span>
+                    Sort Code:{' '}
+                    {
+                      bankOptions.find(
+                        (option) =>
+                          option.id === Number(form.getValues('bankName')),
+                      ).sortCode
+                    }
+                  </span>
                 </div>
               </section>
             ) : (
@@ -353,22 +436,17 @@ export default function NigerianBankTab() {
                           <div className="flex flex-col space-y-1.5">
                             <Input
                               type="text"
-                              value={`₦${formatNumberWithCommas(value)}`}
+                              value={`£${formatNumberWithCommas(value)}`}
                               onChange={(e) => {
                                 const rawValue = e.target.value.replace(
-                                  /[₦,]/g,
+                                  /[£,]/g,
                                   '',
                                 );
                                 onChange(rawValue);
-                                getExchangeRate();
                               }}
                               ref={ref}
                               placeholder="Amount"
                             />
-                            <div className="text-muted-foreground text-xs">
-                              {value &&
-                                `₦${formatNumberWithCommas(value)} = £${formatNumberWithCommas(value / exchangeRate)}`}
-                            </div>
                           </div>
                         </FormControl>
                         <FormMessage className="text-left" />

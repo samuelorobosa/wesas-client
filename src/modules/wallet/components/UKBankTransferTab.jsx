@@ -202,6 +202,8 @@ export default function UKBankTransferTab() {
       dispatch(
         getTransactionHistoryThunk({
           currency: 'GBP',
+          type: 'DEPOSIT',
+          channel: 'stripe',
         }),
       );
       form.reset();
@@ -217,6 +219,8 @@ export default function UKBankTransferTab() {
     dispatch(
       getTransactionHistoryThunk({
         currency: 'GBP',
+        type: 'DEPOSIT',
+        channel: 'stripe',
       }),
     );
   }, []);
@@ -253,6 +257,8 @@ export default function UKBankTransferTab() {
     dispatch(
       getTransactionHistoryThunk({
         currency: 'GBP',
+        type: 'DEPOSIT',
+        channel: 'stripe',
         page,
       }),
     );
@@ -272,13 +278,6 @@ export default function UKBankTransferTab() {
               className="bg-blue hover:bg-primary-tint-300"
             >
               Pay via Card
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => openDialog(1)}
-              className="bg-blue hover:bg-primary-tint-300"
-            >
-              Add Funds via Bank
             </Button>
           </div>
         </div>

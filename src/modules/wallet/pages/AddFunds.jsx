@@ -7,6 +7,7 @@ import { RxHamburgerMenu } from 'react-icons/rx';
 import useWindowSize from '@/src/core/utils/useWindowSize.js';
 import { toggleCollapse } from '@/src/modules/dashboard/state/navDrawerSlice.js';
 import { useDispatch } from 'react-redux';
+import UKBankTransTab from '@/src/modules/wallet/components/UKBankTransTab.jsx';
 
 export default function AddFunds() {
   const { width } = useWindowSize();
@@ -19,8 +20,13 @@ export default function AddFunds() {
       element: <NigerianBankTab />,
     },
     {
+      key: 'uk-bank-trans',
+      title: 'UK Bank Transfer',
+      element: <UKBankTransTab />,
+    },
+    {
       key: 'uk-bank-transfer',
-      title: 'UK Bank Transfer/Card Payment (GBP)',
+      title: 'Card Payment (GBP)',
       element: <UKBankTransferTab />,
     },
     {
