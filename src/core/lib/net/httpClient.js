@@ -20,7 +20,7 @@ export const newHttpClient = (instance = defaultAxiosInstance) => {
       return res;
     },
     delete: async function (url, body, options = {}) {
-      const res = await this.axiosInstance.delete(url, body, options);
+      const res = await this.axiosInstance.delete(url, options);
       return res;
     },
   };
