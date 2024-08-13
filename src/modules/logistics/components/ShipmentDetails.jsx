@@ -122,7 +122,7 @@ export default function ShipmentDetails({
                             },
                           });
                         }}
-                        placeholder="Weight in cm"
+                        placeholder="Weight in kg"
                       />
                     </div>
                   </FormControl>

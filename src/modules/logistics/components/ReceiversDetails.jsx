@@ -154,7 +154,7 @@ export default function ReceiversDetails({
                           setFormData({
                             ...formData,
                             receiver: {
-                              ...formData.sender,
+                              ...formData.receiver,
                               email: e.target.value,
                             },
                           });
