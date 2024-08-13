@@ -42,6 +42,25 @@ export default function ShippedRequests() {
       cell: ({ row }) => row.getValue('id'),
     },
     {
+      accessorKey: 'receiver_name',
+      header: () => <div className="text-grey-08 font-bold">Receiver Name</div>,
+      cell: ({ row }) => row.getValue('receiver_name'),
+    },
+    {
+      accessorKey: 'receiver_phone',
+      header: () => (
+        <div className="text-grey-08 font-bold">Receiver Phone</div>
+      ),
+      cell: ({ row }) => row.getValue('receiver_phone'),
+    },
+    {
+      accessorKey: 'receiver_address',
+      header: () => (
+        <div className="text-grey-08 font-bold">Receiver Address</div>
+      ),
+      cell: ({ row }) => row.getValue('receiver_address'),
+    },
+    {
       accessorKey: 'weight',
       header: () => <div className="text-grey-08 font-bold">Weight</div>,
       cell: ({ row }) => (
@@ -82,6 +101,9 @@ export default function ShippedRequests() {
           return {
             id: shipment.id,
             created_at: format(shipment.createdAt, 'PPP'),
+            receiver_name: shipment?.shippingAddress?.receiverName,
+            receiver_address: `${shipment?.shippingAddress?.receiverAddress} ,${shipment?.shippingAddress?.city} ,${shipment?.shippingAddress?.country}`,
+            receiver_phone: shipment?.shippingAddress?.receiverPhone,
             weight: `${shipment.weight}kg`,
             shipping_fee: `£${formatNumberWithCommas(shipment.shippingFee)}`,
             orders: (

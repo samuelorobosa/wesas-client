@@ -211,18 +211,19 @@ export default function ManageSubscription() {
                                 (item) =>
                                   item.name === form.getValues('subscription'),
                               )?.duration
-                                ? `${data.find((item) => item.name === form.getValues('subscription'))?.duration} months`
+                                ? `${data.find((item) => item.name === form.getValues('subscription'))?.duration} days`
                                 : 'Plan not selected'}
                             </span>
                           </p>
                           <p className="flex justify-between">
                             <span>Amount:</span>
                             <span>
+                              £
                               {data.find(
                                 (item) =>
                                   item.name === form.getValues('subscription'),
                               )?.duration
-                                ? `${data.find((item) => item.name === form.getValues('subscription'))?.amount} months`
+                                ? `${data.find((item) => item.name === form.getValues('subscription'))?.amount}`
                                 : 'Plan not selected'}
                             </span>
                           </p>
