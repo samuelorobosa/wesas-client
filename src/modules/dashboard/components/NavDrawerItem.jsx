@@ -20,7 +20,7 @@ export default function NavDrawerItem({ title, itemKey, icon, links }) {
   const exemptedPaths = [
     {
       key: 'Whatsapp',
-      path: 'https://wa.me/2348136562626',
+      path: 'https://wa.me/+447778190602',
     },
   ];
 
