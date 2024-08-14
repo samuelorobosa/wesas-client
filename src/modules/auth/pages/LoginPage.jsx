@@ -16,7 +16,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { loginThunk } from '@/src/modules/auth/net/authThunks.js';
+import {
+  loginThunk,
+  verifyEmailThunk,
+} from '@/src/modules/auth/net/authThunks.js';
 import {
   Form,
   FormControl,
@@ -30,15 +33,27 @@ import { LoadingStates } from '@/src/core/utils/LoadingStates.js';
 import { routeNames, subRouteNames } from '@/src/core/navigation/routenames.js';
 import { secretKeys } from '@/src/core/utils/secretKeys.js';
 import { saveToLocalStorage } from '@/src/core/utils/saveToLocalStorage.js';
+import {
+  AlertDialog,
+  AlertDialogContent,
+} from '@/src/core/components/ui/alert-dialog.jsx';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from '@/src/core/components/ui/input-otp.jsx';
 
 export default function LoginPage() {
+  const [userEmail, setUserEmail] = useState('');
+  const [otp, setOtp] = useState('');
   const openPage = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [captcha, setCaptcha] = useState(false);
   const dispatch = useDispatch();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const { login_user } = useSelector((state) => state.auth);
-
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   useEffect(() => {
     if (login_user.loading === LoadingStates.fulfilled) {
       setIsLoading(false);
@@ -50,7 +65,14 @@ export default function LoginPage() {
       openPage(`${routeNames.dashboard}/${subRouteNames.profile}`);
     } else if (login_user.loading === LoadingStates.rejected) {
       setIsLoading(false);
-      toast.error(login_user.error);
+      if (
+        login_user.error ===
+        'An otp has been sent to your mail box, Check your mail to veriy your email address'
+      ) {
+        setIsDialogOpen(true);
+      } else {
+        toast.error(login_user.error);
+      }
     }
   }, [login_user.loading]);
 
@@ -85,11 +107,25 @@ export default function LoginPage() {
 
   async function onSubmit(data) {
     setIsLoading(true);
+    setUserEmail(data.email);
     dispatch(loginThunk(data));
   }
 
   const handleCaptchaUpdate = (value) => {
     setCaptcha(value);
+  };
+
+  const handleEmailVerification = async (e) => {
+    e.preventDefault();
+    setIsVerifying(true);
+    try {
+      await dispatch(verifyEmailThunk({ otp, email: userEmail })).unwrap();
+      setIsDialogOpen(false);
+    } catch (error) {
+      toast.error(error);
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   return (
@@ -221,6 +257,67 @@ export default function LoginPage() {
           </Card>
         </center>
       </div>
+      <AlertDialog
+        open={isDialogOpen}
+        onOpenChange={() => setIsDialogOpen(!isDialogOpen)}
+      >
+        <AlertDialogContent className="max-w-[400px] text-center rounded-md">
+          <h1 className="text-xl font-semibold leading-none tracking-tight mt-4">
+            Enter the OTP sent to your email
+          </h1>
+          <div className="flex justify-center mt-10">
+            <InputOTP
+              onChange={(newValue) => setOtp(newValue)}
+              value={otp}
+              maxLength={6}
+            >
+              <InputOTPGroup className="gap-2 justify-between">
+                <InputOTPSlot
+                  className="rounded text-grey-08 text-3xl font-bold border border-grey-02 px-2.5 py-1"
+                  index={0}
+                />
+                <InputOTPSlot
+                  className="rounded text-grey-08 text-3xl font-bold border border-grey-02 px-2.5 py-1"
+                  index={1}
+                />
+                <InputOTPSlot
+                  className="rounded text-grey-08 text-3xl font-bold border border-grey-02 px-2.5 py-1"
+                  index={2}
+                />
+                <InputOTPSlot
+                  className="rounded text-grey-08 text-3xl font-bold border border-grey-02 px-2.5 py-1"
+                  index={3}
+                />
+                <InputOTPSlot
+                  className="rounded text-grey-08 text-3xl font-bold border border-grey-02 px-2.5 py-1"
+                  index={4}
+                />
+                <InputOTPSlot
+                  className="rounded text-grey-08 text-3xl font-bold border border-grey-02 px-2.5 py-1"
+                  index={5}
+                />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+          <Button
+            onClick={handleEmailVerification}
+            disabled={otp.length < 6}
+            className="mt-4"
+          >
+            {isVerifying ? (
+              <ClipLoader
+                color="#fff"
+                loading={isLoading}
+                size={15}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+              />
+            ) : (
+              <span>Verify Email</span>
+            )}
+          </Button>
+        </AlertDialogContent>
+      </AlertDialog>
     </Fragment>
   );
 }
