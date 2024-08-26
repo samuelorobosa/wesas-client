@@ -246,6 +246,10 @@ export default function ProcessedCouriers() {
                   <div className="text-grey-08 font-bold">Shipment Width</div>
                   <div className="text-grey-08">{order.shipment.width} cm</div>
                 </div>
+                <div>
+                  <div className="text-grey-08 font-bold">Shipment Weight</div>
+                  <div className="text-grey-08">{order.shipment.weight} kg</div>
+                </div>
               </div>
             </section>
           </DialogContent>
